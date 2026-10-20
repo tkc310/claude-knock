@@ -9,6 +9,7 @@
 | [0002](./0002-makefile-and-tool-versions.md) | コマンドの入口を Makefile と `vp` に集め、ツールの版は `.tool-versions` だけで持つ | 採用 |
 | [0003](./0003-8341-ui-from-registry.md)      | デザインシステムに 8341-ui を shadcn レジストリ（v0.1.0 固定）で取り込む           | 採用 |
 | [0004](./0004-improvement-loop.md)           | 改善ループ（バックログ・ログ・ADR・改善スキル）を置く                              | 採用 |
+| [0005](./0005-early-buddhist-events-only.md) | 対象を原始仏教にとって重要な行事に限り、ロイクラトンとソンクラーンを外す           | 採用 |
 
 ## テンプレート
 

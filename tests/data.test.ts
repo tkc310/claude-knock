@@ -13,15 +13,6 @@ describe('events', () => {
     expect(name.kana).toMatch(/^[\p{Script=Katakana}ー・]+$/u);
   });
 
-  it('ソンクラーンは太陽暦の 4/13〜15 に固定', () => {
-    const songkran = events.find((e) => e.id === 'songkran');
-    expect(songkran).toMatchObject({
-      calendar: 'solar',
-      start: { month: 4, day: 13 },
-      end: { month: 4, day: 15 },
-    });
-  });
-
   it('名前を「タイ語 / ローマ字 / カタカナ」で表示する', () => {
     expect(formatEventName({ th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ' })).toBe(
       'วันพระ / Wan Phra / ワンプラ',
