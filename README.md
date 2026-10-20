@@ -1,7 +1,7 @@
 # タイ仏教行事カレンダー（日本語版）
 
 タイ仏教の行事を日本語で見られるカレンダー。Web 表示と ICS 配信を目指す。
-行事名は「タイ語 / ローマ字 / カタカナ」を併記する（例: วันพระ / Wan Phra / ワンプラ）。
+行事名は「タイ語 / ローマ字 / カタカナ / 日本語訳」を併記する（例: วันพระ / Wan Phra / ワンプラ / 布薩日）。
 
 ## はじめる
 
@@ -38,7 +38,7 @@ make dev     # http://localhost:4321
 
 ```text
 src/core/        暦計算（Astro・React に依存しない純粋関数）
-src/data/        行事の定義（タイ語 / ローマ字 / カタカナ）
+src/data/        行事の定義（タイ語 / ローマ字 / カタカナ / 日本語訳）
 src/pages/       ページ
 src/layouts/     レイアウト
 src/components/ui/, src/lib/, src/styles/8341-ui.css
