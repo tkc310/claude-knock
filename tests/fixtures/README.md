@@ -1,0 +1,23 @@
+# tests/fixtures
+
+行事日付の正解データ。暦計算（`src/core/`）のテストはここを正とする。
+
+## 形式
+
+1 ファイル 1 年・1 行事でも、複数をまとめてもよい。拡張子は `.json`。
+
+```json
+[
+  {
+    "eventId": "makha-bucha",
+    "date": "2026-03-03",
+    "sourceUrl": "https://example.go.th/..."
+  }
+]
+```
+
+- `eventId`: `src/data/events.ts` の `EventId`
+- `date`: タイ時間での日付（`YYYY-MM-DD`）。期間の行事は開始日
+- `sourceUrl`: **必須**。公式機関（タイ政府・内閣官房・宗教局など）の出典 URL（https）
+
+出典の無いデータは追加しない。`tests/fixtures.test.ts` が全件を検査する。

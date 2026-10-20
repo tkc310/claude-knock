@@ -1,0 +1,778 @@
+/*
+ * 8341-ui のテーマ（shadcn のレジストリ版。トークンを同梱しているので、このファイルだけで動く）。
+ * 生成物なので編集しない。更新は npx shadcn@latest add @8341/theme --overwrite
+ *
+ *   @import 'tailwindcss';
+ *   @import './styles/8341-ui.css';
+ */
+/* ---- 8341-ui-tokens/tokens.css ---- */
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --8341-color-primitive-white: oklch(1.0000 0.0000 0.00);
+  --8341-color-primitive-black: oklch(0.0000 0.0000 0.00);
+  --8341-color-primitive-indigo-50: oklch(0.9750 0.0100 265.00); /** 白背景 1.07:1 */
+  --8341-color-primitive-indigo-100: oklch(0.9450 0.0260 265.00); /** 白背景 1.18:1 */
+  --8341-color-primitive-indigo-200: oklch(0.8900 0.0520 265.00); /** 白背景 1.39:1 */
+  --8341-color-primitive-indigo-300: oklch(0.8200 0.0880 265.00); /** 白背景 1.75:1 */
+  --8341-color-primitive-indigo-400: oklch(0.7400 0.1300 265.00); /** 白背景 2.34:1 */
+  --8341-color-primitive-indigo-500: oklch(0.6500 0.1500 265.00); /** 白背景 3.28:1 */
+  --8341-color-primitive-indigo-600: oklch(0.5700 0.1550 265.00); /** 白背景 4.59:1 */
+  --8341-color-primitive-indigo-700: oklch(0.5000 0.1500 265.00); /** 白背景 6.13:1 */
+  --8341-color-primitive-indigo-800: oklch(0.4400 0.1350 265.00); /** 白背景 8.00:1 */
+  --8341-color-primitive-indigo-900: oklch(0.3800 0.1200 265.00); /** 白背景 10.23:1 */
+  --8341-color-primitive-indigo-1000: oklch(0.3200 0.1000 265.00); /** 白背景 12.84:1 */
+  --8341-color-primitive-indigo-1100: oklch(0.2700 0.0850 265.00); /** 白背景 15.25:1 */
+  --8341-color-primitive-indigo-1200: oklch(0.2200 0.0700 265.00); /** 白背景 17.40:1 */
+  --8341-color-primitive-teal-50: oklch(0.9750 0.0170 195.00); /** 白背景 1.07:1 */
+  --8341-color-primitive-teal-100: oklch(0.9450 0.0340 195.00); /** 白背景 1.16:1 */
+  --8341-color-primitive-teal-200: oklch(0.8900 0.0595 195.00); /** 白背景 1.36:1 */
+  --8341-color-primitive-teal-300: oklch(0.8200 0.0850 195.00); /** 白背景 1.68:1 */
+  --8341-color-primitive-teal-400: oklch(0.7400 0.1105 195.00); /** 白背景 2.21:1 */
+  --8341-color-primitive-teal-500: oklch(0.6500 0.1095 195.00); /** 白背景 3.09:1 */
+  --8341-color-primitive-teal-600: oklch(0.5700 0.0957 195.00); /** 白背景 4.24:1 */
+  --8341-color-primitive-teal-700: oklch(0.5000 0.0835 195.00); /** 白背景 5.74:1 */
+  --8341-color-primitive-teal-800: oklch(0.4400 0.0747 195.00); /** 白背景 7.49:1 */
+  --8341-color-primitive-teal-900: oklch(0.3800 0.0640 195.00); /** 白背景 9.67:1 */
+  --8341-color-primitive-teal-1000: oklch(0.3200 0.0530 195.00); /** 白背景 12.41:1 */
+  --8341-color-primitive-teal-1100: oklch(0.2700 0.0462 195.00); /** 白背景 14.86:1 */
+  --8341-color-primitive-teal-1200: oklch(0.2200 0.0375 195.00); /** 白背景 17.11:1 */
+  --8341-color-primitive-purple-50: oklch(0.9750 0.0120 300.00); /** 白背景 1.08:1 */
+  --8341-color-primitive-purple-100: oklch(0.9450 0.0300 300.00); /** 白背景 1.18:1 */
+  --8341-color-primitive-purple-200: oklch(0.8900 0.0620 300.00); /** 白背景 1.41:1 */
+  --8341-color-primitive-purple-300: oklch(0.8200 0.1000 300.00); /** 白背景 1.79:1 */
+  --8341-color-primitive-purple-400: oklch(0.7400 0.1300 300.00); /** 白背景 2.41:1 */
+  --8341-color-primitive-purple-500: oklch(0.6500 0.1500 300.00); /** 白背景 3.43:1 */
+  --8341-color-primitive-purple-600: oklch(0.5700 0.1550 300.00); /** 白背景 4.74:1 */
+  --8341-color-primitive-purple-700: oklch(0.5000 0.1500 300.00); /** 白背景 6.40:1 */
+  --8341-color-primitive-purple-800: oklch(0.4400 0.1350 300.00); /** 白背景 8.26:1 */
+  --8341-color-primitive-purple-900: oklch(0.3800 0.1200 300.00); /** 白背景 10.56:1 */
+  --8341-color-primitive-purple-1000: oklch(0.3200 0.1000 300.00); /** 白背景 13.25:1 */
+  --8341-color-primitive-purple-1100: oklch(0.2700 0.0850 300.00); /** 白背景 15.49:1 */
+  --8341-color-primitive-purple-1200: oklch(0.2200 0.0700 300.00); /** 白背景 17.58:1 */
+  --8341-color-primitive-red-50: oklch(0.9750 0.0110 25.00); /** 白背景 1.08:1 */
+  --8341-color-primitive-red-100: oklch(0.9450 0.0260 25.00); /** 白背景 1.18:1 */
+  --8341-color-primitive-red-200: oklch(0.8900 0.0575 25.00); /** 白背景 1.42:1 */
+  --8341-color-primitive-red-300: oklch(0.8200 0.0990 25.00); /** 白背景 1.81:1 */
+  --8341-color-primitive-red-400: oklch(0.7400 0.1565 25.00); /** 白背景 2.47:1 */
+  --8341-color-primitive-red-500: oklch(0.6500 0.1875 25.00); /** 白背景 3.55:1 */
+  --8341-color-primitive-red-600: oklch(0.5700 0.1938 25.00); /** 白背景 4.93:1 */
+  --8341-color-primitive-red-700: oklch(0.5000 0.1875 25.00); /** 白背景 6.62:1 */
+  --8341-color-primitive-red-800: oklch(0.4400 0.1688 25.00); /** 白背景 8.52:1 */
+  --8341-color-primitive-red-900: oklch(0.3800 0.1500 25.00); /** 白背景 10.75:1 */
+  --8341-color-primitive-red-1000: oklch(0.3200 0.1250 25.00); /** 白背景 13.38:1 */
+  --8341-color-primitive-red-1100: oklch(0.2700 0.1063 25.00); /** 白背景 15.72:1 */
+  --8341-color-primitive-red-1200: oklch(0.2200 0.0875 25.00); /** 白背景 17.71:1 */
+  --8341-color-primitive-orange-50: oklch(0.9750 0.0130 50.00); /** 白背景 1.08:1 */
+  --8341-color-primitive-orange-100: oklch(0.9450 0.0300 50.00); /** 白背景 1.18:1 */
+  --8341-color-primitive-orange-200: oklch(0.8900 0.0645 50.00); /** 白背景 1.41:1 */
+  --8341-color-primitive-orange-300: oklch(0.8200 0.1110 50.00); /** 白背景 1.80:1 */
+  --8341-color-primitive-orange-400: oklch(0.7400 0.1495 50.00); /** 白背景 2.41:1 */
+  --8341-color-primitive-orange-500: oklch(0.6500 0.1705 50.00); /** 白背景 3.43:1 */
+  --8341-color-primitive-orange-600: oklch(0.5700 0.1502 50.00); /** 白背景 4.75:1 */
+  --8341-color-primitive-orange-700: oklch(0.5000 0.1305 50.00); /** 白背景 6.28:1 */
+  --8341-color-primitive-orange-800: oklch(0.4400 0.1152 50.00); /** 白背景 8.10:1 */
+  --8341-color-primitive-orange-900: oklch(0.3800 0.1000 50.00); /** 白背景 10.33:1 */
+  --8341-color-primitive-orange-1000: oklch(0.3200 0.0830 50.00); /** 白背景 13.05:1 */
+  --8341-color-primitive-orange-1100: oklch(0.2700 0.0717 50.00); /** 白背景 15.40:1 */
+  --8341-color-primitive-orange-1200: oklch(0.2200 0.0585 50.00); /** 白背景 17.57:1 */
+  --8341-color-primitive-yellow-50: oklch(0.9900 0.0120 90.00); /** 白背景 1.03:1 */
+  --8341-color-primitive-yellow-100: oklch(0.9600 0.0480 90.00); /** 白背景 1.12:1 */
+  --8341-color-primitive-yellow-200: oklch(0.9050 0.0840 90.00); /** 白背景 1.33:1 */
+  --8341-color-primitive-yellow-300: oklch(0.8350 0.1200 90.00); /** 白背景 1.67:1 */
+  --8341-color-primitive-yellow-400: oklch(0.7550 0.1540 90.00); /** 白背景 2.19:1 */
+  --8341-color-primitive-yellow-500: oklch(0.6650 0.1340 90.00); /** 白背景 3.05:1 */
+  --8341-color-primitive-yellow-600: oklch(0.5850 0.1180 90.00); /** 白背景 4.20:1 */
+  --8341-color-primitive-yellow-700: oklch(0.5150 0.1040 90.00); /** 白背景 5.63:1 */
+  --8341-color-primitive-yellow-800: oklch(0.4550 0.0920 90.00); /** 白背景 7.26:1 */
+  --8341-color-primitive-yellow-900: oklch(0.3950 0.0800 90.00); /** 白背景 9.41:1 */
+  --8341-color-primitive-yellow-1000: oklch(0.3350 0.0680 90.00); /** 白背景 12.09:1 */
+  --8341-color-primitive-yellow-1100: oklch(0.2850 0.0580 90.00); /** 白背景 14.43:1 */
+  --8341-color-primitive-yellow-1200: oklch(0.2350 0.0480 90.00); /** 白背景 16.64:1 */
+  --8341-color-primitive-green-50: oklch(0.9750 0.0190 155.00); /** 白背景 1.07:1 */
+  --8341-color-primitive-green-100: oklch(0.9450 0.0380 155.00); /** 白背景 1.16:1 */
+  --8341-color-primitive-green-200: oklch(0.8900 0.0665 155.00); /** 白背景 1.36:1 */
+  --8341-color-primitive-green-300: oklch(0.8200 0.0950 155.00); /** 白背景 1.68:1 */
+  --8341-color-primitive-green-400: oklch(0.7400 0.1235 155.00); /** 白背景 2.18:1 */
+  --8341-color-primitive-green-500: oklch(0.6500 0.1425 155.00); /** 白背景 3.03:1 */
+  --8341-color-primitive-green-600: oklch(0.5700 0.1392 155.00); /** 白背景 4.20:1 */
+  --8341-color-primitive-green-700: oklch(0.5000 0.1225 155.00); /** 白背景 5.64:1 */
+  --8341-color-primitive-green-800: oklch(0.4400 0.1082 155.00); /** 白背景 7.39:1 */
+  --8341-color-primitive-green-900: oklch(0.3800 0.0940 155.00); /** 白背景 9.62:1 */
+  --8341-color-primitive-green-1000: oklch(0.3200 0.0790 155.00); /** 白背景 12.28:1 */
+  --8341-color-primitive-green-1100: oklch(0.2700 0.0667 155.00); /** 白背景 14.63:1 */
+  --8341-color-primitive-green-1200: oklch(0.2200 0.0545 155.00); /** 白背景 16.99:1 */
+  --8341-color-primitive-gray-50: oklch(0.9750 0.0012 265.00); /** 白背景 1.07:1 */
+  --8341-color-primitive-gray-100: oklch(0.9450 0.0024 265.00); /** 白背景 1.17:1 */
+  --8341-color-primitive-gray-200: oklch(0.8900 0.0042 265.00); /** 白背景 1.39:1 */
+  --8341-color-primitive-gray-300: oklch(0.8200 0.0060 265.00); /** 白背景 1.75:1 */
+  --8341-color-primitive-gray-400: oklch(0.7400 0.0078 265.00); /** 白背景 2.30:1 */
+  --8341-color-primitive-gray-500: oklch(0.6500 0.0090 265.00); /** 白背景 3.24:1 */
+  --8341-color-primitive-gray-600: oklch(0.5700 0.0093 265.00); /** 白背景 4.48:1 */
+  --8341-color-primitive-gray-700: oklch(0.5000 0.0090 265.00); /** 白背景 6.01:1 */
+  --8341-color-primitive-gray-800: oklch(0.4400 0.0081 265.00); /** 白背景 7.82:1 */
+  --8341-color-primitive-gray-900: oklch(0.3800 0.0072 265.00); /** 白背景 10.07:1 */
+  --8341-color-primitive-gray-1000: oklch(0.3200 0.0060 265.00); /** 白背景 12.67:1 */
+  --8341-color-primitive-gray-1100: oklch(0.2700 0.0051 265.00); /** 白背景 15.13:1 */
+  --8341-color-primitive-gray-1200: oklch(0.2200 0.0042 265.00); /** 白背景 17.24:1 */
+  --8341-dimension-0: 0px;
+  --8341-dimension-1: 1px;
+  --8341-dimension-2: 2px;
+  --8341-dimension-3: 3px;
+  --8341-dimension-4: 0.25rem;
+  --8341-dimension-6: 0.375rem;
+  --8341-dimension-8: 0.5rem;
+  --8341-dimension-12: 0.75rem;
+  --8341-dimension-16: 1rem;
+  --8341-dimension-20: 1.25rem;
+  --8341-dimension-24: 1.5rem;
+  --8341-dimension-32: 2rem;
+  --8341-dimension-36: 2.25rem;
+  --8341-dimension-40: 2.5rem;
+  --8341-dimension-44: 2.75rem;
+  --8341-dimension-48: 3rem;
+  --8341-dimension-52: 3.25rem;
+  --8341-dimension-64: 4rem;
+  --8341-dimension-96: 6rem;
+  --8341-dimension-full: 9999px;
+  --8341-breakpoint-md: 768px;
+  --8341-duration-instant: 0ms;
+  --8341-duration-fast: 120ms;
+  --8341-duration-base: 200ms;
+  --8341-duration-slow: 320ms;
+  --8341-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --8341-easing-enter: cubic-bezier(0, 0, 0, 1);
+  --8341-easing-exit: cubic-bezier(0.3, 0, 1, 1);
+  --8341-font-family-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; /** Web フォントが読めなくても情報が伝わるよう OS 標準の和文ゴシックへフォールバックする */
+  --8341-font-family-mono: 'Noto Sans Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --8341-font-size-14: 0.875rem;
+  --8341-font-size-16: 1rem;
+  --8341-font-size-18: 1.125rem;
+  --8341-font-size-20: 1.25rem;
+  --8341-font-size-24: 1.5rem;
+  --8341-font-size-28: 1.75rem;
+  --8341-font-size-32: 2rem;
+  --8341-font-size-36: 2.25rem;
+  --8341-font-size-44: 2.75rem;
+  --8341-font-size-56: 3.5rem;
+  --8341-font-weight-regular: 400;
+  --8341-font-weight-bold: 700;
+  --8341-font-line-height-100: 1;
+  --8341-font-line-height-120: 1.2;
+  --8341-font-line-height-130: 1.3;
+  --8341-font-line-height-140: 1.4;
+  --8341-font-line-height-150: 1.5;
+  --8341-font-line-height-160: 1.6;
+  --8341-font-line-height-170: 1.7;
+  --8341-font-line-height-180: 1.8;
+  --8341-font-letter-spacing-none: 0em;
+  --8341-font-letter-spacing-tight: 0.01em;
+  --8341-font-letter-spacing-normal: 0.02em;
+  --8341-font-letter-spacing-wide: 0.04em;
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --8341-size-content-max: 75rem; /** コンテンツ最大幅 */
+  --8341-size-prose-max: 45rem; /** 本文の最大幅（和文で 1 行 40〜45 字） */
+  --8341-z-dropdown: 100;
+  --8341-z-sticky: 200;
+  --8341-z-overlay: 300;
+  --8341-z-modal: 400;
+  --8341-z-toast: 500;
+  --8341-text-display-lg-font-family: var(--8341-font-family-sans);
+  --8341-text-display-lg-font-size: var(--8341-font-size-56);
+  --8341-text-display-lg-font-weight: var(--8341-font-weight-bold);
+  --8341-text-display-lg-line-height: var(--8341-font-line-height-140);
+  --8341-text-display-lg-letter-spacing: var(--8341-font-letter-spacing-none);
+  --8341-text-display-md-font-family: var(--8341-font-family-sans);
+  --8341-text-display-md-font-size: var(--8341-font-size-44);
+  --8341-text-display-md-font-weight: var(--8341-font-weight-bold);
+  --8341-text-display-md-line-height: var(--8341-font-line-height-140);
+  --8341-text-display-md-letter-spacing: var(--8341-font-letter-spacing-none);
+  --8341-text-heading-xl-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-xl-font-size: var(--8341-font-size-36);
+  --8341-text-heading-xl-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-xl-line-height: var(--8341-font-line-height-140);
+  --8341-text-heading-xl-letter-spacing: var(--8341-font-letter-spacing-tight);
+  --8341-text-heading-lg-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-lg-font-size: var(--8341-font-size-32);
+  --8341-text-heading-lg-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-lg-line-height: var(--8341-font-line-height-150);
+  --8341-text-heading-lg-letter-spacing: var(--8341-font-letter-spacing-tight);
+  --8341-text-heading-md-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-md-font-size: var(--8341-font-size-28);
+  --8341-text-heading-md-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-md-line-height: var(--8341-font-line-height-150);
+  --8341-text-heading-md-letter-spacing: var(--8341-font-letter-spacing-tight);
+  --8341-text-heading-sm-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-sm-font-size: var(--8341-font-size-24);
+  --8341-text-heading-sm-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-sm-line-height: var(--8341-font-line-height-150);
+  --8341-text-heading-sm-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-heading-xs-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-xs-font-size: var(--8341-font-size-20);
+  --8341-text-heading-xs-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-xs-line-height: var(--8341-font-line-height-150);
+  --8341-text-heading-xs-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-heading-xxs-font-family: var(--8341-font-family-sans);
+  --8341-text-heading-xxs-font-size: var(--8341-font-size-18);
+  --8341-text-heading-xxs-font-weight: var(--8341-font-weight-bold);
+  --8341-text-heading-xxs-line-height: var(--8341-font-line-height-160);
+  --8341-text-heading-xxs-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-body-lg-font-family: var(--8341-font-family-sans);
+  --8341-text-body-lg-font-size: var(--8341-font-size-18);
+  --8341-text-body-lg-font-weight: var(--8341-font-weight-regular);
+  --8341-text-body-lg-line-height: var(--8341-font-line-height-170);
+  --8341-text-body-lg-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-body-md-font-family: var(--8341-font-family-sans);
+  --8341-text-body-md-font-size: var(--8341-font-size-16);
+  --8341-text-body-md-font-weight: var(--8341-font-weight-regular);
+  --8341-text-body-md-line-height: var(--8341-font-line-height-170);
+  --8341-text-body-md-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-body-sm-font-family: var(--8341-font-family-sans);
+  --8341-text-body-sm-font-size: var(--8341-font-size-14);
+  --8341-text-body-sm-font-weight: var(--8341-font-weight-regular);
+  --8341-text-body-sm-line-height: var(--8341-font-line-height-170);
+  --8341-text-body-sm-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-dense-md-font-family: var(--8341-font-family-sans);
+  --8341-text-dense-md-font-size: var(--8341-font-size-16);
+  --8341-text-dense-md-font-weight: var(--8341-font-weight-regular);
+  --8341-text-dense-md-line-height: var(--8341-font-line-height-130);
+  --8341-text-dense-md-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-dense-sm-font-family: var(--8341-font-family-sans);
+  --8341-text-dense-sm-font-size: var(--8341-font-size-14);
+  --8341-text-dense-sm-font-weight: var(--8341-font-weight-regular);
+  --8341-text-dense-sm-line-height: var(--8341-font-line-height-130);
+  --8341-text-dense-sm-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-label-md-font-family: var(--8341-font-family-sans);
+  --8341-text-label-md-font-size: var(--8341-font-size-16);
+  --8341-text-label-md-font-weight: var(--8341-font-weight-bold);
+  --8341-text-label-md-line-height: var(--8341-font-line-height-100);
+  --8341-text-label-md-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-label-sm-font-family: var(--8341-font-family-sans);
+  --8341-text-label-sm-font-size: var(--8341-font-size-14);
+  --8341-text-label-sm-font-weight: var(--8341-font-weight-bold);
+  --8341-text-label-sm-line-height: var(--8341-font-line-height-100);
+  --8341-text-label-sm-letter-spacing: var(--8341-font-letter-spacing-normal);
+  --8341-text-mono-md-font-family: var(--8341-font-family-mono);
+  --8341-text-mono-md-font-size: var(--8341-font-size-16);
+  --8341-text-mono-md-font-weight: var(--8341-font-weight-regular);
+  --8341-text-mono-md-line-height: var(--8341-font-line-height-150);
+  --8341-text-mono-md-letter-spacing: var(--8341-font-letter-spacing-none);
+  --8341-text-mono-sm-font-family: var(--8341-font-family-mono);
+  --8341-text-mono-sm-font-size: var(--8341-font-size-14);
+  --8341-text-mono-sm-font-weight: var(--8341-font-weight-regular);
+  --8341-text-mono-sm-line-height: var(--8341-font-line-height-150);
+  --8341-text-mono-sm-letter-spacing: var(--8341-font-letter-spacing-none);
+  --8341-space-inset-xs: var(--8341-dimension-4);
+  --8341-space-inset-sm: var(--8341-dimension-8);
+  --8341-space-inset-md: var(--8341-dimension-12);
+  --8341-space-inset-lg: var(--8341-dimension-16);
+  --8341-space-inset-xl: var(--8341-dimension-24);
+  --8341-space-gap-xs: var(--8341-dimension-4);
+  --8341-space-gap-sm: var(--8341-dimension-8);
+  --8341-space-gap-md: var(--8341-dimension-16);
+  --8341-space-stack-sm: var(--8341-dimension-8); /** 密接に関係する要素（ラベルと入力欄） */
+  --8341-space-stack-md: var(--8341-dimension-24); /** 同じグループ内の要素（フォーム項目同士） */
+  --8341-space-stack-lg: var(--8341-dimension-64); /** セクション間 */
+  --8341-space-gutter: var(--8341-dimension-32); /** グリッドのガター（本文サイズ × 2） */
+  --8341-space-page-inline: var(--8341-dimension-16); /** モバイル時の左右余白。md 以上は 32px */
+  --8341-radius-none: var(--8341-dimension-0);
+  --8341-radius-xs: var(--8341-dimension-4); /** チェックボックス・タグ */
+  --8341-radius-sm: var(--8341-dimension-6); /** 小さいボタン */
+  --8341-radius-md: var(--8341-dimension-8); /** ボタン・入力欄 */
+  --8341-radius-lg: var(--8341-dimension-12); /** バナー・横長カード */
+  --8341-radius-xl: var(--8341-dimension-16); /** カード・ダイアログ */
+  --8341-radius-full: var(--8341-dimension-full); /** ピル形・円 */
+  --8341-size-control-sm: var(--8341-dimension-36); /** 小さいコントロールの見た目の高さ（タップ領域は 44px を別途確保） */
+  --8341-size-control-md: var(--8341-dimension-44); /** 標準。見た目の高さ＝最小タップ領域 */
+  --8341-size-control-lg: var(--8341-dimension-52);
+  --8341-size-target-min: var(--8341-dimension-44); /** WCAG 2.5.5 のタップ領域 */
+  --8341-size-icon-sm: var(--8341-dimension-16);
+  --8341-size-icon-md: var(--8341-dimension-20);
+  --8341-size-icon-lg: var(--8341-dimension-24);
+  --8341-border-width-default: var(--8341-dimension-1);
+  --8341-border-width-strong: var(--8341-dimension-2);
+  --8341-border-width-accent: var(--8341-dimension-4); /** 見出しのバー・バナーの左線 */
+  --8341-border-width-underline: var(--8341-dimension-1); /** リンクの下線 */
+  --8341-border-width-underline-hover: var(--8341-dimension-3); /** ホバー時のリンク下線（太さで状態変化を示す） */
+  --8341-focus-outline-width: var(--8341-dimension-2);
+  --8341-focus-ring-width: var(--8341-dimension-4); /** outline-offset 分を含む box-shadow の広がり */
+  --8341-focus-offset: var(--8341-dimension-2);
+  --8341-motion-duration-fast: var(--8341-duration-fast);
+  --8341-motion-duration-base: var(--8341-duration-base);
+  --8341-motion-duration-slow: var(--8341-duration-slow);
+  --8341-motion-easing-standard: var(--8341-easing-standard);
+  --8341-motion-easing-enter: var(--8341-easing-enter);
+  --8341-motion-easing-exit: var(--8341-easing-exit);
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root, .light, [data-theme="light"] {
+  color-scheme: light;
+  --8341-color-bg-overlay: oklch(0.1564 0.0174 273.30 / 0.48); /** モーダル背面 */
+  --8341-shadow-1: 0px 1px 2px 0px rgb(16 24 48 / 0.12), 0px 1px 3px 1px rgb(16 24 48 / 0.08); /** カード hover・ドロップダウン */
+  --8341-shadow-2: 0px 2px 6px 0px rgb(16 24 48 / 0.14), 0px 4px 12px 2px rgb(16 24 48 / 0.08); /** ポップオーバー・メニュー */
+  --8341-shadow-3: 0px 6px 16px 0px rgb(16 24 48 / 0.16), 0px 12px 32px 4px rgb(16 24 48 / 0.1); /** ドロワー・モーダル */
+  --8341-color-bg-canvas: var(--8341-color-primitive-white); /** ページ全体の背景 */
+  --8341-color-bg-surface: var(--8341-color-primitive-white); /** カード・入力欄など面の背景 */
+  --8341-color-bg-subtle: var(--8341-color-primitive-gray-50); /** 区切りたい帯・コードブロック */
+  --8341-color-bg-muted: var(--8341-color-primitive-gray-100); /** ホバー時の面・テーブル見出し */
+  --8341-color-bg-inverse: var(--8341-color-primitive-gray-1100);
+  --8341-color-bg-disabled: var(--8341-color-primitive-gray-100);
+  --8341-color-bg-key: var(--8341-color-primitive-indigo-700); /** 主要アクション（Primary ボタン） */
+  --8341-color-bg-key-hover: var(--8341-color-primitive-indigo-800);
+  --8341-color-bg-key-active: var(--8341-color-primitive-indigo-900);
+  --8341-color-bg-key-subtle: var(--8341-color-primitive-indigo-100); /** 選択中の項目・Secondary ボタンの hover */
+  --8341-color-bg-key-subtle-hover: var(--8341-color-primitive-indigo-200);
+  --8341-color-bg-danger: var(--8341-color-primitive-red-700);
+  --8341-color-bg-danger-hover: var(--8341-color-primitive-red-800);
+  --8341-color-bg-danger-active: var(--8341-color-primitive-red-900);
+  --8341-color-bg-danger-subtle: var(--8341-color-primitive-red-50);
+  --8341-color-bg-success-subtle: var(--8341-color-primitive-green-50);
+  --8341-color-bg-warning-subtle: var(--8341-color-primitive-yellow-50);
+  --8341-color-bg-info-subtle: var(--8341-color-primitive-indigo-50);
+  --8341-color-text-default: var(--8341-color-primitive-gray-1100); /** 本文。純黒は使わない */
+  --8341-color-text-subtle: var(--8341-color-primitive-gray-700); /** 補足・説明文（4.5:1 以上） */
+  --8341-color-text-disabled: var(--8341-color-primitive-gray-500); /** 無効状態（WCAG のコントラスト要件対象外だが 3:1 を目安） */
+  --8341-color-text-inverse: var(--8341-color-primitive-gray-50);
+  --8341-color-text-key: var(--8341-color-primitive-indigo-800); /** キーカラーの文字（Secondary ボタン等） */
+  --8341-color-text-on-key: var(--8341-color-primitive-white); /** bg.key / bg.danger の上の文字 */
+  --8341-color-text-danger: var(--8341-color-primitive-red-800);
+  --8341-color-text-success: var(--8341-color-primitive-green-800);
+  --8341-color-text-warning: var(--8341-color-primitive-orange-800);
+  --8341-color-text-link: var(--8341-color-primitive-indigo-800);
+  --8341-color-text-link-hover: var(--8341-color-primitive-indigo-1000);
+  --8341-color-text-link-visited: var(--8341-color-primitive-purple-800);
+  --8341-color-text-link-active: var(--8341-color-primitive-orange-800);
+  --8341-color-icon-default: var(--8341-color-primitive-gray-1000);
+  --8341-color-icon-subtle: var(--8341-color-primitive-gray-700);
+  --8341-color-icon-key: var(--8341-color-primitive-indigo-700);
+  --8341-color-icon-danger: var(--8341-color-primitive-red-700);
+  --8341-color-icon-success: var(--8341-color-primitive-green-700);
+  --8341-color-icon-warning: var(--8341-color-primitive-yellow-700);
+  --8341-color-icon-info: var(--8341-color-primitive-indigo-700);
+  --8341-color-border-subtle: var(--8341-color-primitive-gray-200); /** 装飾的な区切り線（情報を担わないもの限定） */
+  --8341-color-border-default: var(--8341-color-primitive-gray-500); /** カードなど意味のある境界（3:1 以上） */
+  --8341-color-border-input: var(--8341-color-primitive-gray-600); /** 入力欄・チェックボックスの枠 */
+  --8341-color-border-strong: var(--8341-color-primitive-gray-900); /** 入力欄 hover */
+  --8341-color-border-key: var(--8341-color-primitive-indigo-700);
+  --8341-color-border-danger: var(--8341-color-primitive-red-700);
+  --8341-color-border-success: var(--8341-color-primitive-green-700);
+  --8341-color-border-warning: var(--8341-color-primitive-yellow-600);
+  --8341-color-border-disabled: var(--8341-color-primitive-gray-300);
+  --8341-color-focus-ring: var(--8341-color-primitive-yellow-300); /** フォーカスの内側リング */
+  --8341-color-focus-outline: var(--8341-color-primitive-gray-1200); /** フォーカスの外側アウトライン */
+  --8341-color-focus-text: var(--8341-color-primitive-gray-1200); /** フォーカスリング色の背景に乗る文字（リンクのフォーカス時） */
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+.dark, [data-theme="dark"] {
+  color-scheme: dark;
+  --8341-color-bg-overlay: oklch(0.0000 0.0000 0.00 / 0.64);
+  --8341-shadow-1: 0px 1px 2px 0px rgb(0 0 0 / 0.48), 0px 1px 3px 1px rgb(0 0 0 / 0.32);
+  --8341-shadow-2: 0px 2px 6px 0px rgb(0 0 0 / 0.52), 0px 4px 12px 2px rgb(0 0 0 / 0.36);
+  --8341-shadow-3: 0px 6px 16px 0px rgb(0 0 0 / 0.56), 0px 12px 32px 4px rgb(0 0 0 / 0.4);
+  --8341-color-bg-canvas: var(--8341-color-primitive-gray-1200);
+  --8341-color-bg-surface: var(--8341-color-primitive-gray-1100);
+  --8341-color-bg-subtle: var(--8341-color-primitive-gray-1100);
+  --8341-color-bg-muted: var(--8341-color-primitive-gray-1000);
+  --8341-color-bg-inverse: var(--8341-color-primitive-gray-50);
+  --8341-color-bg-disabled: var(--8341-color-primitive-gray-1000);
+  --8341-color-bg-key: var(--8341-color-primitive-indigo-300);
+  --8341-color-bg-key-hover: var(--8341-color-primitive-indigo-200);
+  --8341-color-bg-key-active: var(--8341-color-primitive-indigo-100);
+  --8341-color-bg-key-subtle: var(--8341-color-primitive-indigo-1100);
+  --8341-color-bg-key-subtle-hover: var(--8341-color-primitive-indigo-1000);
+  --8341-color-bg-danger: var(--8341-color-primitive-red-300);
+  --8341-color-bg-danger-hover: var(--8341-color-primitive-red-200);
+  --8341-color-bg-danger-active: var(--8341-color-primitive-red-100);
+  --8341-color-bg-danger-subtle: var(--8341-color-primitive-red-1200);
+  --8341-color-bg-success-subtle: var(--8341-color-primitive-green-1200);
+  --8341-color-bg-warning-subtle: var(--8341-color-primitive-yellow-1200);
+  --8341-color-bg-info-subtle: var(--8341-color-primitive-indigo-1200);
+  --8341-color-text-default: var(--8341-color-primitive-gray-50);
+  --8341-color-text-subtle: var(--8341-color-primitive-gray-300);
+  --8341-color-text-disabled: var(--8341-color-primitive-gray-600);
+  --8341-color-text-inverse: var(--8341-color-primitive-gray-1100);
+  --8341-color-text-key: var(--8341-color-primitive-indigo-300);
+  --8341-color-text-on-key: var(--8341-color-primitive-indigo-1200);
+  --8341-color-text-danger: var(--8341-color-primitive-red-300);
+  --8341-color-text-success: var(--8341-color-primitive-green-300);
+  --8341-color-text-warning: var(--8341-color-primitive-yellow-300);
+  --8341-color-text-link: var(--8341-color-primitive-indigo-300);
+  --8341-color-text-link-hover: var(--8341-color-primitive-indigo-200);
+  --8341-color-text-link-visited: var(--8341-color-primitive-purple-300);
+  --8341-color-text-link-active: var(--8341-color-primitive-orange-300);
+  --8341-color-icon-default: var(--8341-color-primitive-gray-100);
+  --8341-color-icon-subtle: var(--8341-color-primitive-gray-300);
+  --8341-color-icon-key: var(--8341-color-primitive-indigo-300);
+  --8341-color-icon-danger: var(--8341-color-primitive-red-300);
+  --8341-color-icon-success: var(--8341-color-primitive-green-300);
+  --8341-color-icon-warning: var(--8341-color-primitive-yellow-300);
+  --8341-color-icon-info: var(--8341-color-primitive-indigo-300);
+  --8341-color-border-subtle: var(--8341-color-primitive-gray-1000);
+  --8341-color-border-default: var(--8341-color-primitive-gray-600);
+  --8341-color-border-input: var(--8341-color-primitive-gray-500);
+  --8341-color-border-strong: var(--8341-color-primitive-gray-200);
+  --8341-color-border-key: var(--8341-color-primitive-indigo-300);
+  --8341-color-border-danger: var(--8341-color-primitive-red-400);
+  --8341-color-border-success: var(--8341-color-primitive-green-400);
+  --8341-color-border-warning: var(--8341-color-primitive-yellow-400);
+  --8341-color-border-disabled: var(--8341-color-primitive-gray-900);
+  --8341-color-focus-ring: var(--8341-color-primitive-yellow-300);
+  --8341-color-focus-outline: var(--8341-color-primitive-gray-50);
+  --8341-color-focus-text: var(--8341-color-primitive-gray-1200); /** フォーカスリング色の背景に乗る文字（リンクのフォーカス時） */
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]) {
+    color-scheme: dark;
+    --8341-color-bg-overlay: oklch(0.0000 0.0000 0.00 / 0.64);
+    --8341-shadow-1: 0px 1px 2px 0px rgb(0 0 0 / 0.48), 0px 1px 3px 1px rgb(0 0 0 / 0.32);
+    --8341-shadow-2: 0px 2px 6px 0px rgb(0 0 0 / 0.52), 0px 4px 12px 2px rgb(0 0 0 / 0.36);
+    --8341-shadow-3: 0px 6px 16px 0px rgb(0 0 0 / 0.56), 0px 12px 32px 4px rgb(0 0 0 / 0.4);
+    --8341-color-bg-canvas: var(--8341-color-primitive-gray-1200);
+    --8341-color-bg-surface: var(--8341-color-primitive-gray-1100);
+    --8341-color-bg-subtle: var(--8341-color-primitive-gray-1100);
+    --8341-color-bg-muted: var(--8341-color-primitive-gray-1000);
+    --8341-color-bg-inverse: var(--8341-color-primitive-gray-50);
+    --8341-color-bg-disabled: var(--8341-color-primitive-gray-1000);
+    --8341-color-bg-key: var(--8341-color-primitive-indigo-300);
+    --8341-color-bg-key-hover: var(--8341-color-primitive-indigo-200);
+    --8341-color-bg-key-active: var(--8341-color-primitive-indigo-100);
+    --8341-color-bg-key-subtle: var(--8341-color-primitive-indigo-1100);
+    --8341-color-bg-key-subtle-hover: var(--8341-color-primitive-indigo-1000);
+    --8341-color-bg-danger: var(--8341-color-primitive-red-300);
+    --8341-color-bg-danger-hover: var(--8341-color-primitive-red-200);
+    --8341-color-bg-danger-active: var(--8341-color-primitive-red-100);
+    --8341-color-bg-danger-subtle: var(--8341-color-primitive-red-1200);
+    --8341-color-bg-success-subtle: var(--8341-color-primitive-green-1200);
+    --8341-color-bg-warning-subtle: var(--8341-color-primitive-yellow-1200);
+    --8341-color-bg-info-subtle: var(--8341-color-primitive-indigo-1200);
+    --8341-color-text-default: var(--8341-color-primitive-gray-50);
+    --8341-color-text-subtle: var(--8341-color-primitive-gray-300);
+    --8341-color-text-disabled: var(--8341-color-primitive-gray-600);
+    --8341-color-text-inverse: var(--8341-color-primitive-gray-1100);
+    --8341-color-text-key: var(--8341-color-primitive-indigo-300);
+    --8341-color-text-on-key: var(--8341-color-primitive-indigo-1200);
+    --8341-color-text-danger: var(--8341-color-primitive-red-300);
+    --8341-color-text-success: var(--8341-color-primitive-green-300);
+    --8341-color-text-warning: var(--8341-color-primitive-yellow-300);
+    --8341-color-text-link: var(--8341-color-primitive-indigo-300);
+    --8341-color-text-link-hover: var(--8341-color-primitive-indigo-200);
+    --8341-color-text-link-visited: var(--8341-color-primitive-purple-300);
+    --8341-color-text-link-active: var(--8341-color-primitive-orange-300);
+    --8341-color-icon-default: var(--8341-color-primitive-gray-100);
+    --8341-color-icon-subtle: var(--8341-color-primitive-gray-300);
+    --8341-color-icon-key: var(--8341-color-primitive-indigo-300);
+    --8341-color-icon-danger: var(--8341-color-primitive-red-300);
+    --8341-color-icon-success: var(--8341-color-primitive-green-300);
+    --8341-color-icon-warning: var(--8341-color-primitive-yellow-300);
+    --8341-color-icon-info: var(--8341-color-primitive-indigo-300);
+    --8341-color-border-subtle: var(--8341-color-primitive-gray-1000);
+    --8341-color-border-default: var(--8341-color-primitive-gray-600);
+    --8341-color-border-input: var(--8341-color-primitive-gray-500);
+    --8341-color-border-strong: var(--8341-color-primitive-gray-200);
+    --8341-color-border-key: var(--8341-color-primitive-indigo-300);
+    --8341-color-border-danger: var(--8341-color-primitive-red-400);
+    --8341-color-border-success: var(--8341-color-primitive-green-400);
+    --8341-color-border-warning: var(--8341-color-primitive-yellow-400);
+    --8341-color-border-disabled: var(--8341-color-primitive-gray-900);
+    --8341-color-focus-ring: var(--8341-color-primitive-yellow-300);
+    --8341-color-focus-outline: var(--8341-color-primitive-gray-50);
+    --8341-color-focus-text: var(--8341-color-primitive-gray-1200); /** フォーカスリング色の背景に乗る文字（リンクのフォーカス時） */
+  }
+}
+
+/* ---- 8341-ui-tokens/tailwind.css ---- */
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+/*
+ * Tailwind v4 のテーマ。値はすべて tokens.css の CSS 変数を参照する（テーマ切り替えに追従させるため inline）。
+ * Tailwind の既定の色・文字サイズ・太さ・角丸・影・ブレークポイントは消し、semantic トークンだけを使えるようにする。
+ * 余白（--spacing）は 4px の既定スケールを残しつつ、semantic な名前（p-inset-md など）を追加する。
+ */
+@custom-variant dark {
+  &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  /* トークンと同じく、明示が無ければ OS の設定に従う */
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light):not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --breakpoint-*: initial;
+  --font-weight-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --default-transition-duration: var(--8341-motion-duration-fast);
+  --default-transition-timing-function: var(--8341-motion-easing-standard);
+  --color-canvas: var(--8341-color-bg-canvas);
+  --color-surface: var(--8341-color-bg-surface);
+  --color-subtle: var(--8341-color-bg-subtle);
+  --color-muted: var(--8341-color-bg-muted);
+  --color-inverse: var(--8341-color-bg-inverse);
+  --color-disabled: var(--8341-color-bg-disabled);
+  --color-key: var(--8341-color-bg-key);
+  --color-key-hover: var(--8341-color-bg-key-hover);
+  --color-key-active: var(--8341-color-bg-key-active);
+  --color-key-subtle: var(--8341-color-bg-key-subtle);
+  --color-key-subtle-hover: var(--8341-color-bg-key-subtle-hover);
+  --color-danger: var(--8341-color-bg-danger);
+  --color-danger-hover: var(--8341-color-bg-danger-hover);
+  --color-danger-active: var(--8341-color-bg-danger-active);
+  --color-danger-subtle: var(--8341-color-bg-danger-subtle);
+  --color-success-subtle: var(--8341-color-bg-success-subtle);
+  --color-warning-subtle: var(--8341-color-bg-warning-subtle);
+  --color-info-subtle: var(--8341-color-bg-info-subtle);
+  --color-overlay: var(--8341-color-bg-overlay);
+  --color-fg: var(--8341-color-text-default);
+  --color-fg-subtle: var(--8341-color-text-subtle);
+  --color-fg-disabled: var(--8341-color-text-disabled);
+  --color-fg-inverse: var(--8341-color-text-inverse);
+  --color-fg-key: var(--8341-color-text-key);
+  --color-fg-on-key: var(--8341-color-text-on-key);
+  --color-fg-danger: var(--8341-color-text-danger);
+  --color-fg-success: var(--8341-color-text-success);
+  --color-fg-warning: var(--8341-color-text-warning);
+  --color-fg-link: var(--8341-color-text-link);
+  --color-fg-link-hover: var(--8341-color-text-link-hover);
+  --color-fg-link-visited: var(--8341-color-text-link-visited);
+  --color-fg-link-active: var(--8341-color-text-link-active);
+  --color-icon: var(--8341-color-icon-default);
+  --color-icon-subtle: var(--8341-color-icon-subtle);
+  --color-icon-key: var(--8341-color-icon-key);
+  --color-icon-danger: var(--8341-color-icon-danger);
+  --color-icon-success: var(--8341-color-icon-success);
+  --color-icon-warning: var(--8341-color-icon-warning);
+  --color-icon-info: var(--8341-color-icon-info);
+  --color-border-subtle: var(--8341-color-border-subtle);
+  --color-border: var(--8341-color-border-default);
+  --color-border-input: var(--8341-color-border-input);
+  --color-border-strong: var(--8341-color-border-strong);
+  --color-border-key: var(--8341-color-border-key);
+  --color-border-danger: var(--8341-color-border-danger);
+  --color-border-success: var(--8341-color-border-success);
+  --color-border-warning: var(--8341-color-border-warning);
+  --color-border-disabled: var(--8341-color-border-disabled);
+  --color-focus-ring: var(--8341-color-focus-ring);
+  --color-focus-outline: var(--8341-color-focus-outline);
+  --color-focus-text: var(--8341-color-focus-text);
+  --breakpoint-md: 768px;
+  --font-sans: var(--8341-font-family-sans);
+  --font-mono: var(--8341-font-family-mono);
+  --font-weight-regular: var(--8341-font-weight-regular);
+  --font-weight-bold: var(--8341-font-weight-bold);
+  --text-display-lg: var(--8341-text-display-lg-font-size);
+  --text-display-lg--font-weight: var(--8341-text-display-lg-font-weight);
+  --text-display-lg--line-height: var(--8341-text-display-lg-line-height);
+  --text-display-lg--letter-spacing: var(--8341-text-display-lg-letter-spacing);
+  --text-display-md: var(--8341-text-display-md-font-size);
+  --text-display-md--font-weight: var(--8341-text-display-md-font-weight);
+  --text-display-md--line-height: var(--8341-text-display-md-line-height);
+  --text-display-md--letter-spacing: var(--8341-text-display-md-letter-spacing);
+  --text-heading-xl: var(--8341-text-heading-xl-font-size);
+  --text-heading-xl--font-weight: var(--8341-text-heading-xl-font-weight);
+  --text-heading-xl--line-height: var(--8341-text-heading-xl-line-height);
+  --text-heading-xl--letter-spacing: var(--8341-text-heading-xl-letter-spacing);
+  --text-heading-lg: var(--8341-text-heading-lg-font-size);
+  --text-heading-lg--font-weight: var(--8341-text-heading-lg-font-weight);
+  --text-heading-lg--line-height: var(--8341-text-heading-lg-line-height);
+  --text-heading-lg--letter-spacing: var(--8341-text-heading-lg-letter-spacing);
+  --text-heading-md: var(--8341-text-heading-md-font-size);
+  --text-heading-md--font-weight: var(--8341-text-heading-md-font-weight);
+  --text-heading-md--line-height: var(--8341-text-heading-md-line-height);
+  --text-heading-md--letter-spacing: var(--8341-text-heading-md-letter-spacing);
+  --text-heading-sm: var(--8341-text-heading-sm-font-size);
+  --text-heading-sm--font-weight: var(--8341-text-heading-sm-font-weight);
+  --text-heading-sm--line-height: var(--8341-text-heading-sm-line-height);
+  --text-heading-sm--letter-spacing: var(--8341-text-heading-sm-letter-spacing);
+  --text-heading-xs: var(--8341-text-heading-xs-font-size);
+  --text-heading-xs--font-weight: var(--8341-text-heading-xs-font-weight);
+  --text-heading-xs--line-height: var(--8341-text-heading-xs-line-height);
+  --text-heading-xs--letter-spacing: var(--8341-text-heading-xs-letter-spacing);
+  --text-heading-xxs: var(--8341-text-heading-xxs-font-size);
+  --text-heading-xxs--font-weight: var(--8341-text-heading-xxs-font-weight);
+  --text-heading-xxs--line-height: var(--8341-text-heading-xxs-line-height);
+  --text-heading-xxs--letter-spacing: var(--8341-text-heading-xxs-letter-spacing);
+  --text-body-lg: var(--8341-text-body-lg-font-size);
+  --text-body-lg--font-weight: var(--8341-text-body-lg-font-weight);
+  --text-body-lg--line-height: var(--8341-text-body-lg-line-height);
+  --text-body-lg--letter-spacing: var(--8341-text-body-lg-letter-spacing);
+  --text-body-md: var(--8341-text-body-md-font-size);
+  --text-body-md--font-weight: var(--8341-text-body-md-font-weight);
+  --text-body-md--line-height: var(--8341-text-body-md-line-height);
+  --text-body-md--letter-spacing: var(--8341-text-body-md-letter-spacing);
+  --text-body-sm: var(--8341-text-body-sm-font-size);
+  --text-body-sm--font-weight: var(--8341-text-body-sm-font-weight);
+  --text-body-sm--line-height: var(--8341-text-body-sm-line-height);
+  --text-body-sm--letter-spacing: var(--8341-text-body-sm-letter-spacing);
+  --text-dense-md: var(--8341-text-dense-md-font-size);
+  --text-dense-md--font-weight: var(--8341-text-dense-md-font-weight);
+  --text-dense-md--line-height: var(--8341-text-dense-md-line-height);
+  --text-dense-md--letter-spacing: var(--8341-text-dense-md-letter-spacing);
+  --text-dense-sm: var(--8341-text-dense-sm-font-size);
+  --text-dense-sm--font-weight: var(--8341-text-dense-sm-font-weight);
+  --text-dense-sm--line-height: var(--8341-text-dense-sm-line-height);
+  --text-dense-sm--letter-spacing: var(--8341-text-dense-sm-letter-spacing);
+  --text-label-md: var(--8341-text-label-md-font-size);
+  --text-label-md--font-weight: var(--8341-text-label-md-font-weight);
+  --text-label-md--line-height: var(--8341-text-label-md-line-height);
+  --text-label-md--letter-spacing: var(--8341-text-label-md-letter-spacing);
+  --text-label-sm: var(--8341-text-label-sm-font-size);
+  --text-label-sm--font-weight: var(--8341-text-label-sm-font-weight);
+  --text-label-sm--line-height: var(--8341-text-label-sm-line-height);
+  --text-label-sm--letter-spacing: var(--8341-text-label-sm-letter-spacing);
+  --text-mono-md: var(--8341-text-mono-md-font-size);
+  --text-mono-md--font-weight: var(--8341-text-mono-md-font-weight);
+  --text-mono-md--line-height: var(--8341-text-mono-md-line-height);
+  --text-mono-md--letter-spacing: var(--8341-text-mono-md-letter-spacing);
+  --text-mono-sm: var(--8341-text-mono-sm-font-size);
+  --text-mono-sm--font-weight: var(--8341-text-mono-sm-font-weight);
+  --text-mono-sm--line-height: var(--8341-text-mono-sm-line-height);
+  --text-mono-sm--letter-spacing: var(--8341-text-mono-sm-letter-spacing);
+  --spacing-inset-xs: var(--8341-space-inset-xs);
+  --spacing-inset-sm: var(--8341-space-inset-sm);
+  --spacing-inset-md: var(--8341-space-inset-md);
+  --spacing-inset-lg: var(--8341-space-inset-lg);
+  --spacing-inset-xl: var(--8341-space-inset-xl);
+  --spacing-gap-xs: var(--8341-space-gap-xs);
+  --spacing-gap-sm: var(--8341-space-gap-sm);
+  --spacing-gap-md: var(--8341-space-gap-md);
+  --spacing-stack-sm: var(--8341-space-stack-sm);
+  --spacing-stack-md: var(--8341-space-stack-md);
+  --spacing-stack-lg: var(--8341-space-stack-lg);
+  --spacing-gutter: var(--8341-space-gutter);
+  --spacing-page-inline: var(--8341-space-page-inline);
+  --radius-none: var(--8341-radius-none);
+  --radius-xs: var(--8341-radius-xs);
+  --radius-sm: var(--8341-radius-sm);
+  --radius-md: var(--8341-radius-md);
+  --radius-lg: var(--8341-radius-lg);
+  --radius-xl: var(--8341-radius-xl);
+  --radius-full: var(--8341-radius-full);
+  --spacing-control-sm: var(--8341-size-control-sm);
+  --spacing-control-md: var(--8341-size-control-md);
+  --spacing-control-lg: var(--8341-size-control-lg);
+  --spacing-target-min: var(--8341-size-target-min);
+  --spacing-icon-sm: var(--8341-size-icon-sm);
+  --spacing-icon-md: var(--8341-size-icon-md);
+  --spacing-icon-lg: var(--8341-size-icon-lg);
+  --container-content: var(--8341-size-content-max);
+  --container-prose: var(--8341-size-prose-max);
+  --ease-standard: var(--8341-motion-easing-standard);
+  --ease-enter: var(--8341-motion-easing-enter);
+  --ease-exit: var(--8341-motion-easing-exit);
+  --shadow-1: var(--8341-shadow-1);
+  --shadow-2: var(--8341-shadow-2);
+  --shadow-3: var(--8341-shadow-3);
+}
+
+
+/* フォーカス表示: どの背景でも内側（黄）か外側（濃色）のどちらかが 3:1 以上になる二重リング */
+@utility focus-ring {
+  &:focus-visible {
+    outline: var(--8341-focus-outline-width) solid var(--8341-color-focus-outline);
+    outline-offset: var(--8341-focus-offset);
+    box-shadow: 0 0 0 var(--8341-focus-ring-width) var(--8341-color-focus-ring);
+  }
+  @media (forced-colors: active) {
+    &:focus-visible {
+      outline-color: Highlight;
+      box-shadow: none;
+    }
+  }
+}
+
+@utility focus-ring-within {
+  &:has(:focus-visible) {
+    outline: var(--8341-focus-outline-width) solid var(--8341-color-focus-outline);
+    outline-offset: var(--8341-focus-offset);
+    box-shadow: 0 0 0 var(--8341-focus-ring-width) var(--8341-color-focus-ring);
+  }
+  @media (forced-colors: active) {
+    &:has(:focus-visible) {
+      outline-color: Highlight;
+      box-shadow: none;
+    }
+  }
+}
+
+/* 見た目が小さい操作対象に、44px のタップ領域を擬似要素で足す */
+@utility tap-target {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: max(100%, var(--8341-size-target-min));
+    height: max(100%, var(--8341-size-target-min));
+    transform: translate(-50%, -50%);
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--8341-color-bg-canvas);
+    color: var(--8341-color-text-default);
+    font-family: var(--8341-font-family-sans);
+    font-size: var(--8341-text-body-md-font-size);
+    line-height: var(--8341-text-body-md-line-height);
+    letter-spacing: var(--8341-text-body-md-letter-spacing);
+    font-feature-settings: normal;
+    /* 和文の禁則を厳格に、単語途中の改行を避ける */
+    line-break: strict;
+    overflow-wrap: anywhere;
+    /* iOS 26 以降の Safari で Base UI のポップアップ位置がずれないようにする */
+    position: relative;
+  }
+
+  /* Base UI のポップアップがページの内容より前面に出るよう、アプリのルートで重なりの文脈を作る */
+  #root,
+  #__next,
+  [data-8341-root] {
+    isolation: isolate;
+  }
+
+  :where(code, kbd, samp, pre) {
+    font-family: var(--8341-font-family-mono);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
