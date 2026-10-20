@@ -16,3 +16,8 @@
 - 大きな変更はプランモード（Shift+Tab）で計画してから実行する
 - 改善や指摘への対応は docs/improvement-loop.md と improve スキル（.claude/skills/improve/SKILL.md）に従い、docs/improvement/log.md に記録する
 
+## pstack ルーティング（hook の代替）
+複数ファイルに触れる / 設計判断を含む / 原因不明のバグ → `pstack:poteto-mode` を起動して従う。
+意図が明確なら直接: `pstack:tdd` `pstack:architect` `pstack:arena` `pstack:interrogate`。
+単一ファイルの小変更・質問は直接作業する。
+
