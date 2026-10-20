@@ -7,24 +7,36 @@ describe('events', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it.each(events)('$id は タイ語 / ローマ字 / カタカナ がそろっている', ({ name }) => {
+  it.each(events)('$id は タイ語 / ローマ字 / カタカナ / 日本語訳 がそろっている', ({ name }) => {
     expect(name.th).toMatch(/\p{Script=Thai}/u);
     expect(name.romaji).toMatch(/^[A-Za-z][A-Za-z .'-]*$/);
     expect(name.kana).toMatch(/^[\p{Script=Katakana}ー・]+$/u);
+    expect(name.ja).toMatch(/^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}ー・]+$/u);
+    // 日本語訳は音写（カタカナ）の繰り返しにしない
+    expect(name.ja).not.toBe(name.kana);
+  });
+
+  it('民間行事は ADR-0007 で例外にしたロイクラトンとソンクラーンだけ', () => {
+    // 民間行事を足すときは ADR を書き、ここを更新する
+    const folk = events.filter((e) => e.category === 'folk').map((e) => e.id);
+    expect(folk).toEqual(['loi-krathong', 'songkran']);
+  });
+
+  it('ロイクラトンはタイ太陰暦から計算する', () => {
+    expect(events.find((e) => e.id === 'loi-krathong')).toMatchObject({ calendar: 'lunar' });
   });
 
   it('ソンクラーンは太陽暦の 4/13〜15 に固定', () => {
-    const songkran = events.find((e) => e.id === 'songkran');
-    expect(songkran).toMatchObject({
+    expect(events.find((e) => e.id === 'songkran')).toMatchObject({
       calendar: 'solar',
       start: { month: 4, day: 13 },
       end: { month: 4, day: 15 },
     });
   });
 
-  it('名前を「タイ語 / ローマ字 / カタカナ」で表示する', () => {
-    expect(formatEventName({ th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ' })).toBe(
-      'วันพระ / Wan Phra / ワンプラ',
-    );
+  it('名前を「タイ語 / ローマ字 / カタカナ / 日本語訳」で表示する', () => {
+    expect(
+      formatEventName({ th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' }),
+    ).toBe('วันพระ / Wan Phra / ワンプラ / 布薩日');
   });
 });
