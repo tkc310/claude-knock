@@ -16,6 +16,24 @@ describe('events', () => {
     expect(name.ja).not.toBe(name.kana);
   });
 
+  it('民間行事は ADR-0007 で例外にしたロイクラトンとソンクラーンだけ', () => {
+    // 民間行事を足すときは ADR を書き、ここを更新する
+    const folk = events.filter((e) => e.category === 'folk').map((e) => e.id);
+    expect(folk).toEqual(['loi-krathong', 'songkran']);
+  });
+
+  it('ロイクラトンはタイ太陰暦から計算する', () => {
+    expect(events.find((e) => e.id === 'loi-krathong')).toMatchObject({ calendar: 'lunar' });
+  });
+
+  it('ソンクラーンは太陽暦の 4/13〜15 に固定', () => {
+    expect(events.find((e) => e.id === 'songkran')).toMatchObject({
+      calendar: 'solar',
+      start: { month: 4, day: 13 },
+      end: { month: 4, day: 15 },
+    });
+  });
+
   it('名前を「タイ語 / ローマ字 / カタカナ / 日本語訳」で表示する', () => {
     expect(
       formatEventName({ th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' }),

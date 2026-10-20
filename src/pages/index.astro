@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Stack } from '@/components/ui/stack';
+import { Tag } from '@/components/ui/tag';
 import { Text } from '@/components/ui/text';
 import { events, formatEventName } from '@/data/events';
 ---
@@ -12,12 +13,26 @@ import { events, formatEventName } from '@/data/events';
     <Stack gap="lg">
       <Stack gap="sm">
         <Heading level={1}>タイ仏教行事カレンダー</Heading>
-        <Text tone="subtle">タイ太陰暦にもとづく行事の一覧です。</Text>
+        <Text tone="subtle">タイ太陰暦と太陽暦にもとづく行事の一覧です。</Text>
       </Stack>
       <Stack as="ul" gap="md">
         {
           events.map((event) => (
-            <Card as="li" headingLevel={2} title={formatEventName(event.name)} />
+            <Card as="li" headingLevel={2} title={formatEventName(event.name)}>
+              <Stack direction="horizontal" gap="sm" wrap>
+                {event.calendar === 'lunar' ? (
+                  <Tag tone="key">太陰暦</Tag>
+                ) : (
+                  <>
+                    <Tag>太陽暦</Tag>
+                    <Text as="span" variant="body-sm">
+                      {event.start.month}/{event.start.day}〜{event.end.day}
+                    </Text>
+                  </>
+                )}
+                {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
+              </Stack>
+            </Card>
           ))
         }
       </Stack>
