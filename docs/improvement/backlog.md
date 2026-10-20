@@ -12,6 +12,7 @@
 - [ ] 2026 年のマーカ（3/3）、ウィサーカ（5/31）、アーサーラハ（7/29）を `tests/fixtures/` に置く。出典はタイ中央銀行告示 31/2568（https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf）
 - [ ] `make check` が `tests/fixtures.test.ts` の型エラー 5 件で落ちる（`node:fs`・`node:path`・`import.meta.dirname` の型が無い。`@types/node` が未導入）。9ea7dd9 から
 - [ ] タイ中央銀行告示 37/2569（2027 年）も、テキスト抽出で日付と行事名が別の欄に分かれている。PDF を画像にしてウィサーカ（5/20）の行を目視で確かめる（`docs/events/visakha-bucha.md`「未確認・食い違い」）。macOS では PDFKit を使う小さな Swift を `swiftc -framework PDFKit -framework AppKit` でコンパイルすれば全ページを PNG にできた（`swift` の JIT では PDFKit がリンクされない）
+- [ ] ロイクラトン 2024・2026 年の公式の出典を探す（2024 年は文化省のラノーン県の行事の掲載だけ、2026 年は報道と観光サイトの 11-24 だけ。`docs/events/loi-krathong.md`）
 - [ ] 2026 年のカオパンサーとオークパンサーの公式の出典を探す（中央銀行の告示には載っていない。仏教庁と宗教局のサイトは自動取得できなかった）
 
 ## 配信
