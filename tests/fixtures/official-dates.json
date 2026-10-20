@@ -5,6 +5,11 @@
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/content-fragments/holiday-calendar/en/bot-notification-holiday/BOT-Notification-Holiday-Calendar-2024-EN.pdf"
   },
   {
+    "eventId": "songkran",
+    "date": "2024-04-13",
+    "sourceUrl": "https://www.bot.or.th/content/dam/bot/content-fragments/holiday-calendar/en/bot-notification-holiday/BOT-Notification-Holiday-Calendar-2024-EN.pdf"
+  },
+  {
     "eventId": "visakha-bucha",
     "date": "2024-05-22",
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/content-fragments/holiday-calendar/en/bot-notification-holiday/BOT-Notification-Holiday-Calendar-2024-EN.pdf"
@@ -35,8 +40,18 @@
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/content-fragments/holiday-calendar/en/bot-notification-holiday/BOT-Notification-Holiday-Calendar-2025-EN.pdf"
   },
   {
+    "eventId": "loi-krathong",
+    "date": "2025-11-05",
+    "sourceUrl": "https://region2.prd.go.th/th/content/category/detail/id/9/iid/438437"
+  },
+  {
     "eventId": "makha-bucha",
     "date": "2026-03-03",
+    "sourceUrl": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf"
+  },
+  {
+    "eventId": "songkran",
+    "date": "2026-04-13",
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf"
   },
   {
@@ -52,6 +67,11 @@
   {
     "eventId": "makha-bucha",
     "date": "2027-02-21",
+    "sourceUrl": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2569/EngPDF/25690175.pdf"
+  },
+  {
+    "eventId": "songkran",
+    "date": "2027-04-13",
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2569/EngPDF/25690175.pdf"
   },
   {
