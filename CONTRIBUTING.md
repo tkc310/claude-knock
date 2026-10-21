@@ -149,10 +149,12 @@ gh secret set RELEASE_PLEASE_TOKEN   # 任意。fine-grained token を貼り付�
 
 GitHub のリポジトリの secrets に次の 2 つが要ります。
 
-| secret                  | 中身                                                                    |
-| ----------------------- | ----------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Cloudflare の API トークン（「Edit Cloudflare Workers」のテンプレート） |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare のアカウント ID                                              |
+| secret                  | 中身                                                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare の API トークン（「Edit Cloudflare Workers」のテンプレート）                                     |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare のアカウント ID                                                                                  |
+| `BOT_API_TOKEN`         | タイ中央銀行の API キー（https://portal.api.bot.or.th/ の「Others」製品。毎月の告示の照合に使う。ADR-0023） |
+| `RELEASE_PLEASE_TOKEN`  | リリースの PR を作る fine-grained token（任意。ADR-0021）                                                   |
 
 公開先の URL は `astro.config.mjs` の `site`、独自ドメインは `wrangler.json` の `routes` にあります。`www.koyomi.tkc310.com` も独自ドメインにしてあり（証明書のため）、Cloudflare のダッシュボードの Redirect Rule で `koyomi.tkc310.com` へ 301 で転送します（ADR-0018）。別の URL でビルドするとき（プレビューなど）は、環境変数 `SITE_URL` で `site` を上書きできます。
 

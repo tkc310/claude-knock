@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # event-notice の下書き（コミットしない）
 docs/notices/
+
+# make announcements の結果
+announcements-report.md
