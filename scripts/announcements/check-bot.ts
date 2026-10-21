@@ -28,9 +28,10 @@ export function parseBotHolidays(json: unknown): BotHoliday[] {
   const wrapped = json as { result?: { data?: unknown } };
   const list = Array.isArray(json) ? json : wrapped?.result?.data;
   if (!Array.isArray(list)) throw new Error('BOT の応答に休日の一覧がありません');
+  const text = (value: unknown) => (typeof value === 'string' ? value : '');
   return list.map((item: { Date?: unknown; HolidayDescription?: unknown }) => ({
-    date: String(item.Date ?? ''),
-    description: String(item.HolidayDescription ?? ''),
+    date: text(item.Date),
+    description: text(item.HolidayDescription),
   }));
 }
 
