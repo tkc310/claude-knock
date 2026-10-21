@@ -10,9 +10,23 @@
 </p>
 
 <p align="center">
-  <a href="https://koyomi.tkc310.com">https://koyomi.tkc310.com</a>
-  ・
+  <a href="https://koyomi.tkc310.com"><strong>https://koyomi.tkc310.com</strong></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/tkc310/koyomi/actions/workflows/ci.yml"><img src="https://github.com/tkc310/koyomi/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/tkc310/koyomi/actions/workflows/deploy.yml"><img src="https://github.com/tkc310/koyomi/actions/workflows/deploy.yml/badge.svg" alt="Deploy" /></a>
+  <a href="https://github.com/tkc310/koyomi/releases"><img src="https://img.shields.io/github/v/release/tkc310/koyomi?label=release&sort=semver" alt="最新のリリース" /></a>
+  <a href="https://koyomi.tkc310.com"><img src="https://img.shields.io/website?url=https%3A%2F%2Fkoyomi.tkc310.com&label=site&up_message=online&down_message=offline" alt="サイトの稼働" /></a>
+  <a href="https://github.com/tkc310/koyomi/commits/main"><img src="https://img.shields.io/github/last-commit/tkc310/koyomi/main" alt="最終コミット" /></a>
+</p>
+
+<p align="center">
+  <a href="https://astro.build/"><img src="https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white" alt="Astro 7" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white" alt="TypeScript 6" /></a>
+  <a href="https://developers.cloudflare.com/workers/static-assets/"><img src="https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white" alt="Cloudflare Workers" /></a>
+  <a href="./README.md#pwa-の仕組み"><img src="https://img.shields.io/badge/PWA-offline-5A0FC8?logo=pwa&logoColor=white" alt="PWA" /></a>
+  <a href="https://www.conventionalcommits.org/ja/"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white" alt="Conventional Commits" /></a>
 </p>
 
 <p align="center">
@@ -85,7 +99,7 @@ docs/            設計判断（ADR）・改善ログ・行事ごとの資料
 
 ## デプロイ
 
-`main` にマージすると、CI が通った後に `.github/workflows/deploy.yml` が `make deploy` を走らせ、https://koyomi.tkc310.com に公開されます（ADR-0016）。手順と必要な設定は [CONTRIBUTING.md のリリース](./CONTRIBUTING.md#リリース) にあります。
+`main` にマージすると、CI が通った後に `.github/workflows/deploy.yml` が `make deploy` を走らせ、https://koyomi.tkc310.com に公開されます（ADR-0016）。バージョンとリリースノートは release-please が自動で作ります（[CHANGELOG.md](./CHANGELOG.md)、ADR-0021）。手順と必要な設定は [CONTRIBUTING.md のリリース](./CONTRIBUTING.md#リリース) にあります。
 
 定期作業は年 1 回だけです。毎年 12 月に翌年分の公式告示を照合してデプロイします（ADR-0015、[docs/operations.md](./docs/operations.md)）。
 

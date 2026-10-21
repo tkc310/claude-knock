@@ -1,0 +1,30 @@
+# リリースノートとバージョンの自動化（release-please。ADR-0021）。
+# main に入ったコミット（squash した PR のタイトル。Conventional Commits）から、
+# CHANGELOG.md と package.json の版を上げる「リリースの PR」を作り直し続ける。
+# その PR をマージすると、タグ（v1.2.3）と GitHub のリリースノートを作る。デプロイは Deploy ワークフローが別に行う
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          # GITHUB_TOKEN で作った PR では CI が動かず、必須のチェックが通らない。
+          # secrets.RELEASE_PLEASE_TOKEN（contents・pull-requests の書き込みを許した fine-grained token）があればそれを使う
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

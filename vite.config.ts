@@ -30,7 +30,15 @@ export default defineConfig({
     ],
   },
   fmt: {
-    ignorePatterns: ['dist/**', '.astro/**', 'pnpm-lock.yaml', 'CLAUDE.md', ...generated],
+    ignorePatterns: [
+      'dist/**',
+      '.astro/**',
+      'pnpm-lock.yaml',
+      'CLAUDE.md',
+      // release-please が作る（ADR-0021）
+      'CHANGELOG.md',
+      ...generated,
+    ],
     singleQuote: true,
     // .astro も整形する。@astrojs/compiler-rs が要る（ADR-0011）
     astro: true,
