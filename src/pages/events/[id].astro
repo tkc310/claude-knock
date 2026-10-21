@@ -5,10 +5,9 @@ import { getEntry, render } from 'astro:content';
 import EventFacts from '@/components/event/EventFacts.astro';
 import EventIllustration from '@/components/event/EventIllustration.astro';
 import EventSummary from '@/components/event/EventSummary.astro';
+import EventTags from '@/components/event/EventTags.astro';
 import Base from '@/layouts/Base.astro';
-import { Heading } from '@/components/ui/heading';
-import { Stack } from '@/components/ui/stack';
-import { Text } from '@/components/ui/text';
+import { Icon } from '@/components/ui/icon';
 import { occurrences } from '@/core';
 import { displayRange } from '@/data/display-range';
 import { events, formatEventName } from '@/data/events';
@@ -28,32 +27,67 @@ const range = displayRange(new Date());
 const dates = occurrences([event], range);
 const name = formatEventName(event.name);
 const description = `${entry.data.origin}。${entry.data.practice}。`;
+const others = events.filter((e) => e.id !== event.id);
 ---
 
 <Base title={`${name} | タイ仏教行事カレンダー`} description={description}>
-  <main class="mx-auto max-w-3xl p-inset-xl">
-    <Stack gap="lg">
-      <Text variant="body-sm">
-        <a href="/" class="text-fg-link underline underline-offset-[0.2em]">
-          行事の一覧へ戻る
-        </a>
-      </Text>
-      <Stack gap="sm">
-        <EventIllustration id={event.id} class="aspect-[16/7] rounded-xl" />
-        <Heading level={1}>{name}</Heading>
-        <EventSummary entry={entry} />
-      </Stack>
-      <section aria-labelledby="dates">
-        <Stack gap="sm">
-          <Heading level={2} size="sm" id="dates">
-            {range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の日付
-          </Heading>
-          <EventFacts event={event} dates={dates} />
-        </Stack>
-      </section>
-      <div class="flex flex-col gap-stack-sm [&_a]:break-all [&_a]:text-fg-link [&_a]:underline [&_a]:underline-offset-[0.2em] [&_h2]:mt-stack-md [&_h2]:text-heading-sm [&_h3]:text-heading-xs [&_li]:ms-inset-lg [&_ol]:list-decimal [&_p]:text-body-md [&_ul]:list-disc">
-        <Content />
+  <main class="mx-auto flex max-w-3xl flex-col gap-stack-md px-inset-lg pt-inset-xl md:px-inset-xl">
+    <p class="m-0 text-body-sm">
+      <a
+        href="/"
+        class="focus-ring inline-flex items-center gap-gap-xs rounded-xs text-fg-link underline underline-offset-[0.2em] hover:text-fg-link-hover"
+      >
+        <Icon name="chevron-left" size="sm" />
+        行事の一覧へ戻る
+      </a>
+    </p>
+
+    <header class="flex flex-col gap-stack-md">
+      <EventIllustration id={event.id} class="aspect-[16/7] rounded-xl shadow-1" />
+      <div class="flex flex-col gap-gap-sm">
+        <p class="m-0 text-label-md tracking-wider text-fg-saffron">{event.name.romaji}</p>
+        <h1 class="m-0 text-heading-lg text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-heading-xl">
+          {event.name.kana}
+          <span class="block text-heading-xs font-regular text-fg-subtle">{event.name.ja}</span>
+        </h1>
+        <EventTags event={event} />
       </div>
-    </Stack>
+      <EventSummary entry={entry} layout="panels" />
+    </header>
+
+    <section
+      aria-labelledby="dates"
+      class="flex flex-col gap-gap-md rounded-xl border border-border-subtle p-inset-xl"
+    >
+      <h2 id="dates" class="m-0 text-heading-xxs">
+        {range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の日付
+      </h2>
+      <EventFacts event={event} dates={dates} tags={false} />
+    </section>
+
+    <article class="event-prose">
+      <Content />
+    </article>
+
+    <nav
+      aria-labelledby="others"
+      class="flex flex-col gap-gap-md border-t border-border-subtle pt-stack-md"
+    >
+      <h2 id="others" class="m-0 text-heading-xxs">
+        ほかの行事
+      </h2>
+      <ul class="m-0 flex list-none flex-wrap gap-gap-sm p-0">
+        {others.map((e) => (
+          <li>
+            <a
+              href={`/events/${e.id}/`}
+              class="focus-ring inline-flex min-h-control-sm items-center rounded-full border border-border-subtle bg-surface px-inset-md text-body-sm text-fg no-underline hover:border-saffron hover:bg-saffron-subtle"
+            >
+              {e.name.kana}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   </main>
 </Base>

@@ -1,2 +1,65 @@
 @import 'tailwindcss';
 @import './8341-ui.css';
+
+/*
+ * 行事の雰囲気（僧衣のサフラン色・寺院の金色）を出すアクセント色。
+ * 8341-ui の primitive を参照するだけで、新しい色の値は作らない。配色は白に固定している（data-theme="light"）
+ * - saffron / gold: 線・点・面の飾り。意味を持つ点（カレンダーの色の点）は白背景で 3:1 以上の段階を使う
+ * - water: 民間行事（ロイクラトン・ソンクラーン。どちらも水の行事）の色。今日の印（key の藍）と見分けられるよう青緑にする
+ * - fg-saffron: 文字に使うサフラン色（白背景 8:1）
+ */
+@theme inline {
+  --color-saffron: var(--8341-color-primitive-orange-500);
+  --color-saffron-subtle: var(--8341-color-primitive-orange-50);
+  --color-saffron-muted: var(--8341-color-primitive-orange-100);
+  --color-fg-saffron: var(--8341-color-primitive-orange-800);
+  --color-gold: var(--8341-color-primitive-yellow-500);
+  --color-gold-soft: var(--8341-color-primitive-yellow-300);
+  --color-gold-subtle: var(--8341-color-primitive-yellow-50);
+  --color-water: var(--8341-color-primitive-teal-600);
+  --color-water-subtle: var(--8341-color-primitive-teal-50);
+}
+
+/* 行事の本文（markdown）。見出しの前を広めにとり、引用・リスト・リンクを読みやすくする */
+@layer components {
+  .event-prose {
+    @apply flex flex-col gap-inset-md text-body-md;
+
+    & h2 {
+      @apply mt-stack-md flex items-center gap-gap-sm border-b border-border-subtle pb-inset-sm text-heading-xs;
+    }
+    & h2::before {
+      @apply h-[1em] w-1 shrink-0 rounded-full bg-saffron content-[''];
+    }
+    & h3 {
+      @apply mt-inset-lg text-heading-xxs;
+    }
+    & p,
+    & li {
+      @apply text-body-md;
+    }
+    & ul,
+    & ol {
+      @apply flex flex-col gap-gap-xs ps-inset-xl;
+    }
+    & ul {
+      @apply list-disc marker:text-saffron;
+    }
+    & ol {
+      @apply list-decimal marker:font-bold marker:text-fg-saffron;
+    }
+    /* 出典の一覧（どの行事も最後の「## 出典」）は URL が長いので、小さく控えめにする */
+    & h2[id='出典'] ~ ul li {
+      @apply text-body-sm text-fg-subtle;
+    }
+    & blockquote {
+      @apply rounded-e-lg border-s-4 border-gold-soft bg-gold-subtle px-inset-lg py-inset-md;
+    }
+    & a {
+      @apply break-all text-fg-link underline underline-offset-[0.2em] hover:text-fg-link-hover hover:decoration-(length:--8341-border-width-underline-hover);
+    }
+    & a:focus-visible {
+      @apply rounded-xs bg-focus-ring text-focus-text no-underline outline-2 outline-offset-2 outline-focus-outline;
+    }
+  }
+}

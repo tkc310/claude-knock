@@ -1,16 +1,12 @@
 ---
 import { getEntry } from 'astro:content';
+import { spanLabel } from '@/components/event/date-label';
 import EventCalendar from '@/components/event/EventCalendar.astro';
-import EventFacts from '@/components/event/EventFacts.astro';
+import EventCard from '@/components/event/EventCard.astro';
 import EventIllustration from '@/components/event/EventIllustration.astro';
-import EventSummary from '@/components/event/EventSummary.astro';
-import EventTags from '@/components/event/EventTags.astro';
+import SectionHeading from '@/components/site/SectionHeading.astro';
 import Base from '@/layouts/Base.astro';
-import { Card } from '@/components/ui/card';
-import { Heading } from '@/components/ui/heading';
 import { Icon } from '@/components/ui/icon';
-import { Stack } from '@/components/ui/stack';
-import { Text } from '@/components/ui/text';
 import { occurrences } from '@/core';
 import { displayRange } from '@/data/display-range';
 import { events } from '@/data/events';
@@ -28,11 +24,20 @@ const entries = await Promise.all(
   }),
 );
 
-const weekday = (iso: string) => '日月火水木金土'[new Date(`${iso}T00:00:00Z`).getUTCDay()];
-const nextLabel = (start: string, end: string) =>
-  start === end
-    ? `${start}（${weekday(start)}）`
-    : `${start}（${weekday(start)}）〜${end.slice(5)}（${weekday(end)}）`;
+// 冒頭の「次の行事」。ビルドした日より後の候補を書き出し、表示時にブラウザの日付で 1 つ選ぶ（下の script）
+const upcoming = list.filter((o) => o.event.id !== 'wan-phra' && o.end >= today).slice(0, 8);
+const upcomingPhra = list.filter((o) => o.event.id === 'wan-phra' && o.end >= today).slice(0, 12);
+
+const about = [
+  {
+    icon: 'moon',
+    text: 'タイの仏教行事の多くは、月の満ち欠けにもとづく「タイの太陰暦」で日が決まるため、毎年日付が変わります。このサイトでは、その日付を暦から計算し、タイ政府の公式発表と照らし合わせて載せています。',
+  },
+  {
+    icon: 'wheel',
+    text: '載せているのは、仏典（経・律）やブッダの生涯に根拠がある行事です。例外として、タイで広く行われるロイクラトンとソンクラーンを「民間行事」として載せています。',
+  },
+] as const;
 
 const imports = [
   {
@@ -63,153 +68,321 @@ const imports = [
 ---
 
 <Base title="タイ仏教行事カレンダー">
-  <main class="mx-auto max-w-5xl p-inset-xl">
-    <Stack gap="lg">
-      <Stack gap="sm">
-        <Heading level={1}>タイ仏教行事カレンダー</Heading>
-        <Text tone="subtle">タイの仏教行事の日付と意味を、日本語でまとめたカレンダーです。</Text>
-      </Stack>
-
-      <section aria-labelledby="about" class="rounded-xl bg-subtle p-inset-xl">
-        <Stack gap="sm">
-          <Heading level={2} size="sm" id="about">
-            このサイトについて
-          </Heading>
-          <Stack as="ul" gap="sm" className="ms-inset-lg list-disc">
-            <li>
-              <Text variant="body-sm">
-                タイの仏教行事の多くは、月の満ち欠けにもとづく「タイの太陰暦」で日が決まるため、毎年日付が変わります。このサイトでは、その日付を暦から計算し、タイ政府の公式発表と照らし合わせて載せています。
-              </Text>
-            </li>
-            <li>
-              <Text variant="body-sm">
-                載せているのは、仏典（経・律）やブッダの生涯に根拠がある行事です。例外として、タイで広く行われるロイクラトンとソンクラーンを「民間行事」として載せています。
-              </Text>
-            </li>
-            <li>
-              <Text variant="body-sm">
-                {years}の予定は、
-                <a href="#ics" class="text-fg-link underline underline-offset-[0.2em]">
-                  カレンダーアプリに取り込めます
-                </a>
-                。
-              </Text>
-            </li>
-          </Stack>
-        </Stack>
-      </section>
-
-      <section aria-labelledby="calendar">
-        <Stack gap="md">
-          <Stack gap="sm">
-            <Heading level={2} size="sm" id="calendar">
-              行事カレンダー
-            </Heading>
-            <Text variant="body-sm" tone="subtle">
-              月ごとに行事を見られます。行事名を押すと詳しい説明のページへ移ります。
-            </Text>
-          </Stack>
-          <EventCalendar range={range} list={list} today={today} />
-        </Stack>
-      </section>
-
-      <section aria-labelledby="events">
-        <Stack gap="md">
-          <Stack gap="sm">
-            <Heading level={2} size="sm" id="events">
-              行事の一覧
-            </Heading>
-            <Text variant="body-sm" tone="subtle">
-              カードにカーソルを当てると、由来・行うこと・{years}
-              の日付が出ます。押すと詳しい説明のページへ移ります。
-            </Text>
-          </Stack>
-          <ul class="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-gap-md">
-            {events.map((event, i) => {
-              const dates = list.filter((o) => o.event.id === event.id);
-              const next = dates.find((o) => o.end >= today);
-              return (
-                <Card
-                  as="li"
-                  headingLevel={3}
-                  eyebrow={event.name.romaji}
-                  title={`${event.name.kana}（${event.name.ja}）`}
-                  href={`/events/${event.id}/`}
-                  className="overflow-visible"
-                  data-card
-                >
-                  <EventIllustration
-                    slot="media"
-                    id={event.id}
-                    class="aspect-[16/7] rounded-t-xl"
-                  />
-                  <Stack gap="sm">
-                    <EventTags event={event} />
-                    {next && <Text variant="body-sm">次回 {nextLabel(next.start, next.end)}</Text>}
-                  </Stack>
-                  <div
-                    data-popover
-                    class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs rounded-xl border border-border bg-surface p-inset-lg opacity-0 shadow-2 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100"
-                  >
-                    <Stack gap="sm">
-                      <EventSummary entry={entries[i]!} />
-                      <EventFacts event={event} dates={dates} />
-                    </Stack>
-                  </div>
-                </Card>
-              );
-            })}
-          </ul>
-        </Stack>
-      </section>
-
-      <section aria-labelledby="ics" class="rounded-xl border border-border p-inset-xl">
-        <Stack gap="md">
-          <Stack gap="sm">
-            <Heading level={2} size="sm" id="ics">
-              カレンダーアプリに取り込む
-            </Heading>
-            <Text variant="body-sm">
-              {years}の行事をまとめた ICS ファイル（calendar.ics）をダウンロードできます。Google
-              カレンダーや iPhone のカレンダーなどに取り込むと、行事が終日の予定として入ります。
-            </Text>
-          </Stack>
-          <div>
+  <main>
+    <section
+      aria-labelledby="site-title"
+      class="relative overflow-hidden border-b border-border-subtle bg-gold-subtle"
+    >
+      <!-- 飾り: 右上に月の暈（かさ）のような同心円 -->
+      <svg
+        viewBox="0 0 400 400"
+        aria-hidden="true"
+        focusable="false"
+        class="pointer-events-none absolute -top-40 -right-40 size-[28rem] text-gold-soft md:-top-24 md:-right-24"
+      >
+        <circle cx="200" cy="200" r="70" fill="currentColor" opacity="0.35"></circle>
+        <circle
+          cx="200"
+          cy="200"
+          r="110"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        ></circle>
+        <circle
+          cx="200"
+          cy="200"
+          r="150"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-dasharray="2 6"
+        ></circle>
+        <circle
+          cx="200"
+          cy="200"
+          r="190"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+        ></circle>
+      </svg>
+      <div class="relative mx-auto grid max-w-5xl gap-stack-md px-inset-lg py-stack-md md:grid-cols-[minmax(0,1fr)_20rem] md:items-center md:gap-gutter md:px-inset-xl md:py-stack-lg">
+        <div class="flex flex-col gap-inset-lg">
+          <!-- 飾り: 月の満ち欠け（新月・上弦・満月・下弦）。行事が月で決まることを表す -->
+          <svg
+            viewBox="0 0 88 16"
+            aria-hidden="true"
+            focusable="false"
+            class="h-4 w-[5.5rem] text-gold"
+          >
+            <circle
+              cx="8"
+              cy="8"
+              r="6.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            ></circle>
+            <circle
+              cx="32"
+              cy="8"
+              r="6.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            ></circle>
+            <path d="M32 1.5 A6.5 6.5 0 0 1 32 14.5 Z" fill="currentColor"></path>
+            <circle cx="56" cy="8" r="7.25" fill="currentColor"></circle>
+            <circle
+              cx="80"
+              cy="8"
+              r="6.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            ></circle>
+            <path d="M80 1.5 A6.5 6.5 0 0 0 80 14.5 Z" fill="currentColor"></path>
+          </svg>
+          <h1
+            id="site-title"
+            class="m-0 text-heading-md text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-display-md"
+          >
+            タイ仏教行事カレンダー
+          </h1>
+          <p class="m-0 max-w-prose text-body-lg text-fg-subtle">
+            タイの仏教行事の日付と意味を、日本語でまとめたカレンダーです。
+          </p>
+          <div class="flex flex-wrap items-center gap-gap-sm">
             <a
-              href="/calendar.ics"
-              download="thai-buddhist-calendar.ics"
-              class="inline-flex items-center gap-gap-xs rounded-md bg-key px-inset-lg py-inset-sm text-body-md font-bold text-fg-on-key hover:bg-key-hover"
+              href="#calendar"
+              class="focus-ring inline-flex min-h-control-md items-center gap-gap-xs rounded-md bg-key px-inset-lg text-label-md text-fg-on-key no-underline hover:bg-key-hover"
             >
-              <Icon name="download" />
-              calendar.ics をダウンロード
+              カレンダーを見る
+              <Icon name="chevron-down" size="sm" />
+            </a>
+            <a
+              href="#ics"
+              class="focus-ring inline-flex min-h-control-md items-center gap-gap-xs rounded-md border border-border bg-surface px-inset-lg text-label-md text-fg no-underline hover:bg-muted"
+            >
+              カレンダーアプリに取り込む
             </a>
           </div>
-          <div class="grid gap-gap-md md:grid-cols-3">
-            {imports.map(({ app, steps }) => (
-              <Stack gap="sm">
-                <Heading level={3} size="xs">
-                  {app}
-                </Heading>
-                <Stack as="ol" gap="sm" className="ms-inset-lg list-decimal">
-                  {steps.map((step) => (
-                    <li>
-                      <Text variant="body-sm">{step}</Text>
-                    </li>
-                  ))}
-                </Stack>
-              </Stack>
+        </div>
+
+        {upcoming.length > 0 && (
+          <aside
+            aria-labelledby="next-title"
+            class="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-surface shadow-1"
+          >
+            <p
+              id="next-title"
+              class="m-0 flex items-center gap-gap-sm px-inset-lg pt-inset-md pb-inset-sm text-label-sm text-fg-saffron"
+            >
+              <span aria-hidden="true" class="size-2 rounded-full bg-saffron" />
+              次の行事
+            </p>
+            {upcoming.map((o, i) => (
+              <a
+                data-next-event
+                data-start={o.start}
+                data-end={o.end}
+                href={`/events/${o.event.id}/`}
+                hidden={i !== 0}
+                class="group/next focus-ring flex flex-col text-fg no-underline"
+              >
+                <span class="mx-inset-lg block overflow-hidden rounded-lg">
+                  <EventIllustration
+                    id={o.event.id}
+                    class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/next:scale-[1.04]"
+                  />
+                </span>
+                <span class="flex flex-col gap-gap-xs px-inset-lg pt-inset-md pb-inset-lg">
+                  <span class="flex items-baseline justify-between gap-gap-sm">
+                    <span class="text-heading-xxs group-hover/next:underline group-hover/next:underline-offset-[0.25em]">
+                      {o.event.name.kana}
+                    </span>
+                    <span
+                      data-countdown
+                      class="shrink-0 rounded-full bg-saffron-subtle px-inset-sm py-0.5 text-label-sm text-fg-saffron empty:hidden"
+                    />
+                  </span>
+                  <span class="text-body-sm text-fg-subtle">{o.event.name.ja}</span>
+                  <time datetime={o.start} class="text-body-sm font-bold">
+                    {spanLabel(o.start, o.end)}
+                  </time>
+                </span>
+              </a>
             ))}
-          </div>
-          <Text variant="body-sm" tone="subtle">
-            取り込んだ予定は自動では更新されません。年が変わったら、新しいファイルを取り込み直してください。予定をまとめて消せるよう、取り込む前に専用のカレンダーを作っておくと便利です。
-          </Text>
-        </Stack>
+            {upcomingPhra.length > 0 && (
+              <p class="m-0 flex flex-wrap items-center gap-x-gap-sm border-t border-border-subtle bg-subtle px-inset-lg py-inset-sm text-body-sm">
+                <span class="flex items-center gap-gap-xs text-fg-subtle">
+                  <span aria-hidden="true" class="size-2 rounded-full bg-gold" />
+                  次のワンプラ（布薩日）
+                </span>
+                {upcomingPhra.map((o, i) => (
+                  <time data-next-phra data-end={o.end} datetime={o.start} hidden={i !== 0}>
+                    {spanLabel(o.start, o.end)}
+                  </time>
+                ))}
+              </p>
+            )}
+          </aside>
+        )}
+      </div>
+    </section>
+
+    <div class="mx-auto flex max-w-5xl flex-col gap-stack-lg px-inset-lg pt-stack-md md:px-inset-xl md:pt-stack-lg">
+      <section aria-labelledby="about" class="flex flex-col gap-stack-md">
+        <SectionHeading id="about" eyebrow="About" title="このサイトについて" />
+        <ul class="m-0 grid list-none gap-gap-md p-0 md:grid-cols-2">
+          {about.map(({ icon, text }) => (
+            <li class="flex items-start gap-gap-md rounded-xl bg-subtle p-inset-xl">
+              <span
+                aria-hidden="true"
+                class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-saffron-muted text-fg-saffron"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-icon-md"
+                >
+                  {icon === 'moon' ? (
+                    <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
+                  ) : (
+                    <>
+                      <circle cx="12" cy="12" r="8" />
+                      <circle cx="12" cy="12" r="2" />
+                      <path d="M12 4v6M12 14v6M4 12h6M14 12h6M6.3 6.3l4.3 4.3M13.4 13.4l4.3 4.3M17.7 6.3l-4.3 4.3M10.6 13.4l-4.3 4.3" />
+                    </>
+                  )}
+                </svg>
+              </span>
+              <p class="m-0 text-body-sm">{text}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="m-0 text-body-sm">
+          {years}の予定は、
+          <a
+            href="#ics"
+            class="focus-ring rounded-xs text-fg-link underline underline-offset-[0.2em] hover:text-fg-link-hover"
+          >
+            カレンダーアプリに取り込めます
+          </a>
+          。
+        </p>
       </section>
-    </Stack>
+
+      <section aria-labelledby="calendar" class="flex flex-col gap-stack-md">
+        <SectionHeading id="calendar" eyebrow="Calendar" title="行事カレンダー">
+          <p class="m-0 text-body-sm text-fg-subtle">
+            月ごとに行事を見られます。行事名を押すと詳しい説明のページへ移ります。
+          </p>
+        </SectionHeading>
+        <EventCalendar range={range} list={list} today={today} />
+      </section>
+
+      <section aria-labelledby="events" class="flex flex-col gap-stack-md">
+        <SectionHeading id="events" eyebrow="Events" title="行事の一覧">
+          <p class="m-0 text-body-sm text-fg-subtle">
+            カードにカーソルを当てると、由来・行うこと・{years}
+            の日付が出ます。押すと詳しい説明のページへ移ります。
+          </p>
+        </SectionHeading>
+        <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-gap-md p-0">
+          {events.map((event, i) => (
+            <EventCard
+              event={event}
+              entry={entries[i]!}
+              dates={list.filter((o) => o.event.id === event.id)}
+              today={today}
+              years={years}
+            />
+          ))}
+        </ul>
+      </section>
+
+      <section
+        aria-labelledby="ics"
+        class="flex flex-col overflow-hidden rounded-xl border border-border-subtle"
+      >
+        <div class="flex flex-col gap-stack-md bg-gold-subtle p-inset-xl md:flex-row md:items-end md:justify-between md:gap-gutter">
+          <SectionHeading id="ics" eyebrow="Import" title="カレンダーアプリに取り込む">
+            <p class="m-0 max-w-prose text-body-sm">
+              {years}の行事をまとめた ICS ファイル（calendar.ics）をダウンロードできます。Google
+              カレンダーや iPhone のカレンダーなどに取り込むと、行事が終日の予定として入ります。
+            </p>
+          </SectionHeading>
+          <a
+            href="/calendar.ics"
+            download="thai-buddhist-calendar.ics"
+            class="focus-ring inline-flex min-h-control-lg shrink-0 items-center justify-center gap-gap-sm self-start rounded-md bg-key px-inset-xl text-label-md text-fg-on-key no-underline shadow-1 hover:bg-key-hover md:self-auto"
+          >
+            <Icon name="download" />
+            calendar.ics をダウンロード
+          </a>
+        </div>
+        <div class="grid gap-px bg-border-subtle md:grid-cols-3">
+          {imports.map(({ app, steps }) => (
+            <div class="flex flex-col gap-gap-md bg-surface p-inset-xl">
+              <h3 class="m-0 text-heading-xxs">{app}</h3>
+              <ol class="m-0 flex list-none flex-col gap-gap-md p-0">
+                {steps.map((step, n) => (
+                  <li class="flex gap-gap-sm">
+                    <span
+                      aria-hidden="true"
+                      class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-saffron-muted text-label-sm text-fg-saffron tabular-nums"
+                    >
+                      {n + 1}
+                    </span>
+                    <span class="text-body-sm">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+        <p class="m-0 flex gap-gap-sm border-t border-border-subtle bg-subtle px-inset-xl py-inset-lg text-body-sm text-fg-subtle">
+          <Icon name="info" size="sm" className="mt-1 text-icon-subtle" />
+          <span>
+            取り込んだ予定は自動では更新されません。年が変わったら、新しいファイルを取り込み直してください。予定をまとめて消せるよう、取り込む前に専用のカレンダーを作っておくと便利です。
+          </span>
+        </p>
+      </section>
+    </div>
   </main>
 </Base>
 
 <script>
+  // 冒頭の「次の行事」を、ブラウザの日付で選び直し、あと何日かを出す
+  const today = new Date().toLocaleDateString('sv-SE');
+  const days = (from: string, to: string) =>
+    Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+  const pick = <T extends HTMLElement>(items: T[]) => {
+    const found = items.find((el) => (el.dataset.end ?? '') >= today) ?? items.at(-1);
+    for (const el of items) el.hidden = el !== found;
+    return found;
+  };
+  const next = pick([...document.querySelectorAll<HTMLElement>('[data-next-event]')]);
+  const countdown = next?.querySelector<HTMLElement>('[data-countdown]');
+  if (next && countdown) {
+    const { start = '', end = '' } = next.dataset;
+    countdown.textContent =
+      end < today
+        ? ''
+        : start > today
+          ? `あと ${days(today, start)} 日`
+          : start === end
+            ? '今日'
+            : '期間中';
+  }
+  pick([...document.querySelectorAll<HTMLElement>('[data-next-phra]')]);
+
   // 一覧のカードのポップアップを、画面に収まる側（右、だめなら左）に出す。
   // どちらにも入らない狭い画面では、カードの下に出す（CSS の既定の位置）
   const GAP = 8;

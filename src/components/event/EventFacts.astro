@@ -1,8 +1,7 @@
 ---
 // 行事のタグと日付。トップページと詳細ページで同じ表示にする
+import { spanLabel } from '@/components/event/date-label';
 import EventTags from '@/components/event/EventTags.astro';
-import { Stack } from '@/components/ui/stack';
-import { Text } from '@/components/ui/text';
 import { formatLunarDate, type Occurrence } from '@/core';
 import type { EventDefinition } from '@/data/events';
 
@@ -10,27 +9,29 @@ interface Props {
   event: EventDefinition;
   /** この行事の日付（occurrences の結果をこの行事に絞ったもの） */
   dates: readonly Occurrence<EventDefinition>[];
+  /** タグを出すか。見出しの近くに別にタグを置くときは false */
+  tags?: boolean;
 }
 
-const { event, dates } = Astro.props;
-const span = (start: string, end: string) => (start === end ? start : `${start}〜${end.slice(5)}`);
+const { event, dates, tags = true } = Astro.props;
 ---
 
-<Stack gap="sm">
-  <EventTags event={event} />
+<div class="flex flex-col gap-gap-sm">
+  {tags && <EventTags event={event} />}
   {event.date.kind === 'uposatha' ? (
-    <Text variant="body-sm">
+    <p class="m-0 text-body-sm">
       月に 4 回。月の前半・後半それぞれの 8 日目と最後の日（{dates.length} 日）
-    </Text>
+    </p>
   ) : (
-    <Stack as="ul" gap="sm">
+    <ul class="m-0 flex list-none flex-col p-0">
       {dates.map((o) => (
-        <li>
-          <Text variant="body-sm">
-            {span(o.start, o.end)}（{formatLunarDate(o.lunar)}）
-          </Text>
+        <li class="flex flex-col border-t border-border-subtle py-inset-sm first:border-t-0 first:pt-0 last:pb-0">
+          <time datetime={o.start} class="text-body-sm font-bold">
+            {spanLabel(o.start, o.end)}
+          </time>
+          <span class="text-body-sm text-fg-subtle">{formatLunarDate(o.lunar)}</span>
         </li>
       ))}
-    </Stack>
+    </ul>
   )}
-</Stack>
+</div>

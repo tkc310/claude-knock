@@ -1,0 +1,79 @@
+---
+// トップページの行事の一覧のカード。カード全体が詳細ページへのリンクで、ホバー・フォーカスで由来と日付のポップアップを出す
+// ポップアップの左右の置き場所は src/pages/index.astro の script が決める（data-card・data-popover）
+import type { CollectionEntry } from 'astro:content';
+import { spanLabel } from '@/components/event/date-label';
+import EventFacts from '@/components/event/EventFacts.astro';
+import EventIllustration from '@/components/event/EventIllustration.astro';
+import EventSummary from '@/components/event/EventSummary.astro';
+import EventTags from '@/components/event/EventTags.astro';
+import { Icon } from '@/components/ui/icon';
+import type { Occurrence } from '@/core';
+import type { EventDefinition } from '@/data/events';
+
+interface Props {
+  event: EventDefinition;
+  entry: CollectionEntry<'events'>;
+  dates: readonly Occurrence<EventDefinition>[];
+  /** ビルドした日（YYYY-MM-DD）。次回の日付を選ぶのに使う */
+  today: string;
+  /** 表示範囲の年（例: 2026〜2027 年） */
+  years: string;
+}
+
+const { event, entry, dates, today, years } = Astro.props;
+const next = dates.find((o) => o.end >= today);
+---
+
+<li
+  data-card
+  class="group/card focus-ring-within relative flex flex-col rounded-xl border border-border-subtle bg-surface text-fg transition-[border-color,box-shadow] hover:border-saffron hover:shadow-2"
+>
+  <div class="overflow-hidden rounded-t-xl">
+    <EventIllustration
+      id={event.id}
+      class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/card:scale-[1.04]"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-gap-sm p-inset-lg">
+    <p class="m-0 text-label-sm tracking-wider text-fg-saffron">{event.name.romaji}</p>
+    <h3 class="m-0 text-heading-xxs [font-feature-settings:'palt']">
+      <a
+        href={`/events/${event.id}/`}
+        class="text-fg no-underline outline-none after:absolute after:inset-0 after:content-[''] group-hover/card:underline group-hover/card:underline-offset-[0.25em]"
+      >
+        {event.name.kana}
+        <span class="text-body-sm font-regular text-fg-subtle">（{event.name.ja}）</span>
+      </a>
+    </h3>
+    <EventTags event={event} />
+  </div>
+  {next && (
+    <div class="flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md">
+      <span class="text-label-sm text-fg-subtle">次回</span>
+      <time datetime={next.start} class="text-body-sm font-bold">
+        {spanLabel(next.start, next.end)}
+      </time>
+      <Icon
+        name="arrow-right"
+        size="sm"
+        className="ms-auto text-icon-key transition-transform group-hover/card:translate-x-gap-xs"
+      />
+    </div>
+  )}
+  <div
+    data-popover
+    class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs translate-y-1 rounded-xl border border-border-subtle bg-surface p-inset-lg opacity-0 shadow-3 transition-[opacity,translate] group-focus-within/card:translate-y-0 group-focus-within/card:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100"
+  >
+    <div class="flex flex-col gap-gap-md">
+      <p class="m-0 border-b border-border-subtle pb-inset-sm text-label-md">
+        {`${event.name.kana}（${event.name.ja}）`}
+      </p>
+      <EventSummary entry={entry} />
+      <div class="flex flex-col gap-gap-sm rounded-lg bg-subtle p-inset-md">
+        <p class="m-0 text-label-sm text-fg-subtle">{years}の日付</p>
+        <EventFacts event={event} dates={dates} tags={false} />
+      </div>
+    </div>
+  </div>
+</li>

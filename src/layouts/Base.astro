@@ -8,6 +8,11 @@ interface Props {
 
 const { title, description } = Astro.props;
 // 配色は白に固定する。OS のダークモードには追従しない（data-theme="light"）
+const nav = [
+  { href: '/#calendar', label: 'カレンダー' },
+  { href: '/#events', label: '行事の一覧' },
+  { href: '/#ics', label: '取り込む' },
+];
 ---
 
 <html lang="ja" data-theme="light">
@@ -20,7 +25,49 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
   </head>
-  <body class="bg-canvas text-fg">
-    <slot />
+  <body class="flex min-h-dvh flex-col bg-canvas text-fg">
+    <header class="border-b border-border-subtle bg-surface">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-gap-md px-inset-lg py-inset-md md:px-inset-xl">
+        <a
+          href="/"
+          class="focus-ring flex items-center gap-gap-sm rounded-md text-label-md text-fg no-underline"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            class="size-icon-lg shrink-0 text-saffron"
+          >
+            <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.18"></circle>
+            <circle cx="12" cy="12" r="6" fill="currentColor"></circle>
+          </svg>
+          タイ仏教行事カレンダー
+        </a>
+        <nav aria-label="ページ内の案内" class="hidden md:block">
+          <ul class="m-0 flex list-none gap-gap-md p-0">
+            {nav.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="focus-ring rounded-xs text-body-sm text-fg-subtle no-underline hover:text-fg hover:underline hover:underline-offset-[0.3em]"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="flex-1">
+      <slot />
+    </div>
+    <footer class="mt-stack-lg border-t border-border-subtle bg-subtle">
+      <div class="mx-auto flex max-w-5xl flex-col gap-gap-xs px-inset-lg py-inset-xl md:px-inset-xl">
+        <p class="m-0 text-body-sm text-fg-subtle">
+          日付はタイの太陰暦から計算し、タイ政府の公式発表と照らし合わせています。出典は各行事のページにあります。
+        </p>
+      </div>
+    </footer>
   </body>
 </html>

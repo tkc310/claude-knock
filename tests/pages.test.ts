@@ -133,6 +133,19 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).toContain('aria-label="次の月"');
   });
 
+  it('トップページの冒頭に次の行事の案内を出し、カレンダーに凡例と月ごとの行事の一覧を添える', () => {
+    const html = page('index.html');
+    expect(html).toMatch(
+      /<a [^>]*data-next-event[^>]*href="\/events\/[a-z-]+\/"|<a [^>]*href="\/events\/[a-z-]+\/"[^>]*data-next-event/,
+    );
+    expect(html).toContain('次の行事');
+    for (const label of ['仏教行事', '民間行事', 'ワンプラ', '今日']) {
+      expect(html).toMatch(new RegExp(`data-legend[^>]*>[\\s\\S]*${label}`));
+    }
+    // スマホ幅ではマスの中を色の点にし、その月の行事は表の下に文字で並べる
+    expect(html.match(/\sdata-agenda="/g)).toHaveLength(24);
+  });
+
   it('一覧のカードのポップアップは、カードの左右に置く', () => {
     const html = page('index.html');
     expect(html.match(/\sdata-popover[\s=>]/g)).toHaveLength(events.length);

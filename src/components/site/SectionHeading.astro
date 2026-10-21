@@ -1,0 +1,28 @@
+---
+// トップページのセクションの見出し。上に小さな飾りのラベル（英字、読み上げない）、下に説明文（slot）
+interface Props {
+  id: string;
+  /** 見出しの上の飾りのラベル（例: Calendar） */
+  eyebrow: string;
+  title: string;
+}
+
+const { id, eyebrow, title } = Astro.props;
+---
+
+<div class="flex flex-col gap-gap-sm">
+  <p
+    aria-hidden="true"
+    class="m-0 flex items-center gap-gap-sm text-label-sm tracking-widest text-fg-saffron uppercase"
+  >
+    <span class="h-0.5 w-6 rounded-full bg-saffron"></span>
+    {eyebrow}
+  </p>
+  <h2
+    id={id}
+    class="m-0 scroll-mt-inset-xl text-heading-sm text-balance [font-feature-settings:'palt'] [word-break:auto-phrase]"
+  >
+    {title}
+  </h2>
+  <slot />
+</div>

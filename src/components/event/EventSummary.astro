@@ -1,34 +1,37 @@
 ---
-// 行事の由来と行うこと（frontmatter の origin・practice）。トップページと詳細ページで同じ表示にする
+// 行事の由来と行うこと（frontmatter の origin・practice）。トップページと詳細ページで同じ内容を出す
+// compact: 一覧のポップアップ（ラベルを左に並べる） / panels: 詳細ページ（2 つの面に分ける）
 import type { CollectionEntry } from 'astro:content';
-import { Text } from '@/components/ui/text';
 
 interface Props {
   entry: CollectionEntry<'events'>;
+  layout?: 'compact' | 'panels';
 }
 
-const { origin, practice } = Astro.props.entry.data;
+const { entry, layout = 'compact' } = Astro.props;
+const { origin, practice } = entry.data;
+const items = [
+  { label: '由来', text: origin },
+  { label: '行うこと', text: practice },
+];
 ---
 
-<dl class="grid grid-cols-[auto_1fr] gap-x-gap-md gap-y-gap-xs">
-  <dt>
-    <Text as="span" variant="body-sm" tone="subtle">
-      由来
-    </Text>
-  </dt>
-  <dd>
-    <Text as="span" variant="body-sm">
-      {origin}
-    </Text>
-  </dd>
-  <dt>
-    <Text as="span" variant="body-sm" tone="subtle">
-      行うこと
-    </Text>
-  </dt>
-  <dd>
-    <Text as="span" variant="body-sm">
-      {practice}
-    </Text>
-  </dd>
-</dl>
+{layout === 'compact' ? (
+  <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-gap-md gap-y-gap-sm">
+    {items.map(({ label, text }) => (
+      <div class="col-span-2 grid grid-cols-subgrid">
+        <dt class="pt-0.5 text-label-sm whitespace-nowrap text-fg-saffron">{label}</dt>
+        <dd class="m-0 text-body-sm">{text}</dd>
+      </div>
+    ))}
+  </dl>
+) : (
+  <dl class="m-0 grid gap-gap-md md:grid-cols-2">
+    {items.map(({ label, text }) => (
+      <div class="flex flex-col gap-gap-xs rounded-lg border-s-4 border-saffron bg-saffron-subtle px-inset-lg py-inset-md">
+        <dt class="text-label-sm text-fg-saffron">{label}</dt>
+        <dd class="m-0 text-body-md">{text}</dd>
+      </div>
+    ))}
+  </dl>
+)}
