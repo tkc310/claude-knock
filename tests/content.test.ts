@@ -35,3 +35,7 @@ it('src/content/events/ のファイル名は events の id のどれか', () =>
   const eventIds = events.map((e) => e.id as string);
   for (const id of ids) expect(eventIds).toContain(id);
 });
+
+it.each(events)('$id の本文が src/content/events/ にある', ({ id }) => {
+  expect(existsSync(join(import.meta.dirname, `../src/content/events/${id}.md`))).toBe(true);
+});
