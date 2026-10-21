@@ -263,6 +263,36 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(blocks[0]![1]!).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
+  // リッチリザルト（ADR-0020）。どのページにも運営者（Organization・ロゴ）、行事とタンブンのページは Article。
+  // 行事は会場があって予約できる催しではないので、Google の Event の条件に合わず、Event は出さない
+  it.each(seoPages)('%s に Organization・Article を出し、Event は出さない', (path, url) => {
+    const html = page(path);
+    const ld = html.match(/<script type="application\/ld\+json">([^<]*)<\/script>/)![1]!;
+    type Node = { '@type': string; '@id'?: string; [key: string]: unknown };
+    const graph: Node[] = JSON.parse(ld)['@graph'];
+    const org = graph.find((n) => n['@type'] === 'Organization');
+    expect(org).toMatchObject({ '@id': `${site}/#organization`, url: `${site}/` });
+    expect(org?.logo).toMatchObject({ url: `${site}/icons/icon-512.png`, width: 512, height: 512 });
+    const website = graph.find((n) => n['@type'] === 'WebSite');
+    expect(website?.publisher).toEqual({ '@id': `${site}/#organization` });
+    const article = graph.find((n) => n['@type'] === 'Article');
+    if (url === '/') {
+      expect(article).toBeUndefined();
+    } else {
+      expect(article).toMatchObject({
+        mainEntityOfPage: `${site}${url}`,
+        image: [`${site}/og.png`],
+        inLanguage: 'ja',
+        author: { '@id': `${site}/#organization` },
+        publisher: { '@id': `${site}/#organization` },
+      });
+      expect(String(article?.headline).length).toBeGreaterThan(0);
+      expect(String(article?.headline).length).toBeLessThanOrEqual(110);
+      expect(String(article?.dateModified)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+    expect(graph.some((n) => n['@type'] === 'Event')).toBe(false);
+  });
+
   // llms.txt（https://llmstxt.org/ 、ADR-0019）。AI 向けにサイトの概要と全ページを Markdown で渡す
   it('llms.txt に、サイト名・概要・全ページのリンクと、行事の由来・行うこと・日付を出す', () => {
     const llms = page('llms.txt');

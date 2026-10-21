@@ -13,26 +13,55 @@ const siteName = 'タイ仏教行事カレンダー';
 const home = new URL('/', Astro.site ?? Astro.url).href;
 const canonical = new URL(Astro.url.pathname, home).href;
 const ogImage = new URL('/og.png', home).href;
-// JSON-LD: どのページにも WebSite、トップ以外はパンくず（トップ → このページ）を出す
+// JSON-LD（ADR-0017・0020）。どのページにも運営者（Organization・ロゴ）と WebSite を出す。
+// トップ以外（行事の詳細・タンブン）は記事（Article）とパンくずを足す。
+// 行事は会場があって予約できる催しではないので、Google の Event の条件に合わず、Event は出さない
 const pageName = title.split(' | ')[0]!;
+const organization = { '@id': `${home}#organization` };
 const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'Organization',
+    ...organization,
+    name: siteName,
+    url: home,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/icons/icon-512.png', home).href,
+      width: 512,
+      height: 512,
+    },
+  },
   {
     '@type': 'WebSite',
     '@id': `${home}#website`,
     name: siteName,
     url: home,
     inLanguage: 'ja',
-    description,
+    publisher: organization,
   },
 ];
 if (canonical !== home) {
-  graph.push({
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: siteName, item: home },
-      { '@type': 'ListItem', position: 2, name: pageName, item: canonical },
-    ],
-  });
+  graph.push(
+    {
+      '@type': 'Article',
+      headline: pageName,
+      description,
+      mainEntityOfPage: canonical,
+      image: [ogImage],
+      inLanguage: 'ja',
+      // 内容はビルドのたびに暦から作り直すので、更新日はビルドした日にする
+      dateModified: new Date().toISOString().slice(0, 10),
+      author: organization,
+      publisher: organization,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: siteName, item: home },
+        { '@type': 'ListItem', position: 2, name: pageName, item: canonical },
+      ],
+    },
+  );
 }
 const ld = { '@context': 'https://schema.org', '@graph': graph };
 // </script> で途切れないよう < をエスケープする
