@@ -4,6 +4,7 @@
 
 | 文書                                               | 中身                                                                  |
 | -------------------------------------------------- | --------------------------------------------------------------------- |
+| [operations.md](./operations.md)                   | 定期作業（ビルド、公式告示の確認など）と定期ビルドの仕組み            |
 | [improvement-loop.md](./improvement-loop.md)       | 改善ループ（使う → 気づく → 記録する → 直す → 再発を防ぐ → 振り返る） |
 | [improvement/backlog.md](./improvement/backlog.md) | 改善候補の一覧                                                        |
 | [improvement/log.md](./improvement/log.md)         | 直したことの記録（1 改善 1 行）                                       |
@@ -13,4 +14,4 @@
 | [plans/](./plans/event-pages.md)                   | 進めている作業の計画（行事の詳細ページ）                              |
 | [ai-agents.md](./ai-agents.md)                     | AI エージェントが読むファイルと、エージェントに任せるときの進め方     |
 
-ドメインのルール（4 表記の併記、出典 URL、太陰暦の計算、対象とする行事の範囲）は [`CLAUDE.md`](../CLAUDE.md) にあります。
+ドメインのルール（行事名の表記、出典 URL、太陰暦の計算、対象とする行事の範囲）は [`CLAUDE.md`](../CLAUDE.md) にあります。
