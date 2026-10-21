@@ -1,0 +1,55 @@
+---
+// 行事の詳細ページ（docs/plans/event-pages.md）。本文は src/content/events/<id>.md
+import type { GetStaticPaths } from 'astro';
+import { getEntry, render } from 'astro:content';
+import EventFacts from '@/components/event/EventFacts.astro';
+import Base from '@/layouts/Base.astro';
+import { Heading } from '@/components/ui/heading';
+import { Stack } from '@/components/ui/stack';
+import { Text } from '@/components/ui/text';
+import { occurrences } from '@/core';
+import { displayRange } from '@/data/display-range';
+import { events, formatEventName } from '@/data/events';
+
+export const getStaticPaths = (async () =>
+  Promise.all(
+    events.map(async (event) => {
+      const entry = await getEntry('events', event.id);
+      if (!entry) throw new Error(`src/content/events/${event.id}.md がありません`);
+      return { params: { id: event.id }, props: { event, entry } };
+    }),
+  )) satisfies GetStaticPaths;
+
+const { event, entry } = Astro.props;
+const { Content } = await render(entry);
+const range = displayRange(new Date());
+const dates = occurrences([event], range);
+const name = formatEventName(event.name);
+---
+
+<Base title={`${name} | タイ仏教行事カレンダー`} description={entry.data.summary}>
+  <main class="mx-auto max-w-3xl p-inset-xl">
+    <Stack gap="lg">
+      <Text variant="body-sm">
+        <a href="/" class="text-fg-link underline underline-offset-[0.2em]">行事の一覧へ戻る</a>
+      </Text>
+      <Stack gap="sm">
+        <Heading level={1}>{name}</Heading>
+        <Text tone="subtle">{entry.data.summary}</Text>
+      </Stack>
+      <section aria-labelledby="dates">
+        <Stack gap="sm">
+          <Heading level={2} size="sm" id="dates">
+            {range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の日付
+          </Heading>
+          <EventFacts event={event} dates={dates} />
+        </Stack>
+      </section>
+      <div
+        class="flex flex-col gap-stack-sm [&_a]:break-all [&_a]:text-fg-link [&_a]:underline [&_a]:underline-offset-[0.2em] [&_h2]:mt-stack-md [&_h2]:text-heading-sm [&_h3]:text-heading-xs [&_li]:ms-inset-lg [&_ol]:list-decimal [&_p]:text-body-md [&_ul]:list-disc"
+      >
+        <Content />
+      </div>
+    </Stack>
+  </main>
+</Base>
