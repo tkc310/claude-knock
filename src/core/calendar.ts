@@ -9,6 +9,8 @@ export type LunarMonth = { month: number; isLeapMonth: false } | { month: 8; isL
 export type ThaiLunarDate = LunarMonth & {
   /** 表示用の仏暦。その日の西暦年 + 543（タイの暦と同じく 1 月 1 日に替わる） */
   buddhistYear: number;
+  /** その太陰年が閏月の年か。1 回目の 8 月を เดือน 8 แรก と書くのに使う */
+  inLeapMonthYear: boolean;
   /** 白分（ข้างขึ้น）か黒分（ข้างแรม） */
   phase: 'waxing' | 'waning';
   /** 白分・黒分の中での日（1〜15） */
@@ -112,11 +114,12 @@ export function lunarYearOf(cal: Calendar, date: IsoDate): number {
 }
 
 export function toLunarIn(cal: Calendar, date: IsoDate): ThaiLunarDate {
-  const { span } = locate(cal, toDayNumber(date));
+  const { year, span } = locate(cal, toDayNumber(date));
   const offset = toDayNumber(date) - span.start;
   return {
     ...span.month,
     buddhistYear: Number(date.slice(0, 4)) + 543,
+    inLeapMonthYear: year.kind === 'adhikamasa',
     phase: offset < 15 ? 'waxing' : 'waning',
     day: offset < 15 ? offset + 1 : offset - 14,
   };
@@ -132,13 +135,10 @@ export function formatLunarDate(date: ThaiLunarDate): string {
   return `${date.phase === 'waxing' ? 'ขึ้น' : 'แรม'} ${date.day} ค่ำ ${monthName(date)}`;
 }
 
-function monthName({ month, isLeapMonth, buddhistYear }: ThaiLunarDate): string {
+function monthName({ month, isLeapMonth, inLeapMonthYear }: ThaiLunarDate): string {
   if (month === 1) return 'เดือนอ้าย';
   if (month === 2) return 'เดือนยี่';
   if (month !== 8) return `เดือน ${month}`;
   if (isLeapMonth) return 'เดือน 8 หลัง';
-  // 8 月は西暦の 6〜8 月にあるので、表示用の仏暦がそのまま太陰年の番号になる
-  const year = calendar.years.find((y) => y.year === buddhistYear);
-  if (!year) throw new RangeError(`仏暦 ${buddhistYear} 年は年表の外です`);
-  return year.kind === 'adhikamasa' ? 'เดือน 8 แรก' : 'เดือน 8';
+  return inLeapMonthYear ? 'เดือน 8 แรก' : 'เดือน 8';
 }
