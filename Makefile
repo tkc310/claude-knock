@@ -42,7 +42,7 @@ preview: ## ビルドしたサイトを手元で確認する
 
 ##@ 検査・テスト
 
-check: ## fmt・lint・型（vp check と astro check）
+check: ## fmt・lint（vp check）と型（astro check。ADR-0010）
 	$(VP) check
 	$(VP) run typecheck
 

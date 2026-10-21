@@ -26,7 +26,6 @@
 - [ ] 依存を入れ直した環境（新しい clone や worktree）では、`vp check` が `@types/node` の型エラーを 13 件出す（`tests/core/fixtures.ts`・`tests/fixtures.test.ts`・`scripts/diff-pythaidate/compare.ts` の `node:fs`・`process`・`import.meta.dirname`）。今のチェックアウトで出ないのは古い `node_modules` に残っているためとみられる。`@types/node` を devDependencies に足すか決める
 - [ ] 静的出力では `calendar.ics.ts` の Content-Type は使われず、配信先が拡張子で決める。デプロイ先（Cloudflare）で `text/calendar; charset=utf-8` になるか確かめる
 - [ ] `.astro` のテンプレート部分は `vp fmt` も `vp lint` も見ない（`astro check` だけ）。`prettier-plugin-astro` を入れるか判断する
-- [ ] 型検査が `vp check`（tsgolint、TypeScript 7 系）と `astro check`（TypeScript 6）で二重に走っている。どちらかに寄せるか判断する
 
 ## 仕組み
 
