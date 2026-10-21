@@ -27,6 +27,10 @@ describe('報道の日付', () => {
     ['thot-kathin', '2025-10-08'],
     ['thot-kathin', '2026-10-27'],
     ['loi-krathong', '2026-11-24'],
+    // アッタミー・ブーチャー（docs/events/atthami-bucha.md）。2026 年は閏月の年で เดือน 7
+    ['atthami-bucha', '2024-05-30'],
+    ['atthami-bucha', '2025-05-19'],
+    ['atthami-bucha', '2026-06-08'],
   ] as const)('%s %s', (eventId, date) => {
     expect(startsIn(eventId, Number(date.slice(0, 4)))).toEqual([date]);
   });

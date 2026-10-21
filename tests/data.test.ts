@@ -35,6 +35,16 @@ describe('events', () => {
     });
   });
 
+  it('アッタミー・ブーチャーは แรม 8 ค่ำ เดือน 6（閏月の年は เดือน 7）', () => {
+    expect(events.find((e) => e.id === 'atthami-bucha')).toMatchObject({
+      category: 'buddhist',
+      date: {
+        kind: 'lunar-day',
+        at: { month: { common: 6, adhikamas: 7 }, phase: 'waning', day: 8 },
+      },
+    });
+  });
+
   it('名前を「タイ語 / ローマ字 / カタカナ / 日本語訳」で表示する', () => {
     expect(
       formatEventName({ th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' }),
