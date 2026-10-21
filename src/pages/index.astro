@@ -31,6 +31,11 @@ const about = [
     icon: 'wheel',
     text: '載せているのは、仏典（経・律）やブッダの生涯に根拠がある行事です。例外として、タイで広く行われるロイクラトンとソンクラーンを「民間行事」として載せています。',
   },
+  {
+    icon: 'lotus',
+    text: 'ワンプラやブーチャーの日には、在家の人々も布施・戒・瞑想などで功徳を積みます（タンブン）。その行いと経典の根拠を、別のページにまとめています。',
+    link: { href: '/tambun/', label: 'タンブン（功徳を積む行い）について' },
+  },
 ] as const;
 
 // ホーム画面に追加する（PWA。ADR-0013）。オフラインで見られるのは public/sw.js が保存するため
@@ -183,8 +188,13 @@ const imports = [
       <section aria-labelledby="about" class="flex flex-col gap-stack-md">
         <SectionHeading id="about" eyebrow="About" title="このサイトについて" />
         <ul class="m-0 grid list-none gap-gap-md p-0 md:grid-cols-2">
-          {about.map(({ icon, text }) => (
-            <li class="flex items-start gap-gap-md rounded-sm bg-subtle p-inset-xl">
+          {about.map((item) => (
+            <li
+              class:list={[
+                'flex items-start gap-gap-md rounded-sm bg-subtle p-inset-xl',
+                'link' in item && 'md:col-span-2',
+              ]}
+            >
               <span
                 aria-hidden="true"
                 class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-saffron-muted text-fg-saffron"
@@ -198,8 +208,10 @@ const imports = [
                   stroke-linejoin="round"
                   class="size-icon-md"
                 >
-                  {icon === 'moon' ? (
+                  {item.icon === 'moon' ? (
                     <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
+                  ) : item.icon === 'lotus' ? (
+                    <path d="M12 19c-4 0-7-2.5-8-6 2.5 0 5 1 6.5 3M12 19c4 0 7-2.5 8-6-2.5 0-5 1-6.5 3M12 19c-2-2-3-4.5-3-7.5 1.2.6 2.3 1.6 3 3 .7-1.4 1.8-2.4 3-3 0 3-1 5.5-3 7.5ZM12 14.5c-.8-2.6-.5-5.4 0-8 .5 2.6.8 5.4 0 8Z" />
                   ) : (
                     <>
                       <circle cx="12" cy="12" r="8" />
@@ -209,7 +221,18 @@ const imports = [
                   )}
                 </svg>
               </span>
-              <p class="m-0 text-body-sm">{text}</p>
+              <div class="flex flex-col gap-gap-sm">
+                <p class="m-0 text-body-sm">{item.text}</p>
+                {'link' in item && (
+                  <a
+                    href={item.link.href}
+                    class="focus-ring inline-flex items-center gap-gap-xs self-start rounded-xs text-body-sm font-bold text-fg-link underline underline-offset-[0.2em] hover:text-fg-link-hover"
+                  >
+                    {item.link.label}
+                    <Icon name="chevron-right" size="sm" />
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>
