@@ -4,7 +4,7 @@ Run every command through the Makefile, which calls Vite+ (`vp`). Run `make` to 
 
 - `make setup`: install tools from `.tool-versions` and dependencies.
 - `make dev`: start the Astro dev server on http://localhost:4321. From an agent shell the command returns at once and the server keeps running. Stop it with `pnpm exec astro dev stop`.
-- `make check`: `vp check` (fmt, lint) plus `astro check`. `.astro` files are linted for their frontmatter only and are not formatted.
+- `make check`: `vp check` (fmt, lint) plus `astro check`. `.astro` files are formatted whole by oxfmt (ADR-0011); only their frontmatter and `<script>` are linted, and templates are covered by `astro check` and `make build`.
 - `make test`: run Vitest.
 - `make build`: build the static site to `dist/`.
 
