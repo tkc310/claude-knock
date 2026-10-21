@@ -83,7 +83,7 @@ core は型引数 `E extends { date: DateRule }` を取るので、`EventId` を
 ```ts
 export type IsoDate; // 実在する YYYY-MM-DD のブランド型。parseIsoDate か core の戻り値でしか作れない
 export interface DateRange { from: IsoDate; to: IsoDate } // 両端を含む
-export type ThaiLunarDate; // 今の項目のまま。isLeapMonth: true は 8 月のときだけ取れる共用体にする
+export type ThaiLunarDate; // 今の項目のまま。isLeapMonth: true は 8 月のときだけ取れる共用体にする。閏月の年かを inLeapMonthYear に持つ
 export type DateRule =
   | { kind: 'lunar-day'; at: LunarDayRule }
   | { kind: 'lunar-span'; start: LunarDayRule; end: LunarDayRule }

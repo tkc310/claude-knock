@@ -1,7 +1,8 @@
 // fixtures に依存しない不変条件。年表の全年で確かめる
 import { describe, expect, it } from 'vite-plus/test';
-import { calendar, toLunarIn } from '../../src/core/calendar';
+import { buildCalendar, calendar, formatLunarDate, toLunarIn } from '../../src/core/calendar';
 import { fromDayNumber, toDayNumber, type IsoDate } from '../../src/core/day';
+import { yearKind } from '../../src/core/suriyayatra';
 import { occurrencesIn } from '../../src/core/rules';
 import { events, type EventId } from '../../src/data/events';
 
@@ -86,6 +87,13 @@ describe('行事どうしの関係', () => {
 
 it('Occurrence.lunar は toLunar と一致する', () => {
   for (const o of all) expect(o.lunar).toEqual(toLunarIn(calendar, o.start));
+});
+
+it('8 แรก の表記は、その日を出した年表の年型で決まる', () => {
+  // 上書きの表を試すテストは、年型を変えた年表を作る（overrides.test.ts）
+  const cal = buildCalendar((y) => (y === 2570 ? 'adhikamasa' : yearKind(y)));
+  const first8 = cal.years.find((y) => y.year === 2570)!.months.find((m) => m.month.month === 8)!;
+  expect(formatLunarDate(toLunarIn(cal, fromDayNumber(first8.start)))).toBe('ขึ้น 1 ค่ำ เดือน 8 แรก');
 });
 
 function days(from: IsoDate, to: IsoDate): number {
