@@ -1,2 +1,6 @@
 minimumReleaseAgeExclude:
   - astro@7.4.1
+# 依存のインストール時のスクリプトを許すもの。wrangler（デプロイ）が使う（ADR-0016）
+allowBuilds:
+  esbuild: true
+  workerd: true

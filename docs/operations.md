@@ -9,7 +9,7 @@
 1. **公式告示の照合**: `check-announcements` スキル（「告示を確認して」）を使う。翌年分のタイ中央銀行の休日告示から日付を読み、`tests/fixtures/official-dates.json` に足す PR を作る
    - 食い違いがあれば `tests/core/overrides.test.ts` が落ちる。`src/core/calendar.ts` の `YEAR_KIND_OVERRIDES` でその年の年型を直す（手順はスキルにある）
 2. **PR のマージ**: 人が中身を確かめてマージする
-3. **ビルドとデプロイ**: `make verify` を通してからデプロイする
+3. **ビルドとデプロイ**: PR をマージすると、main の CI が通った後に Deploy ワークフローが `make deploy`（build・verify の後に Cloudflare Workers へ送る）を走らせる。手元からは `make deploy`（ADR-0016）
 
 ## なぜ 12 月に 1 回で足りるのか
 
@@ -31,7 +31,7 @@
 
 ## 定期ビルドの仕組み
 
-年 1 回の手作業なので、定期実行の仕組みは作りません。デプロイの手順は、デプロイ先を用意するときに決めます（`docs/improvement/backlog.md` の「仕組み」）。
+年 1 回の手作業なので、定期実行の仕組みは作りません。デプロイは main へのマージで自動で走ります（`.github/workflows/deploy.yml`、ADR-0016）。
 
 ## 困ったとき
 

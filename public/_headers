@@ -1,0 +1,12 @@
+# Cloudflare Workers の静的アセットが読むヘッダーの指定（ADR-0016）。このファイル自体は配られない
+
+# Service Worker は古いものが残らないよう、毎回サーバーに確かめさせる
+/sw.js
+  Cache-Control: no-cache
+
+# 静的出力では src/pages/calendar.ics.ts の Content-Type は使われないので、ここで決める
+/calendar.ics
+  Content-Type: text/calendar; charset=utf-8
+
+/manifest.webmanifest
+  Content-Type: application/manifest+json

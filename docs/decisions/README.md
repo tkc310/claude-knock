@@ -20,6 +20,7 @@
 | [0013](./0013-mobile-first-and-pwa.md)           | スマホファーストのカード（ホバーできる広い画面だけポップアップ）と自前の Service Worker で PWA にする | 一部廃止（→ 0014）     |
 | [0014](./0014-cards-inline-and-softer-radius.md) | 一覧のカードは PC でもカードの中に説明を出し、ボタン以外の角丸を弱くする                              | 採用                   |
 | [0015](./0015-yearly-update.md)                  | 定期作業を年 1 回（12 月）にまとめ、ビルドした日に依存する表示（次の行事・次回）を外す                | 採用                   |
+| [0016](./0016-deploy-cloudflare-workers.md)      | Cloudflare Workers の静的アセットで配り、main の CI が通ったら `make deploy` でデプロイする           | 採用                   |
 
 ## テンプレート
 
