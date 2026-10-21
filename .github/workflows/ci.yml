@@ -1,0 +1,54 @@
+# 検査・テスト・ビルド。手順はローカルと同じ make のコマンドだけにする（tests/ci.test.ts）
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # mise 本体だけを入れる。Node.js と pnpm は make tools が .tool-versions から入れる
+      - uses: jdx/mise-action@v2
+        with:
+          install: false
+          cache: true
+
+      - name: Node.js・pnpm を入れる（.tool-versions）
+        run: make tools
+
+      # pnpm のストアをキャッシュする。場所は pnpm_config_store_dir で固定する
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('.tool-versions', 'pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+
+      - name: 依存を入れる
+        run: make install
+        env:
+          pnpm_config_store_dir: ${{ runner.temp }}/pnpm-store
+
+      - name: fmt・lint・型
+        run: make check
+
+      - name: テスト
+        run: make test
+
+      - name: ビルド
+        run: make build
+
+      - name: ビルドした ICS を確かめる
+        run: make verify

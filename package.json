@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "sync": "astro sync",
     "typecheck": "astro check"
   },
   "dependencies": {
@@ -22,7 +23,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@astrojs/compiler-rs": "^0.5.2",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.19.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vite-plus": "^1.3.0"

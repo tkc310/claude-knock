@@ -19,25 +19,24 @@ const list = occurrences(events, range);
       <Stack gap="sm">
         <Heading level={1}>タイ仏教行事カレンダー</Heading>
         <Text tone="subtle">
-          タイ太陰暦と太陽暦にもとづく、{range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の行事の一覧です。
+          タイ太陰暦と太陽暦にもとづく、{range.from.slice(0, 4)}〜{range.to.slice(0, 4)}{' '}
+          年の行事の一覧です。
         </Text>
       </Stack>
       <Stack as="ul" gap="md">
-        {
-          events.map((event) => {
-            const dates = list.filter((o) => o.event.id === event.id);
-            return (
-              <Card
-                as="li"
-                headingLevel={2}
-                title={formatEventName(event.name)}
-                href={`/events/${event.id}/`}
-              >
-                <EventFacts event={event} dates={dates} />
-              </Card>
-            );
-          })
-        }
+        {events.map((event) => {
+          const dates = list.filter((o) => o.event.id === event.id);
+          return (
+            <Card
+              as="li"
+              headingLevel={2}
+              title={formatEventName(event.name)}
+              href={`/events/${event.id}/`}
+            >
+              <EventFacts event={event} dates={dates} />
+            </Card>
+          );
+        })}
       </Stack>
     </Stack>
   </main>
