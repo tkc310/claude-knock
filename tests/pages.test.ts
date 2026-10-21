@@ -118,7 +118,7 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
-  it.each(['index.html', 'events/wan-phra/index.html'])('%s に OGP と X の大きい画像のカードを出す', (path) => {
+  it.each(['index.html', 'events/wan-phra/index.html'])('%s に OGP のメタを出す', (path) => {
     const html = page(path);
     const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
     expect(title).toBeTruthy();
