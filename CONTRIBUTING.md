@@ -68,6 +68,8 @@ chore(deploy): use wrangler.json without comments
 
 よく使う type は `feat`・`fix`・`docs`・`test`・`chore`・`style`・`refactor`・`ci` です。
 
+PR は squash でマージするので、**PR のタイトルがそのまま `main` のコミットメッセージになり、リリースノートの元になります**。PR のタイトルも Conventional Commits で書いてください。リリースノートに載るのは `feat`（新機能）・`fix`（不具合の修正）・`perf`（性能の改善）・`docs`（ドキュメント）で、ほかの type は載りません。互換性の無い変更は `feat!:` のように `!` を付けるか、本文に `BREAKING CHANGE:` を書きます。
+
 ### テストを先に書く
 
 実装より先にテストを書き、落ちることを確かめてから実装します。
@@ -119,6 +121,29 @@ chore(deploy): use wrangler.json without comments
 4. Actions の画面で Deploy が成功したことを確かめ、サイトを開いて確認する
 
 Deploy ワークフローは、Actions の画面から手動で（`workflow_dispatch`、`main` のときだけ）走らせることもできます。
+
+### バージョンとリリースノート
+
+バージョンとリリースノートは [release-please](https://github.com/googleapis/release-please) が自動で作ります（`.github/workflows/release.yml`、ADR-0021）。
+
+1. `main` に `feat`・`fix` などの PR が入るたびに、Release ワークフローが「リリースの PR」（`chore(main): release 1.2.0` のような題）を作り直す。中身は `CHANGELOG.md` と `package.json`・`.release-please-manifest.json` の版の更新
+2. リリースしたいときに、その PR をマージする
+3. タグ（`v1.2.0`）と GitHub のリリース（リリースノート）ができる
+
+版の上げ方は [Semantic Versioning](https://semver.org/lang/ja/) です。`fix` は 1.0.**1**、`feat` は 1.**1**.0、互換性の無い変更（`!`・`BREAKING CHANGE:`）は **2**.0.0 になります。サイトのデプロイはリリースと関係なく、`main` へのマージのたびに行われます。
+
+リリースの PR は、そのままだと GITHUB_TOKEN で作られるため CI が動かず、必須のチェックが通りません。次のどちらかにしてください。
+
+- secrets に `RELEASE_PLEASE_TOKEN`（このリポジトリの Contents と Pull requests に書き込みを許した fine-grained personal access token）を登録する（おすすめ）。その PR では CI が動きます
+- 管理者としてチェックを飛ばしてマージする（ブランチ保護は管理者に適用していません）
+
+GitHub Actions が PR を作れるよう、リポジトリの設定で「Allow GitHub Actions to create and approve pull requests」を有効にしておきます。
+
+```sh
+gh api -X PUT repos/tkc310/koyomi/actions/permissions/workflow \
+  -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true
+gh secret set RELEASE_PLEASE_TOKEN   # 任意。fine-grained token を貼り付ける
+```
 
 ### 必要な設定
 
