@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # mise 本体だけを入れる。Node.js と pnpm は make tools が .tool-versions から入れる
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
         with:
           install: false
           cache: true
@@ -30,7 +30,7 @@ jobs:
         run: make tools
 
       # pnpm のストアをキャッシュする。場所は pnpm_config_store_dir で固定する
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ runner.temp }}/pnpm-store
           key: pnpm-store-${{ runner.os }}-${{ hashFiles('.tool-versions', 'pnpm-lock.yaml') }}
