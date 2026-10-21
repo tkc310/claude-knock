@@ -1,31 +1,21 @@
 ---
 // トップページの行事の一覧のカード。カード全体が詳細ページへのリンク。
-// 由来と行うこと（data-details）は、スマホでも PC でもカードの中（次回の日付の上）に出す。
+// 由来と行うこと（data-details）は、スマホでも PC でもカードの中に出す。
 // 以前は PC でだけホバーのポップアップにしていたが、スマホと同じ見せ方にそろえた（docs/improvement/log.md）
+// 次回の日付は出さない。ビルドした日に依存し、年 1 回のビルドでは古くなるため（ADR-0015）
 import type { CollectionEntry } from 'astro:content';
-import { spanLabel } from '@/components/event/date-label';
 import EventIllustration from '@/components/event/EventIllustration.astro';
 import EventSummary from '@/components/event/EventSummary.astro';
 import EventTags from '@/components/event/EventTags.astro';
 import { Icon } from '@/components/ui/icon';
-import type { Occurrence } from '@/core';
 import type { EventDefinition } from '@/data/events';
 
 interface Props {
   event: EventDefinition;
   entry: CollectionEntry<'events'>;
-  dates: readonly Occurrence<EventDefinition>[];
-  /** ビルドした日（YYYY-MM-DD）。次回の日付を選ぶのに使う */
-  today: string;
 }
 
-const { event, entry, dates, today } = Astro.props;
-// 次回の候補。ビルドした日にまだ終わっていない日付をすべて持たせ、表示時にブラウザの日付で選び直す（index.astro の script）
-const remaining = dates.filter((o) => o.end >= today);
-const next = remaining[0];
-const candidates = JSON.stringify(
-  remaining.map((o) => [o.start, o.end, spanLabel(o.start, o.end)]),
-);
+const { event, entry } = Astro.props;
 ---
 
 <li
@@ -57,19 +47,8 @@ const candidates = JSON.stringify(
   >
     <EventSummary entry={entry} />
   </div>
-  <div
-    data-next-dates={candidates}
-    class="mt-auto flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md"
-  >
-    <span class="text-label-sm text-fg-subtle">次回</span>
-    <!-- 候補が尽きたら（表示期間の後）、日付の代わりにこの文言を出す。要素を増やさないよう time の中身を差し替える -->
-    <time
-      datetime={next?.start}
-      data-next-none="次回の日付は、サイトの更新後に表示されます"
-      class="text-body-sm font-bold"
-    >
-      {next ? spanLabel(next.start, next.end) : '次回の日付は、サイトの更新後に表示されます'}
-    </time>
+  <div class="mt-auto flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md">
+    <span class="text-label-sm text-fg-key">詳しく見る</span>
     <Icon
       name="arrow-right"
       size="sm"
