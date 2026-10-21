@@ -28,4 +28,14 @@ describe('ロゴと OGP バナー', () => {
     const [, w, h] = svg.match(/viewBox="0 0 (\d+) (\d+)"/) ?? [];
     expect(pngSize(pub('logo.png'))).toEqual({ width: Number(w) * 3, height: Number(h) * 3 });
   });
+
+  it('README はダークモードで文字を明るくしたロゴ（docs/assets/logo-dark.svg）に切り替える', () => {
+    const readme = readFileSync(join(import.meta.dirname, '../README.md'), 'utf8');
+    expect(readme).toMatch(
+      /<source media="\(prefers-color-scheme: dark\)" srcset="\.\/docs\/assets\/logo-dark\.svg"/,
+    );
+    const dark = readFileSync(join(import.meta.dirname, '../docs/assets/logo-dark.svg'), 'utf8');
+    expect(dark).toContain('fill="#F0F2F5"');
+    expect(dark).not.toContain('fill="#26282C"');
+  });
 });
