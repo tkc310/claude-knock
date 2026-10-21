@@ -10,7 +10,7 @@
 ## 決定
 
 - Cloudflare Workers の静的アセットで `dist/` をそのまま配る（`wrangler.jsonc`）。Worker のスクリプト（`main`）と `@astrojs/cloudflare` のアダプターは使わない
-- ヘッダーは `public/_headers` で決める。`sw.js` は `Cache-Control: no-cache`（古い Service Worker を残さない）、`calendar.ics` は `text/calendar; charset=utf-8`、`manifest.webmanifest` は `application/manifest+json`
+- ヘッダーは `public/_headers` で決める。`_headers` は配られない（404）ので、Service Worker の保存の対象から外す（`src/integrations/service-worker.ts`）。`sw.js` は `Cache-Control: no-cache`（古い Service Worker を残さない）、`calendar.ics` は `text/calendar; charset=utf-8`、`manifest.webmanifest` は `application/manifest+json`
 - デプロイは `make deploy`（`build` と `verify` の後に `pnpm dlx wrangler@4 deploy`）。wrangler は依存に足さず、その場で取ってくる。wrangler が使う esbuild と workerd のインストール時のスクリプトは `pnpm-workspace.yaml` の `allowBuilds` で許す
 - `.github/workflows/deploy.yml` は、main への push で CI が通ったときだけ、CI が確かめたコミットで `make deploy` を走らせる。トークンは secrets の `CLOUDFLARE_API_TOKEN`・`CLOUDFLARE_ACCOUNT_ID`
 - 公開先は `https://koyomi.tkc310.com`。`astro.config.mjs` の `site` に書き（`SITE_URL` で上書きできる）、`wrangler.jsonc` の `routes` に独自ドメイン（`custom_domain: true`）として書く
