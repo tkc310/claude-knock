@@ -9,7 +9,8 @@ export default defineConfig({
   },
   lint: {
     ignorePatterns: ['dist/**', '.astro/**', ...generated],
-    options: { typeAware: true, typeCheck: true },
+    // 型エラーは astro check（.astro を含む。TypeScript 6）だけが報告する。tsgolint は型を使う lint 規則だけ（ADR-0010）
+    options: { typeAware: true, typeCheck: false },
     // core の内部は core の中とテストからだけ読み込む。外からは公開 API（src/core/index.ts）を使う（ADR-0008）
     overrides: [
       {
