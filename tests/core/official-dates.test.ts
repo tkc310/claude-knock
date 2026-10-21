@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vite-plus/test';
 import { gregorianYear, occurrences, parseIsoDate } from '../../src/core';
 import { events, type EventId } from '../../src/data/events';
-import { officialDates } from './fixtures';
+import { officialDatesInTable } from './fixtures';
 
 function startsIn(eventId: EventId, year: number): string[] {
   const event = events.filter((e) => e.id === eventId);
@@ -9,7 +9,7 @@ function startsIn(eventId: EventId, year: number): string[] {
 }
 
 describe('公式の日付（tests/fixtures/official-dates.json）', () => {
-  it.each(officialDates)('$eventId $date', ({ eventId, date }) => {
+  it.each(officialDatesInTable)('$eventId $date', ({ eventId, date }) => {
     // その西暦年に、ほかの日には出ていないことまで確かめる
     expect(startsIn(eventId, Number(date.slice(0, 4)))).toEqual([date]);
   });

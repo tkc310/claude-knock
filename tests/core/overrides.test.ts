@@ -11,7 +11,7 @@ import { gregorianYear } from '../../src/core/day';
 import { occurrencesIn } from '../../src/core/rules';
 import { yearKind, type YearKind } from '../../src/core/suriyayatra';
 import { events } from '../../src/data/events';
-import { officialDates, type OfficialDate } from './fixtures';
+import { officialDatesInTable, type OfficialDate } from './fixtures';
 
 const yearKinds: readonly YearKind[] = ['common', 'adhikavara', 'adhikamasa'];
 
@@ -24,7 +24,7 @@ function matches(cal: Calendar, fixtures: readonly OfficialDate[]): boolean {
 }
 
 // 西暦年 + 543 ではなく、日付が当たる太陰年でまとめる（12〜1 月の日付が別の年にならないように）
-const byLunarYear = Map.groupBy(officialDates, ({ date }) => lunarYearOf(calendar, date));
+const byLunarYear = Map.groupBy(officialDatesInTable, ({ date }) => lunarYearOf(calendar, date));
 const pure = buildCalendar(yearKind);
 
 /** その年だけ年型を替えて、その年の fixtures をすべて満たす年型 */
@@ -53,6 +53,6 @@ describe('YEAR_KIND_OVERRIDES', () => {
   });
 
   it('上書きを入れた暦が fixtures をすべて満たす', () => {
-    expect(matches(calendar, officialDates)).toBe(true);
+    expect(matches(calendar, officialDatesInTable)).toBe(true);
   });
 });

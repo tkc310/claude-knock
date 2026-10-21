@@ -11,7 +11,7 @@
   - 再現: `scripts/diff-pythaidate/run.sh`（初回は `scripts/diff-pythaidate/.venv` に pythaidate を入れる。Node 24 と python3 が要る）。食い違った年を表で出し、終了コード 1 で終わる。pythaidate 側の年型は `scripts/diff-pythaidate/.venv/bin/python -c "from pythaidate.lsyear import LSYear; from pythaidate import CsDate; print([(be, LSYear(be-1181).cal_type, CsDate.calculate_year0(be-1181).cal_type) for be in range(2582, 2585)])"` で、`c`（重なり）が `C` になり、前年が `B` になるのが見える
   - 確かめ方: 2039 年（仏暦 2582）のアーサーラハ・ブーチャーは `src/core` では 2039-07-05、pythaidate では 2039-07-06。公式の告示が出るのはだいぶ先なので、先に過去の重なり年（2547 年以外にもあれば）の公式の日付で送る向きを確かめる
 - [ ] 年表を過去にたどると、仏暦 2557・2558 年のアーサーラハ・ブーチャーが 1 日遅い（計算 2014-07-12・2015-07-31、タイ語版 Wikipedia 07-11・07-30）。pythaidate も同じ。仏暦 2557 年は avoman がちょうど 137、2558 年は 692 で、閾値の境目に当たる。年表の範囲（2567〜2666 年）に同じ境目の年は無いが、2014・2015 年の公式告示で確かめ、原因を突き止める
-- [ ] 年型の分岐を守るテストが無い。今の不変条件（年の長さ・ワンプラの間隔など）は年型を誤っても落ちず、fixtures（2024〜2027 年）は閏月と閏日が重なる分岐（最初は仏暦 2583 年）も 24/6 の分岐（仏暦 2574 年 = 2031 年）も通らない。過去の公式の日付で各分岐の年を fixtures にする
+- [ ] 年型の分岐を、年表より前の年の公式の日付で確かめる。`tests/core/year-kind.test.ts` は、連続する 2 年の公式のアーサーラハ・ブーチャーの間隔から年型を照らす（年表の外の fixtures も使える）。今の fixtures（2024〜2027 年）は、閏月と閏日が重なる分岐（仏暦 2542・2547 年）も 24/6 の分岐（仏暦 2555 年）も通らない。それらの年と前年の公式の日付を fixtures に足す
 - [ ] 毎年秋に、翌年分のタイ中央銀行告示を `tests/fixtures/` に足す（ADR-0009 の安全網。足さないと上書きのテストは翌年を照らさない）
 - [ ] アッタミー・ブーチャー（วันอัฏฐมีบูชา / Atthami Bucha / アッタミー・ブーチャー）を行事に足す。แรม 8 ค่ำ เดือน 6（閏月の年は เดือน 7）。根拠と見送った候補は [`docs/events/candidates.md`](../events/candidates.md)
 - [ ] タイ中央銀行告示 37/2569（2027 年）も、テキスト抽出で日付と行事名が別の欄に分かれている。PDF を画像にしてウィサーカ（5/20）の行を目視で確かめる（`docs/events/visakha-bucha.md`「未確認・食い違い」）。macOS では PDFKit を使う小さな Swift を `swiftc -framework PDFKit -framework AppKit` でコンパイルすれば全ページを PNG にできた（`swift` の JIT では PDFKit がリンクされない）
