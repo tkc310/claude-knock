@@ -165,28 +165,42 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html.match(/\sdata-agenda="/g)).toHaveLength(24);
   });
 
-  it('一覧のカードのポップアップは、カードの左右に置く', () => {
+  // PC でもスマホと同じく、由来と行うことはカードの中に出し、ホバーのポップアップにしない
+  it('一覧のカードは、PC でもポップアップにせず、由来と行うことをカードの中に出す', () => {
     const html = page('index.html');
-    expect(html.match(/\sdata-popover[\s=>]/g)).toHaveLength(events.length);
     expect(html.match(/\sdata-card[\s=>]/g)).toHaveLength(events.length);
+    expect(html.match(/\sdata-details[\s=>]/g)).toHaveLength(events.length);
+    expect(html).not.toMatch(/\sdata-popover[\s=>]/);
+    expect(html).not.toContain('hoverable:');
+    // Tailwind v4 は hover: を (hover: hover) で包むので、幅と組み合わせた hoverable: の条件が無いことを見る
+    expect(html).not.toMatch(/\(hover:\s*hover\) and \((?:min-width:\s*48rem|width\s*>=\s*48rem)\)/);
+    expect(html).not.toContain('カーソルを当てると');
   });
 
-  // スマホファースト（ADR-0013）: 同じ要素（data-popover）を、既定ではカードの中に置いて由来と行うことを見せ、
-  // カーソルのある広い画面（hoverable: のメディアクエリ）でだけ浮かせてポップアップにする
-  it('一覧のカードは、スマホではポップアップにせず、由来と行うことをカードの中に出す', () => {
+  it('「ホーム画面に追加する」の節は、「カレンダーアプリに取り込む」と同じカード型にする', () => {
     const html = page('index.html');
-    const classes = [...html.matchAll(/<div [^>]*data-popover[^>]*class="([^"]*)"/g)].map((m) =>
-      m[1]!.split(/\s+/),
-    );
-    expect(classes).toHaveLength(events.length);
-    for (const list of classes) {
-      expect(list).not.toContain('absolute');
-      expect(list).not.toContain('opacity-0');
-      expect(list).toContain('hoverable:absolute');
+    const section = (id: string) => {
+      const open = `<section aria-labelledby="${id}" class="([^"]*)"[^>]*>`;
+      const m = html.match(new RegExp(`${open}([\\s\\S]*?)</section>`));
+      expect(m).toBeTruthy();
+      return { classes: m![1]!.split(/\s+/), body: m![2]! };
+    };
+    const ics = section('ics');
+    const app = section('app');
+    for (const c of ['overflow-hidden', 'border', 'border-border-subtle', 'rounded-sm']) {
+      expect(ics.classes).toContain(c);
+      expect(app.classes).toContain(c);
     }
-    expect(html).toMatch(
-      /@media \(hover:\s*hover\) and \((?:min-width:\s*48rem|width\s*>=\s*48rem)\)/,
-    );
+    for (const part of ['bg-gold-subtle', 'gap-px bg-border-subtle']) {
+      expect(ics.body).toContain(part);
+      expect(app.body).toContain(part);
+    }
+  });
+
+  // ボタン（rounded-md・rounded-full のボタン）以外の面は角丸を弱くする: カード・パネルは sm、内側の面は xs
+  const radiusPages = ['index.html', 'events/wan-phra/index.html', 'tambun/index.html'];
+  it.each(radiusPages)('%s のボタン以外の面は角丸を sm 以下にする', (path) => {
+    expect(page(path)).not.toMatch(/\brounded-(?:t-|b-|s-|e-)?(?:lg|xl|2xl|3xl)\b/);
   });
 
   it('ヘッダーのロゴは法輪で、favicon も同じ法輪にする', () => {
