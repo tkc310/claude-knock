@@ -70,6 +70,11 @@
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/content-fragments/holiday-calendar/en/bot-notification-holiday/BOT-Notification-Holiday-Calendar-2025-EN.pdf"
   },
   {
+    "eventId": "khao-phansa",
+    "date": "2025-07-11",
+    "sourceUrl": "https://image.mfa.go.th/mfa/0/c2VR8BNjtA/ประกาศ/Official_Holidays_2025_1.pdf"
+  },
+  {
     "eventId": "loi-krathong",
     "date": "2025-11-05",
     "sourceUrl": "https://region2.prd.go.th/th/content/category/detail/id/9/iid/438437"
@@ -93,6 +98,11 @@
     "eventId": "asarnha-bucha",
     "date": "2026-07-29",
     "sourceUrl": "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf"
+  },
+  {
+    "eventId": "khao-phansa",
+    "date": "2026-07-30",
+    "sourceUrl": "https://image.mfa.go.th/mfa/0/xzhwNrdFsC/Holiday_2026/Holiday_2026.pdf"
   },
   {
     "eventId": "makha-bucha",
