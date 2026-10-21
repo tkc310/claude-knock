@@ -5,7 +5,6 @@
 
 ## 暦
 
-- [ ] `supportedRange` は 2027-12-31 まで。トップページは今年と来年を出すので、2027-01-01 以降のビルドは 2028 年分で RangeError になる。2028 年分のタイ中央銀行告示（例年 2027 年の秋）を `tests/fixtures/` に足し、`src/core/calendar.ts` の `supportedRange` を延ばす。それまでの間どうするか（ビルドの日を固定する・範囲を縮める）も決める
 - [ ] 閏月と閏日が同じ年に重なったとき、`src/core/suriyayatra.ts` は閏日を翌年に送る。pythaidate は前後の年の曜日の並びで送る向きを決めている。重なる年（暦法では仏暦 2547 年）の公式の日付で確かめる
 - [ ] アッタミー・ブーチャー（วันอัฏฐมีบูชา / Atthami Bucha / アッタミー・ブーチャー）を行事に足す。แรม 8 ค่ำ เดือน 6（閏月の年は เดือน 7）。根拠と見送った候補は [`docs/events/candidates.md`](../events/candidates.md)
 - [ ] タイ中央銀行告示 37/2569（2027 年）も、テキスト抽出で日付と行事名が別の欄に分かれている。PDF を画像にしてウィサーカ（5/20）の行を目視で確かめる（`docs/events/visakha-bucha.md`「未確認・食い違い」）。macOS では PDFKit を使う小さな Swift を `swiftc -framework PDFKit -framework AppKit` でコンパイルすれば全ページを PNG にできた（`swift` の JIT では PDFKit がリンクされない）

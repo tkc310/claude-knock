@@ -76,16 +76,21 @@ export function buildCalendar(kindOf: (year: number) => YearKind): Calendar {
 
 export const calendar = buildCalendar((year) => YEAR_KIND_OVERRIDES.get(year) ?? yearKind(year));
 
-/** 暦法を確かめた範囲。仏暦 2567 年の始まりから、公式告示で確かめた 2027 年の末まで */
+const lastYear = calendar.years.at(-1)!;
+
+/**
+ * 年表の範囲。公式告示より先の年も暦法で出す（ADR-0009）。
+ * 告示が出たら tests/fixtures/ に足し、食い違えば YEAR_KIND_OVERRIDES で年型を直す
+ */
 export const supportedRange: DateRange = {
   from: fromDayNumber(EPOCH),
-  to: parseIsoDate('2027-12-31'),
+  to: fromDayNumber(lastYear.start + lastYear.length - 1),
 };
 
 export function assertSupported({ from, to }: DateRange): void {
   if (from < supportedRange.from || to > supportedRange.to) {
     throw new RangeError(
-      `${from}〜${to} は暦法を確かめた範囲（${supportedRange.from}〜${supportedRange.to}）の外です`,
+      `${from}〜${to} は年表の範囲（${supportedRange.from}〜${supportedRange.to}）の外です`,
     );
   }
 }

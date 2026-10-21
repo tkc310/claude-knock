@@ -120,7 +120,7 @@ export function occurrencesIn<E extends { date: DateRule }>(
     }));
 }
 
-/** 範囲の中に開始日がある行事を、開始日の順に返す。暦法を確かめた範囲（supportedRange）の外は RangeError */
+/** 範囲の中に開始日がある行事を、開始日の順に返す。年表の範囲（supportedRange）の外は RangeError */
 export function occurrences<E extends { date: DateRule }>(
   events: readonly E[],
   range: DateRange,

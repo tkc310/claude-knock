@@ -82,7 +82,16 @@ describe('occurrences', () => {
     ]);
   });
 
-  it('暦法を確かめた範囲（supportedRange）の外は RangeError', () => {
+  it('公式告示より先の年も、年表の範囲なら計算で出す（ADR-0009）', () => {
+    const [makha] = occurrences(
+      events.filter((e) => e.id === 'makha-bucha'),
+      gregorianYear(2028),
+    );
+    expect(makha?.lunar).toMatchObject({ phase: 'waxing', day: 15 });
+    expect(supportedRange.to >= gregorianYear(2100).to).toBe(true);
+  });
+
+  it('年表の範囲（supportedRange）の外は RangeError', () => {
     expect(() => occurrences(events, gregorianYear(2023))).toThrow(RangeError);
     expect(() =>
       occurrences(events, { from: supportedRange.to, to: addDays(supportedRange.to, 1) }),
