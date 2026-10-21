@@ -1,4 +1,5 @@
 // 行事の詳細ページの本文（docs/plans/event-pages.md）。ファイル名は src/data/events.ts の id
+// guides は行事をまたぐ説明のページの本文。ページは src/pages/<ファイル名>.astro（例: /tambun/）
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
@@ -10,9 +11,19 @@ export const eventEntrySchema = z.strictObject({
   practice: z.string().trim().min(1),
 });
 
+// 説明のページは行事に結びつかないので、見出しと説明文（meta description）を frontmatter に書く
+export const guideEntrySchema = z.strictObject({
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+});
+
 export const collections = {
   events: defineCollection({
     loader: glob({ pattern: '*.md', base: './src/content/events' }),
     schema: eventEntrySchema,
+  }),
+  guides: defineCollection({
+    loader: glob({ pattern: '*.md', base: './src/content/guides' }),
+    schema: guideEntrySchema,
   }),
 };

@@ -27,7 +27,8 @@ function copyProject(): string {
   }
   cpSync(join(repo, 'src'), join(root, 'src'), {
     recursive: true,
-    filter: (src) => src !== join(repo, 'src/content'),
+    // 行事の本文だけ仮のものに差し替える。タンブンの説明（src/content/guides/）は本物を使う
+    filter: (src) => src !== join(repo, 'src/content/events'),
   });
   symlinkSync(join(repo, 'node_modules'), join(root, 'node_modules'), 'dir');
   return root;
@@ -281,6 +282,19 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     const mark = `data-illustration="${event.id}"`;
     expect(page('index.html')).toContain(mark);
     expect(page(`events/${event.id}/index.html`)).toContain(mark);
+  });
+
+  it('タンブンの説明ページ /tambun/ を作り、見出し・説明文・出典を出してタイ文字を出さない', () => {
+    const html = page('tambun/index.html');
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toContain('タンブン');
+    expect(html).toMatch(/<meta name="description" content="[^"]{20,}"/);
+    expect(html).toMatch(/<svg [^>]*data-logo="dharma-wheel"/);
+    expect(html).toMatch(/<a href="https:\/\/suttacentral\.net\/an8\.36\/[^"]*" target="_blank"/);
+    expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
+    expect(html).toContain('href="/"');
+    const sw = page('sw.js');
+    expect(JSON.parse(sw.match(/const PRECACHE = (\[[^\]]*\])/)![1]!)).toContain('/tambun/');
   });
 
   it.each(['index.html', 'events/wan-phra/index.html'])(

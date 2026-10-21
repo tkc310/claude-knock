@@ -9,6 +9,7 @@
 | [improvement/log.md](./improvement/log.md)         | 直したことの記録（1 改善 1 行）                                       |
 | [decisions/](./decisions/README.md)                | 設計判断の記録（ADR）                                                 |
 | [events/](./events/README.md)                      | 行事ごとの資料（日付の決め方と出典）                                  |
+| [tambun.md](./tambun.md)                           | タンブンの説明ページ（`/tambun/`）の経典の根拠と用語の対応            |
 | [plans/](./plans/event-pages.md)                   | 進めている作業の計画（行事の詳細ページ）                              |
 | [ai-agents.md](./ai-agents.md)                     | AI エージェントが読むファイルと、エージェントに任せるときの進め方     |
 
