@@ -24,6 +24,7 @@
 | [0017](./0017-seo.md)                            | canonical・JSON-LD・sitemap.xml で検索エンジンに伝え、ヘッダーのロゴを logo.svg にする                | 採用                   |
 | [0018](./0018-www-redirect.md)                   | www.koyomi.tkc310.com を独自ドメインにして証明書を作り、Redirect Rule で転送する                      | 採用                   |
 | [0019](./0019-llms-txt.md)                       | AI 向けに llms.txt を置き、行事の由来・行うこと・日付まで書く                                         | 採用                   |
+| [0020](./0020-rich-results.md)                   | リッチリザルト向けに Organization と Article の JSON-LD を出し、Event は出さない                      | 採用                   |
 
 ## テンプレート
 
