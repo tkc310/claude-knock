@@ -1,0 +1,62 @@
+# タイ中央銀行（BOT）の API の休日を、暦の計算と正解データに毎月照らす（ADR-0023）。
+# 食い違い（mismatch）・正解データに無い公式の日付（new）・今年の告示が取れない（none）ときは Issue で知らせる。
+# 必要なもの: secrets の BOT_API_TOKEN（https://portal.api.bot.or.th/ の Others 製品の API キー）
+name: Announcements
+
+on:
+  # cron は UTC。日本時間の毎月 2 日 10 時 23 分
+  schedule:
+    - cron: '23 1 2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: announcements
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # 「今年」を日本時間で数える（ランナーは UTC）
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          install: false
+          cache: true
+
+      - name: Node.js・pnpm を入れる（.tool-versions）
+        run: make tools
+
+      - name: タイ中央銀行の API で照合する
+        id: check
+        run: make announcements
+        env:
+          BOT_API_TOKEN: ${{ secrets.BOT_API_TOKEN }}
+
+      - name: 食い違い・新しい告示を Issue で知らせる
+        if: contains(fromJSON('["new", "mismatch", "none"]'), steps.check.outputs.status)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          STATUS: ${{ steps.check.outputs.status }}
+        run: |
+          case "$STATUS" in
+            mismatch) title='告示の照合: 暦の計算と公式の日付が食い違っています' ;;
+            new) title='告示の照合: 正解データに無い公式の日付があります' ;;
+            none) title='告示の照合: 今年の告示が API から取れません' ;;
+          esac
+          printf '\n---\n\n対応: `check-announcements` スキル（「告示を確認して」）で出典を確かめ、`tests/fixtures/official-dates.json` に足す PR を作る。食い違いなら `YEAR_KIND_OVERRIDES` で年型を直す（docs/operations.md）。\n' >> announcements-report.md
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file announcements-report.md
+          else
+            gh issue create --title "$title" --body-file announcements-report.md
+          fi
