@@ -15,6 +15,7 @@
 | [0008](./0008-lunar-calendar-strategy.md)       | 太陰暦の行事日は暦法で年型を出して計算し、公式と食い違う年だけ年型を上書きする     | 採用           |
 | [0009](./0009-compute-beyond-official-dates.md) | 公式告示より先の年も、暦法で計算して出す（`supportedRange` を年表の全体にする）    | 採用           |
 | [0010](./0010-typecheck-with-astro-check.md)    | 型検査は `astro check` に寄せ、tsgolint は型を使う lint 規則だけにする             | 採用           |
+| [0011](./0011-format-astro-with-oxfmt.md)       | `.astro` は oxfmt（`vp fmt`）で丸ごと整形し、テンプレートの lint は足さない        | 採用           |
 
 ## テンプレート
 

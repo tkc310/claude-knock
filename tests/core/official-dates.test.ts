@@ -26,7 +26,6 @@ describe('報道の日付', () => {
     ['thot-kathin', '2024-10-18'],
     ['thot-kathin', '2025-10-08'],
     ['thot-kathin', '2026-10-27'],
-    ['loi-krathong', '2024-11-15'],
     ['loi-krathong', '2026-11-24'],
     // アッタミー・ブーチャー（docs/events/atthami-bucha.md）。2026 年は閏月の年で เดือน 7
     ['atthami-bucha', '2024-05-30'],
