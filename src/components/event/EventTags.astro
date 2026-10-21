@@ -1,0 +1,17 @@
+---
+// 行事のタグ（太陰暦／太陽暦・民間行事）
+import { Stack } from '@/components/ui/stack';
+import { Tag } from '@/components/ui/tag';
+import type { EventDefinition } from '@/data/events';
+
+interface Props {
+  event: EventDefinition;
+}
+
+const { event } = Astro.props;
+---
+
+<Stack direction="horizontal" gap="sm" wrap>
+  {event.date.kind === 'solar-span' ? <Tag>太陽暦</Tag> : <Tag tone="key">太陰暦</Tag>}
+  {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
+</Stack>

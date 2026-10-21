@@ -11,7 +11,7 @@
 - 行事名は frontmatter に重ねて書かない。正本は `events.ts` の `name` で、見出しはテンプレートが `formatEventName` で出す。本文の見出しは `##` から始める
 - 日付の表は本文に書かない。テンプレートが `occurrences`（`@/core`）で計算して出す（トップページと同じ）
 - 本文の材料は `docs/events/<id>.md`。読む人向けに「由来」「行うこと」「日付の決め方」の要点を書く。調べの「未確認・食い違い」は載せない。出典 URL は本文末尾の `## 出典` に残す
-- frontmatter は `summary` だけにする。`docs/events/<id>.md` の「カレンダーでの説明文」を使い、ページの説明文と一覧の一言に使う。スキーマは知らない項目（`name` など）を弾く
+- frontmatter は `origin`（由来）と `practice`（行うこと）を 1 行ずつ書く（ADR-0012 で `summary` から分けた）。詳細ページの冒頭・説明文と、一覧のカードに使う。スキーマは知らない項目（`name` など）を弾く
 
 ## スキーマ（`src/content.config.ts`）
 
@@ -20,7 +20,10 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-export const eventEntrySchema = z.strictObject({ summary: z.string().trim().min(1) });
+export const eventEntrySchema = z.strictObject({
+  origin: z.string().trim().min(1),
+  practice: z.string().trim().min(1),
+});
 
 export const collections = {
   events: defineCollection({
@@ -30,7 +33,7 @@ export const collections = {
 };
 ```
 
-検査は `tests/content.test.ts`。`summary` の有無・空白だけ・知らない項目と、`src/content/events/` のファイル名が `events` の `id` のどれかであることを見る。
+検査は `tests/content.test.ts`。`origin`・`practice` の有無・空白だけ・知らない項目と、`src/content/events/` のファイル名が `events` の `id` のどれかであることを見る。
 3 つの作業より先に実装し、3 つの作業はどれもスキーマを変えない。変える必要が出たら作業を止めて相談する。
 
 ## 分担（互いに同じファイルを触らない）

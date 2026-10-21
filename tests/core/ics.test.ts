@@ -46,14 +46,18 @@ describe('改行と折り返し', () => {
     for (const line of physical) {
       expect(new TextEncoder().encode(line).length, line).toBeLessThanOrEqual(75);
     }
-    // 75 オクテットを超える SUMMARY（アーサーラハ・ブーチャー）が折り返されている
-    expect(physical.some((l) => l.startsWith(' '))).toBe(true);
+    // 75 オクテットを超える行は折り返す。行事名だけでは超えないので、長いカレンダー名で確かめる
+    const long = toIcs([], { builtAt, name: 'タイ仏教行事カレンダー（日本語版・今年と来年の分）' });
+    expect(long).toContain('\r\n ');
+    expect(long.replaceAll('\r\n ', '')).toContain(
+      'X-WR-CALNAME:タイ仏教行事カレンダー（日本語版・今年と来年の分）',
+    );
   });
 
-  it('日本語とタイ語の文字を途中で切らない（戻すと元の SUMMARY になる）', () => {
+  it('日本語の文字を途中で切らない（戻すと元の SUMMARY になる）', () => {
     expect(ics).not.toContain('�');
     expect(vevent('asarnha-bucha', '2026-07-29')).toContain(
-      'SUMMARY:アーサーラハ・ブーチャー（วันอาสาฬหบูชา）',
+      'SUMMARY:アーサーラハ・ブーチャー（三宝節）',
     );
   });
 });
@@ -65,8 +69,9 @@ it('購読したときのカレンダー名（X-WR-CALNAME）は VCALENDAR に 1
 });
 
 describe('VEVENT', () => {
-  it('SUMMARY は「カタカナ（タイ語）」', () => {
-    expect(vevent('wan-phra', '2026-02-16')).toContain('SUMMARY:ワンプラ（วันพระ）');
+  it('SUMMARY は「カタカナ（日本語訳）」で、タイ文字を含まない', () => {
+    expect(vevent('wan-phra', '2026-02-16')).toContain('SUMMARY:ワンプラ（布薩日）');
+    expect(ics).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
   it('1 日の行事は終日（DTSTART;VALUE=DATE）', () => {

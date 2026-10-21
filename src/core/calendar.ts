@@ -134,15 +134,18 @@ export function toLunar(date: IsoDate): ThaiLunarDate {
   return toLunarIn(calendar, date);
 }
 
-/** "ขึ้น 8 ค่ำ เดือนอ้าย"、"แรม 1 ค่ำ เดือน 8 หลัง" のようにタイの暦の言い方で書く */
+/**
+ * "太陰暦 3 月の満月"、"太陰暦 8 月（2 回目）後半 1 日" のように日本語で書く。
+ * 前半は白分（月が満ちていく半月）、後半は黒分（欠けていく半月）
+ */
 export function formatLunarDate(date: ThaiLunarDate): string {
-  return `${date.phase === 'waxing' ? 'ขึ้น' : 'แรม'} ${date.day} ค่ำ ${monthName(date)}`;
+  const month = `太陰暦 ${monthName(date)}`;
+  if (date.phase === 'waxing' && date.day === 15) return `${month}の満月`;
+  return `${month}${date.phase === 'waxing' ? '前半' : '後半'} ${date.day} 日`;
 }
 
 function monthName({ month, isLeapMonth, inLeapMonthYear }: ThaiLunarDate): string {
-  if (month === 1) return 'เดือนอ้าย';
-  if (month === 2) return 'เดือนยี่';
-  if (month !== 8) return `เดือน ${month}`;
-  if (isLeapMonth) return 'เดือน 8 หลัง';
-  return inLeapMonthYear ? 'เดือน 8 แรก' : 'เดือน 8';
+  if (month !== 8) return `${month} 月`;
+  if (isLeapMonth) return '8 月（2 回目）';
+  return inLeapMonthYear ? '8 月（1 回目）' : '8 月';
 }

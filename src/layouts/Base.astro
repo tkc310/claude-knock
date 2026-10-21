@@ -7,9 +7,10 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+// 配色は白に固定する。OS のダークモードには追従しない（data-theme="light"）
 ---
 
-<html lang="ja">
+<html lang="ja" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />

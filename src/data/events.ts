@@ -1,4 +1,4 @@
-// 行事定義。名前は「タイ語 / ローマ字 / カタカナ / 日本語訳」を必ず併記する
+// 行事定義。名前は「ローマ字 / カタカナ / 日本語訳」を必ず併記する（タイ文字は使わない。ADR-0012）
 import type { DateRule, LunarDayRule } from '@/core';
 
 export type EventId =
@@ -14,7 +14,6 @@ export type EventId =
   | 'songkran';
 
 export interface EventName {
-  th: string;
   romaji: string;
   kana: string;
   /** 意味をとった日本語訳（音写のカタカナとは別） */
@@ -45,21 +44,20 @@ export const events: readonly EventDefinition[] = [
     id: 'wan-phra',
     category: 'buddhist',
     date: { kind: 'uposatha' },
-    name: { th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' },
+    name: { romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' },
   },
   {
     id: 'makha-bucha',
     category: 'buddhist',
     // 閏月の年は 1 か月ずれる（docs/events/makha-bucha.md）
     date: fullMoon({ common: 3, adhikamas: 4 }),
-    name: { th: 'วันมาฆบูชา', romaji: 'Makha Bucha', kana: 'マーカ・ブーチャー', ja: '万仏節' },
+    name: { romaji: 'Makha Bucha', kana: 'マーカ・ブーチャー', ja: '万仏節' },
   },
   {
     id: 'visakha-bucha',
     category: 'buddhist',
     date: fullMoon({ common: 6, adhikamas: 7 }),
     name: {
-      th: 'วันวิสาขบูชา',
       romaji: 'Visakha Bucha',
       kana: 'ウィサーカ・ブーチャー',
       ja: '仏誕節',
@@ -74,7 +72,6 @@ export const events: readonly EventDefinition[] = [
       at: { month: { common: 6, adhikamas: 7 }, phase: 'waning', day: 8 },
     },
     name: {
-      th: 'วันอัฏฐมีบูชา',
       romaji: 'Atthami Bucha',
       kana: 'アッタミー・ブーチャー',
       ja: '荼毘節',
@@ -85,7 +82,6 @@ export const events: readonly EventDefinition[] = [
     category: 'buddhist',
     date: fullMoon({ common: 8, adhikamas: 'second-8' }),
     name: {
-      th: 'วันอาสาฬหบูชา',
       romaji: 'Asarnha Bucha',
       kana: 'アーサーラハ・ブーチャー',
       ja: '三宝節',
@@ -98,13 +94,13 @@ export const events: readonly EventDefinition[] = [
       kind: 'lunar-day',
       at: { month: { common: 8, adhikamas: 'second-8' }, phase: 'waning', day: 1 },
     },
-    name: { th: 'วันเข้าพรรษา', romaji: 'Khao Phansa', kana: 'カオパンサー', ja: '入安居' },
+    name: { romaji: 'Khao Phansa', kana: 'カオパンサー', ja: '入安居' },
   },
   {
     id: 'ok-phansa',
     category: 'buddhist',
     date: fullMoon(11),
-    name: { th: 'วันออกพรรษา', romaji: 'Ok Phansa', kana: 'オークパンサー', ja: '出安居' },
+    name: { romaji: 'Ok Phansa', kana: 'オークパンサー', ja: '出安居' },
   },
   {
     id: 'thot-kathin',
@@ -115,22 +111,22 @@ export const events: readonly EventDefinition[] = [
       start: { month: 11, phase: 'waning', day: 1 },
       end: { month: 12, phase: 'waxing', day: 15 },
     },
-    name: { th: 'ทอดกฐิน', romaji: 'Thot Kathin', kana: 'トートカティン', ja: 'カティナ衣奉献' },
+    name: { romaji: 'Thot Kathin', kana: 'トートカティン', ja: 'カティナ衣奉献' },
   },
   {
     id: 'loi-krathong',
     category: 'folk',
     date: fullMoon(12),
-    name: { th: 'ลอยกระทง', romaji: 'Loi Krathong', kana: 'ロイクラトン', ja: '灯籠流し' },
+    name: { romaji: 'Loi Krathong', kana: 'ロイクラトン', ja: '灯籠流し' },
   },
   {
     id: 'songkran',
     category: 'folk',
     date: { kind: 'solar-span', start: { month: 4, day: 13 }, end: { month: 4, day: 15 } },
-    name: { th: 'สงกรานต์', romaji: 'Songkran', kana: 'ソンクラーン', ja: 'タイ正月' },
+    name: { romaji: 'Songkran', kana: 'ソンクラーン', ja: 'タイ正月' },
   },
 ];
 
-export function formatEventName({ th, romaji, kana, ja }: EventName): string {
-  return `${th} / ${romaji} / ${kana} / ${ja}`;
+export function formatEventName({ romaji, kana, ja }: EventName): string {
+  return `${kana}（${ja}）/ ${romaji}`;
 }

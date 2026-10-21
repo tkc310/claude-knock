@@ -4,7 +4,11 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 // 行事名は events.ts が正本なので、frontmatter に重ねて書けないよう知らない項目を弾く
-export const eventEntrySchema = z.strictObject({ summary: z.string().trim().min(1) });
+// origin（由来）と practice（行うこと）は一覧のカードにも出すので、それぞれ 1 行で書く
+export const eventEntrySchema = z.strictObject({
+  origin: z.string().trim().min(1),
+  practice: z.string().trim().min(1),
+});
 
 export const collections = {
   events: defineCollection({

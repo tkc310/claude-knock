@@ -3,6 +3,8 @@
 import type { GetStaticPaths } from 'astro';
 import { getEntry, render } from 'astro:content';
 import EventFacts from '@/components/event/EventFacts.astro';
+import EventIllustration from '@/components/event/EventIllustration.astro';
+import EventSummary from '@/components/event/EventSummary.astro';
 import Base from '@/layouts/Base.astro';
 import { Heading } from '@/components/ui/heading';
 import { Stack } from '@/components/ui/stack';
@@ -25,9 +27,10 @@ const { Content } = await render(entry);
 const range = displayRange(new Date());
 const dates = occurrences([event], range);
 const name = formatEventName(event.name);
+const description = `${entry.data.origin}。${entry.data.practice}。`;
 ---
 
-<Base title={`${name} | タイ仏教行事カレンダー`} description={entry.data.summary}>
+<Base title={`${name} | タイ仏教行事カレンダー`} description={description}>
   <main class="mx-auto max-w-3xl p-inset-xl">
     <Stack gap="lg">
       <Text variant="body-sm">
@@ -36,8 +39,9 @@ const name = formatEventName(event.name);
         </a>
       </Text>
       <Stack gap="sm">
+        <EventIllustration id={event.id} class="aspect-[16/7] rounded-xl" />
         <Heading level={1}>{name}</Heading>
-        <Text tone="subtle">{entry.data.summary}</Text>
+        <EventSummary entry={entry} />
       </Stack>
       <section aria-labelledby="dates">
         <Stack gap="sm">

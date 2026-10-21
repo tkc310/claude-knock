@@ -1,43 +1,191 @@
 ---
+import { getEntry } from 'astro:content';
 import EventFacts from '@/components/event/EventFacts.astro';
+import EventIllustration from '@/components/event/EventIllustration.astro';
+import EventSummary from '@/components/event/EventSummary.astro';
+import EventTags from '@/components/event/EventTags.astro';
 import Base from '@/layouts/Base.astro';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
+import { Icon } from '@/components/ui/icon';
 import { Stack } from '@/components/ui/stack';
 import { Text } from '@/components/ui/text';
 import { occurrences } from '@/core';
 import { displayRange } from '@/data/display-range';
-import { events, formatEventName } from '@/data/events';
+import { events } from '@/data/events';
 
-const range = displayRange(new Date());
+const now = new Date();
+const today = now.toLocaleDateString('sv-SE');
+const range = displayRange(now);
+const years = `${range.from.slice(0, 4)}〜${range.to.slice(0, 4)} 年`;
 const list = occurrences(events, range);
+const entries = await Promise.all(
+  events.map(async (event) => {
+    const entry = await getEntry('events', event.id);
+    if (!entry) throw new Error(`src/content/events/${event.id}.md がありません`);
+    return entry;
+  }),
+);
+
+const weekday = (iso: string) => '日月火水木金土'[new Date(`${iso}T00:00:00Z`).getUTCDay()];
+const nextLabel = (start: string, end: string) =>
+  start === end
+    ? `${start}（${weekday(start)}）`
+    : `${start}（${weekday(start)}）〜${end.slice(5)}（${weekday(end)}）`;
+
+const imports = [
+  {
+    app: 'Google カレンダー（パソコン）',
+    steps: [
+      '右上の歯車から「設定」を開く',
+      '左のメニューで「インポート / エクスポート」を選ぶ',
+      '「パソコンからファイルを選択」で calendar.ics を選び、追加先のカレンダーを選んで「インポート」を押す',
+    ],
+  },
+  {
+    app: 'iPhone・Mac のカレンダー',
+    steps: [
+      'iPhone は Safari で上のボタンを押し、「すべてを追加」を選ぶ',
+      'Mac はダウンロードした calendar.ics をダブルクリックする',
+      '追加先のカレンダーを選んで「OK」を押す',
+    ],
+  },
+  {
+    app: 'Outlook（Web）',
+    steps: [
+      '左のメニューで「カレンダー」を開き、「カレンダーを追加」を選ぶ',
+      '「ファイルからアップロード」で calendar.ics と追加先のカレンダーを選ぶ',
+      '「インポート」を押す',
+    ],
+  },
+];
 ---
 
 <Base title="タイ仏教行事カレンダー">
-  <main class="mx-auto max-w-3xl p-inset-xl">
+  <main class="mx-auto max-w-5xl p-inset-xl">
     <Stack gap="lg">
       <Stack gap="sm">
         <Heading level={1}>タイ仏教行事カレンダー</Heading>
-        <Text tone="subtle">
-          タイ太陰暦と太陽暦にもとづく、{range.from.slice(0, 4)}〜{range.to.slice(0, 4)}{' '}
-          年の行事の一覧です。
-        </Text>
+        <Text tone="subtle">タイの仏教行事の日付と意味を、日本語でまとめたカレンダーです。</Text>
       </Stack>
-      <Stack as="ul" gap="md">
-        {events.map((event) => {
-          const dates = list.filter((o) => o.event.id === event.id);
-          return (
-            <Card
-              as="li"
-              headingLevel={2}
-              title={formatEventName(event.name)}
-              href={`/events/${event.id}/`}
+
+      <section aria-labelledby="about" class="rounded-xl bg-subtle p-inset-xl">
+        <Stack gap="sm">
+          <Heading level={2} size="sm" id="about">
+            このサイトについて
+          </Heading>
+          <Stack as="ul" gap="sm" className="ms-inset-lg list-disc">
+            <li>
+              <Text variant="body-sm">
+                タイの仏教行事の多くは、月の満ち欠けにもとづく「タイの太陰暦」で日が決まるため、毎年日付が変わります。このサイトでは、その日付を暦から計算し、タイ政府の公式発表と照らし合わせて載せています。
+              </Text>
+            </li>
+            <li>
+              <Text variant="body-sm">
+                載せているのは、仏典（経・律）やブッダの生涯に根拠がある行事です。例外として、タイで広く行われるロイクラトンとソンクラーンを「民間行事」として載せています。
+              </Text>
+            </li>
+            <li>
+              <Text variant="body-sm">
+                {years}の予定は、
+                <a href="#ics" class="text-fg-link underline underline-offset-[0.2em]">
+                  カレンダーアプリに取り込めます
+                </a>
+                。
+              </Text>
+            </li>
+          </Stack>
+        </Stack>
+      </section>
+
+      <section aria-labelledby="events">
+        <Stack gap="md">
+          <Stack gap="sm">
+            <Heading level={2} size="sm" id="events">
+              行事の一覧
+            </Heading>
+            <Text variant="body-sm" tone="subtle">
+              カードにカーソルを当てると、由来・行うこと・{years}
+              の日付が出ます。押すと詳しい説明のページへ移ります。
+            </Text>
+          </Stack>
+          <ul class="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-gap-md">
+            {events.map((event, i) => {
+              const dates = list.filter((o) => o.event.id === event.id);
+              const next = dates.find((o) => o.end >= today);
+              return (
+                <Card
+                  as="li"
+                  headingLevel={3}
+                  eyebrow={event.name.romaji}
+                  title={`${event.name.kana}（${event.name.ja}）`}
+                  href={`/events/${event.id}/`}
+                  className="overflow-visible"
+                >
+                  <EventIllustration
+                    slot="media"
+                    id={event.id}
+                    class="aspect-[16/7] rounded-t-xl"
+                  />
+                  <Stack gap="sm">
+                    <EventTags event={event} />
+                    {next && <Text variant="body-sm">次回 {nextLabel(next.start, next.end)}</Text>}
+                  </Stack>
+                  <div class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs rounded-xl border border-border bg-surface p-inset-lg opacity-0 shadow-2 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100">
+                    <Stack gap="sm">
+                      <EventSummary entry={entries[i]!} />
+                      <EventFacts event={event} dates={dates} />
+                    </Stack>
+                  </div>
+                </Card>
+              );
+            })}
+          </ul>
+        </Stack>
+      </section>
+
+      <section aria-labelledby="ics" class="rounded-xl border border-border p-inset-xl">
+        <Stack gap="md">
+          <Stack gap="sm">
+            <Heading level={2} size="sm" id="ics">
+              カレンダーアプリに取り込む
+            </Heading>
+            <Text variant="body-sm">
+              {years}の行事をまとめた ICS ファイル（calendar.ics）をダウンロードできます。Google
+              カレンダーや iPhone のカレンダーなどに取り込むと、行事が終日の予定として入ります。
+            </Text>
+          </Stack>
+          <div>
+            <a
+              href="/calendar.ics"
+              download="thai-buddhist-calendar.ics"
+              class="inline-flex items-center gap-gap-xs rounded-md bg-key px-inset-lg py-inset-sm text-body-md font-bold text-fg-on-key hover:bg-key-hover"
             >
-              <EventFacts event={event} dates={dates} />
-            </Card>
-          );
-        })}
-      </Stack>
+              <Icon name="download" />
+              calendar.ics をダウンロード
+            </a>
+          </div>
+          <div class="grid gap-gap-md md:grid-cols-3">
+            {imports.map(({ app, steps }) => (
+              <Stack gap="sm">
+                <Heading level={3} size="xs">
+                  {app}
+                </Heading>
+                <Stack as="ol" gap="sm" className="ms-inset-lg list-decimal">
+                  {steps.map((step) => (
+                    <li>
+                      <Text variant="body-sm">{step}</Text>
+                    </li>
+                  ))}
+                </Stack>
+              </Stack>
+            ))}
+          </div>
+          <Text variant="body-sm" tone="subtle">
+            取り込んだ予定は自動では更新されません。年が変わったら、新しいファイルを取り込み直してください。予定をまとめて消せるよう、取り込む前に専用のカレンダーを作っておくと便利です。
+          </Text>
+        </Stack>
+      </section>
     </Stack>
   </main>
 </Base>

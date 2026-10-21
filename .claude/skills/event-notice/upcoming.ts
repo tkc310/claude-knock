@@ -28,7 +28,7 @@ if (import.meta.main) {
   const rows = upcoming(today, Number(days)).map(({ event, start, end, lunar }) => ({
     id: event.id,
     kana: event.name.kana,
-    th: event.name.th,
+    ja: event.name.ja,
     start,
     end,
     lunar: formatLunarDate(lunar),
