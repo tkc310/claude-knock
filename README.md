@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="./public/logo.svg" alt="タイ仏教行事カレンダー" width="420" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/logo-dark.svg" />
+    <img src="./public/logo.svg" alt="タイ仏教行事カレンダー" width="420" />
+  </picture>
 </p>
 
 <p align="center">
