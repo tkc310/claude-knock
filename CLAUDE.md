@@ -28,3 +28,9 @@
 - src/lib/  : UI ユーティリティ（tv, tw-merge 等のサードパーティの抽象・設定層）
 - src/data/ : 行事定義（core を使って日付を得る）
 
+## 並列作業ルール
+- 1 セッション 1 タスク、1 PR。main 向け
+- 着手前に docs/improvement/backlog.md と open PR を確認し、同じ課題に手を付けない
+- 対象行事の追加・削除は PR を作るがマージ前にユーザーに確認
+- 完了したら backlog から消し、docs/improvement/log.md に 1 行記録
+
