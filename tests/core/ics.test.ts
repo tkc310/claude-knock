@@ -4,7 +4,8 @@ import { gregorianYear, occurrences, toIcs } from '../../src/core';
 import { events, type EventId } from '../../src/data/events';
 
 const builtAt = new Date('2026-10-21T03:04:05Z');
-const ics = toIcs(occurrences(events, gregorianYear(2026)), { builtAt });
+const name = 'タイ仏教行事カレンダー';
+const ics = toIcs(occurrences(events, gregorianYear(2026)), { builtAt, name });
 
 /** 折り返しを戻した論理行 */
 const lines = ics.replaceAll('\r\n ', '').split('\r\n').slice(0, -1);
@@ -57,6 +58,12 @@ describe('改行と折り返し', () => {
   });
 });
 
+it('購読したときのカレンダー名（X-WR-CALNAME）は VCALENDAR に 1 つ', () => {
+  const header = lines.slice(0, lines.indexOf('BEGIN:VEVENT'));
+  expect(header).toContain('X-WR-CALNAME:タイ仏教行事カレンダー');
+  expect(lines.filter((l) => l.startsWith('X-WR-CALNAME:'))).toHaveLength(1);
+});
+
 describe('VEVENT', () => {
   it('SUMMARY は「カタカナ（タイ語）」', () => {
     expect(vevent('wan-phra', '2026-02-16')).toContain('SUMMARY:ワンプラ（วันพระ）');
@@ -94,7 +101,7 @@ describe('UID', () => {
   it('同じ行事日なら、範囲やビルド日時が変わっても同じ UID', () => {
     const wider = toIcs(
       occurrences(events, { from: gregorianYear(2026).from, to: gregorianYear(2027).to }),
-      { builtAt: new Date('2027-01-01T00:00:00Z') },
+      { builtAt: new Date('2027-01-01T00:00:00Z'), name },
     );
     const uid = vevent('asarnha-bucha', '2026-07-29').find((l) => l.startsWith('UID:'));
     expect(uid).toContain('asarnha-bucha');
@@ -103,5 +110,5 @@ describe('UID', () => {
 });
 
 it('同じ入力なら同じ出力（時計を読まない）', () => {
-  expect(toIcs(occurrences(events, gregorianYear(2026)), { builtAt })).toBe(ics);
+  expect(toIcs(occurrences(events, gregorianYear(2026)), { builtAt, name })).toBe(ics);
 });

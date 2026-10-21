@@ -37,7 +37,7 @@ const ymd = (date: IsoDate) => date.replaceAll('-', '');
 /** UID は行事日と行事の id だけで決まるので、範囲やビルド日時が変わっても変わらない */
 export function toIcs<E extends IcsEvent>(
   occurrences: readonly Occurrence<E>[],
-  { builtAt }: { builtAt: Date },
+  { builtAt, name }: { builtAt: Date; name: string },
 ): string {
   const stamp = builtAt.toISOString().replace(/[-:]|\.\d+/g, '');
   const lines = [
@@ -45,6 +45,7 @@ export function toIcs<E extends IcsEvent>(
     'VERSION:2.0',
     'PRODID:-//thai-buddhist-calendar-ja//ICS//JA',
     'CALSCALE:GREGORIAN',
+    `X-WR-CALNAME:${escapeText(name)}`,
     ...occurrences.flatMap(({ event, start, end }) => [
       'BEGIN:VEVENT',
       `UID:${ymd(start)}-${event.id}@thai-buddhist-calendar-ja`,
