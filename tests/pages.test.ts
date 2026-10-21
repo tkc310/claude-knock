@@ -361,7 +361,7 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('タンブン');
     expect(html).toMatch(/<meta name="description" content="[^"]{20,}"/);
-    expect(html).toMatch(/<svg [^>]*data-logo="dharma-wheel"/);
+    expect(html).toMatch(/<img [^>]*src="\/logo\.svg"/);
     expect(html).toMatch(/<a href="https:\/\/suttacentral\.net\/an8\.36\/[^"]*" target="_blank"/);
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
     expect(html).toContain('href="/"');
