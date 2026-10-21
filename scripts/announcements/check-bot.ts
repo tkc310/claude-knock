@@ -55,7 +55,7 @@ export function compareYear(
   return holidays.flatMap(({ date, description }) => {
     const eventId = matchEvent(description);
     if (!eventId || !date.startsWith(`${year}-`)) return [];
-    const dates = computed.filter((o) => o.event.id === eventId).map((o) => o.start);
+    const dates: string[] = computed.filter((o) => o.event.id === eventId).map((o) => o.start);
     return [
       {
         eventId,
