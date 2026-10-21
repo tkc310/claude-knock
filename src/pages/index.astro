@@ -1,18 +1,16 @@
 ---
+import EventFacts from '@/components/event/EventFacts.astro';
 import Base from '@/layouts/Base.astro';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Stack } from '@/components/ui/stack';
-import { Tag } from '@/components/ui/tag';
 import { Text } from '@/components/ui/text';
-import { formatLunarDate, occurrences } from '@/core';
+import { occurrences } from '@/core';
 import { displayRange } from '@/data/display-range';
 import { events, formatEventName } from '@/data/events';
 
 const range = displayRange(new Date());
 const list = occurrences(events, range);
-const span = (start: string, end: string) =>
-  start === end ? start : `${start}〜${end.slice(5)}`;
 ---
 
 <Base title="タイ仏教行事カレンダー">
@@ -29,32 +27,13 @@ const span = (start: string, end: string) =>
           events.map((event) => {
             const dates = list.filter((o) => o.event.id === event.id);
             return (
-              <Card as="li" headingLevel={2} title={formatEventName(event.name)}>
-                <Stack gap="sm">
-                  <Stack direction="horizontal" gap="sm" wrap>
-                    {event.date.kind === 'solar-span' ? (
-                      <Tag>太陽暦</Tag>
-                    ) : (
-                      <Tag tone="key">太陰暦</Tag>
-                    )}
-                    {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
-                  </Stack>
-                  {event.date.kind === 'uposatha' ? (
-                    <Text variant="body-sm">
-                      毎月の白分 8・15 日、黒分 8 日、月末（{dates.length} 日）
-                    </Text>
-                  ) : (
-                    <Stack as="ul" gap="sm">
-                      {dates.map((o) => (
-                        <li>
-                          <Text variant="body-sm">
-                            {span(o.start, o.end)}（{formatLunarDate(o.lunar)}）
-                          </Text>
-                        </li>
-                      ))}
-                    </Stack>
-                  )}
-                </Stack>
+              <Card
+                as="li"
+                headingLevel={2}
+                title={formatEventName(event.name)}
+                href={`/events/${event.id}/`}
+              >
+                <EventFacts event={event} dates={dates} />
               </Card>
             );
           })
