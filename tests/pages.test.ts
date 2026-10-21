@@ -191,7 +191,9 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).not.toMatch(/\sdata-popover[\s=>]/);
     expect(html).not.toContain('hoverable:');
     // Tailwind v4 は hover: を (hover: hover) で包むので、幅と組み合わせた hoverable: の条件が無いことを見る
-    expect(html).not.toMatch(/\(hover:\s*hover\) and \((?:min-width:\s*48rem|width\s*>=\s*48rem)\)/);
+    expect(html).not.toMatch(
+      /\(hover:\s*hover\) and \((?:min-width:\s*48rem|width\s*>=\s*48rem)\)/,
+    );
     expect(html).not.toContain('カーソルを当てると');
   });
 
