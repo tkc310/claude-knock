@@ -4,7 +4,7 @@
 
 | 文書                                               | 中身                                                                  |
 | -------------------------------------------------- | --------------------------------------------------------------------- |
-| [operations.md](./operations.md)                   | 定期作業（ビルド、公式告示の確認など）と定期ビルドの仕組み            |
+| [operations.md](./operations.md)                   | 定期作業（毎年 12 月の照合とビルド）                                  |
 | [improvement-loop.md](./improvement-loop.md)       | 改善ループ（使う → 気づく → 記録する → 直す → 再発を防ぐ → 振り返る） |
 | [improvement/backlog.md](./improvement/backlog.md) | 改善候補の一覧                                                        |
 | [improvement/log.md](./improvement/log.md)         | 直したことの記録（1 改善 1 行）                                       |

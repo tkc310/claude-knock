@@ -119,22 +119,20 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
-  it('行事カードの次回は、表示時にブラウザの日付で選び直せるよう、まだ終わっていない日付をすべて候補に持つ', () => {
+  it('ビルドした日に依存する「次の行事」「次回」の表示を出さない（年 1 回のビルドで足りるように。ADR-0014）', () => {
     const html = page('index.html');
-    const today = new Date().toLocaleDateString('sv-SE');
-    const all = occurrences(events, displayRange(new Date()));
-    const attrs = [...html.matchAll(/data-next-dates="([^"]*)"/g)].map((m) =>
-      JSON.parse(m[1]!.replaceAll('&quot;', '"')),
-    ) as [string, string, string][][];
-    expect(attrs).toHaveLength(events.length);
-    for (const [i, event] of events.entries()) {
-      const expected = all.filter((o) => o.event.id === event.id && o.end >= today);
-      expect(attrs[i]!.map(([start, end]) => [start, end])).toEqual(
-        expected.map((o) => [o.start, o.end]),
-      );
+    for (const attr of [
+      'data-next-event',
+      'data-next-template',
+      'data-next-phra',
+      'data-next-dates',
+      'data-countdown',
+    ]) {
+      expect(html).not.toMatch(new RegExp(`\\s${attr}[\\s=>]`));
     }
-    // 候補が尽きたとき（表示範囲の後）に出す文言
-    expect(html).toContain('次回の日付は、サイトの更新後に表示されます');
+    expect(html).not.toContain('次の行事');
+    expect(html).not.toContain('次のワンプラ');
+    expect(html).not.toMatch(/>\s*次回\s*</);
   });
 
   it.each(['index.html', 'events/wan-phra/index.html'])('%s に OGP のメタを出す', (path) => {
@@ -170,12 +168,8 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).toContain('aria-label="次の月"');
   });
 
-  it('トップページの冒頭に次の行事の案内を出し、カレンダーに凡例と月ごとの行事の一覧を添える', () => {
+  it('カレンダーに凡例と月ごとの行事の一覧を添える', () => {
     const html = page('index.html');
-    expect(html).toMatch(
-      /<a [^>]*data-next-event[^>]*href="\/events\/[a-z-]+\/"|<a [^>]*href="\/events\/[a-z-]+\/"[^>]*data-next-event/,
-    );
-    expect(html).toContain('次の行事');
     for (const label of ['仏教行事', '民間行事', 'ワンプラ', '今日']) {
       expect(html).toMatch(new RegExp(`data-legend[^>]*>[\\s\\S]*${label}`));
     }

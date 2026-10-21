@@ -1,9 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
-import { spanLabel } from '@/components/event/date-label';
 import EventCalendar from '@/components/event/EventCalendar.astro';
 import EventCard from '@/components/event/EventCard.astro';
-import NextEvent from '@/components/event/NextEvent.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
 import Base from '@/layouts/Base.astro';
 import { Icon } from '@/components/ui/icon';
@@ -23,10 +21,6 @@ const entries = await Promise.all(
     return entry;
   }),
 );
-
-// 冒頭の「次の行事」。ビルドした日より後の候補を書き出し、表示時にブラウザの日付で 1 つ選ぶ（下の script）
-const upcoming = list.filter((o) => o.event.id !== 'wan-phra' && o.end >= today).slice(0, 8);
-const upcomingPhra = list.filter((o) => o.event.id === 'wan-phra' && o.end >= today).slice(0, 12);
 
 const about = [
   {
@@ -138,7 +132,7 @@ const imports = [
           stroke-width="1"
         ></circle>
       </svg>
-      <div class="relative mx-auto grid max-w-5xl gap-stack-md px-inset-lg py-stack-md md:grid-cols-[minmax(0,1fr)_20rem] md:items-center md:gap-gutter md:px-inset-xl md:py-stack-lg">
+      <div class="relative mx-auto grid max-w-5xl gap-stack-md px-inset-lg py-stack-md md:px-inset-xl md:py-stack-lg">
         <div class="flex flex-col gap-inset-lg">
           <!-- 飾り: 月の満ち欠け（新月・上弦・満月・下弦）。行事が月で決まることを表す -->
           <svg
@@ -182,48 +176,6 @@ const imports = [
             </a>
           </div>
         </div>
-
-        {upcoming.length > 0 && (
-          <aside
-            aria-labelledby="next-title"
-            class="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-surface shadow-1"
-          >
-            <p
-              id="next-title"
-              class="m-0 flex items-center gap-gap-sm px-inset-lg pt-inset-md pb-inset-sm text-label-sm text-fg-saffron"
-            >
-              <span aria-hidden="true" class="size-2 rounded-full bg-saffron" />
-              次の行事
-            </p>
-            {upcoming.map((o, i) =>
-              // 2 件目からは <template> に入れて DOM を小さくし、ビルドした日より後に開いたとき下の script が出す（ADR-0013）
-              i === 0 ? (
-                <NextEvent occurrence={o} />
-              ) : (
-                <template data-next-template data-end={o.end}>
-                  <NextEvent occurrence={o} />
-                </template>
-              ),
-            )}
-            {upcomingPhra.length > 0 && (
-              <p class="m-0 flex flex-wrap items-center gap-x-gap-sm border-t border-border-subtle bg-subtle px-inset-lg py-inset-sm text-body-sm">
-                <span class="flex items-center gap-gap-xs text-fg-subtle">
-                  <span aria-hidden="true" class="size-2 rounded-full bg-gold" />
-                  次のワンプラ（布薩日）
-                </span>
-                <time
-                  data-next-phra
-                  data-dates={JSON.stringify(
-                    upcomingPhra.map((o) => [o.start, o.end, spanLabel(o.start, o.end)]),
-                  )}
-                  datetime={upcomingPhra[0]!.start}
-                >
-                  {spanLabel(upcomingPhra[0]!.start, upcomingPhra[0]!.end)}
-                </time>
-              </p>
-            )}
-          </aside>
-        )}
       </div>
     </section>
 
@@ -285,9 +237,7 @@ const imports = [
       <section aria-labelledby="events" class="flex flex-col gap-stack-md">
         <SectionHeading id="events" eyebrow="Events" title="行事の一覧">
           <p class="m-0 text-body-sm text-fg-subtle">
-            <span class="hoverable:hidden">
-              由来と行うことと次回の日付を、カードにまとめています。
-            </span>
+            <span class="hoverable:hidden">由来と行うことを、カードにまとめています。</span>
             <span class="hidden hoverable:inline">
               カードにカーソルを当てると、由来・行うこと・{years}の日付が出ます。
             </span>
@@ -300,7 +250,6 @@ const imports = [
               event={event}
               entry={entries[i]!}
               dates={list.filter((o) => o.event.id === event.id)}
-              today={today}
               years={years}
             />
           ))}
@@ -388,62 +337,6 @@ const imports = [
 </Base>
 
 <script>
-  // 冒頭の「次の行事」を、ブラウザの日付で選び直し、あと何日かを出す
-  const today = new Date().toLocaleDateString('sv-SE');
-  const days = (from: string, to: string) =>
-    Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
-  // ビルドした日の「次の行事」が過ぎていたら、<template> の候補から選び直して差し替える
-  let next = document.querySelector<HTMLElement>('[data-next-event]');
-  if (next && (next.dataset.end ?? '') < today) {
-    const later = [
-      ...document.querySelectorAll<HTMLTemplateElement>('template[data-next-template]'),
-    ];
-    const found = later.find((t) => (t.dataset.end ?? '') >= today) ?? later.at(-1);
-    const replacement = found?.content.firstElementChild;
-    if (found && replacement instanceof HTMLElement) {
-      next.replaceWith(found.content);
-      next = replacement;
-    }
-  }
-  const countdown = next?.querySelector<HTMLElement>('[data-countdown]');
-  if (next && countdown) {
-    const { start = '', end = '' } = next.dataset;
-    countdown.textContent =
-      end < today
-        ? ''
-        : start > today
-          ? `あと ${days(today, start)} 日`
-          : start === end
-            ? '今日'
-            : '期間中';
-  }
-  // 次のワンプラ: 候補（[始まり, 終わり, 表示]）から、ブラウザの日付で選び直す
-  type Candidate = [start: string, end: string, label: string];
-  const phra = document.querySelector<HTMLTimeElement>('[data-next-phra]');
-  if (phra) {
-    const dates: Candidate[] = JSON.parse(phra.dataset.dates ?? '[]');
-    const found = dates.find(([, end]) => end >= today) ?? dates.at(-1);
-    if (found) {
-      phra.dateTime = found[0];
-      phra.textContent = found[2];
-    }
-  }
-
-  // 行事カードの次回: 同じく候補から選び直す。候補が尽きたら（表示範囲の後）、サイトの更新を待つ旨を出す
-  for (const row of document.querySelectorAll<HTMLElement>('[data-next-dates]')) {
-    const dates: Candidate[] = JSON.parse(row.dataset.nextDates ?? '[]');
-    const found = dates.find(([, end]) => end >= today);
-    const time = row.querySelector('time');
-    if (!time) continue;
-    if (found) {
-      time.dateTime = found[0];
-      time.textContent = found[2];
-    } else {
-      time.removeAttribute('datetime');
-      time.textContent = time.dataset.nextNone ?? '';
-    }
-  }
-
   // 一覧のカードのポップアップを、画面に収まる側（右、だめなら左）に出す。
   // どちらにも入らないときは、カードの下に出す（CSS の hoverable: の位置）。
   // カーソルの無い画面・狭い画面では、ポップアップにせずカードの中に出すので何もしない（ADR-0013）
