@@ -39,7 +39,7 @@ function writeEntries(root: string, ids: readonly string[]) {
   for (const id of ids) {
     writeFileSync(
       join(dir, `${id}.md`),
-      `---\nsummary: ${id} の説明文\n---\n\n## 由来\n\n${id} の本文。\n`,
+      `---\nsummary: ${id} の説明文\n---\n\n## 由来\n\n${id} の本文。\n\n## 出典\n\n- https://example.com/${id}\n`,
     );
   }
 }
@@ -78,6 +78,9 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).toContain(`<meta name="description" content="${event.id} の説明文"`);
     expect(html).toContain(`${event.id} の本文。`);
     expect(html).toContain('href="/"');
+    expect(html).toContain(
+      `<a href="https://example.com/${event.id}" target="_blank" rel="noopener noreferrer">`,
+    );
   });
 
   it.each(events)('$id のページにトップページと同じタグと日付が出る', (event) => {
