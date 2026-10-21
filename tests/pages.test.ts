@@ -118,21 +118,18 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
-  it.each(['index.html', 'events/wan-phra/index.html'])(
-    '%s に OGP と X のカード（大きい画像）のメタを出す',
-    (path) => {
-      const html = page(path);
-      const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
-      expect(title).toBeTruthy();
-      expect(html).toContain(`<meta property="og:title" content="${title}"`);
-      expect(html).toMatch(/<meta property="og:description" content="[^"]+"/);
-      expect(html).toMatch(/<meta property="og:image" content="[^"]*\/og\.png"/);
-      expect(html).toContain('<meta property="og:image:width" content="1200"');
-      expect(html).toContain('<meta property="og:image:height" content="630"');
-      expect(html).toContain('<meta name="twitter:card" content="summary_large_image"');
-      expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
-    },
-  );
+  it.each(['index.html', 'events/wan-phra/index.html'])('%s に OGP と X の大きい画像のカードを出す', (path) => {
+    const html = page(path);
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
+    expect(title).toBeTruthy();
+    expect(html).toContain(`<meta property="og:title" content="${title}"`);
+    expect(html).toMatch(/<meta property="og:description" content="[^"]+"/);
+    expect(html).toMatch(/<meta property="og:image" content="[^"]*\/og\.png"/);
+    expect(html).toContain('<meta property="og:image:width" content="1200"');
+    expect(html).toContain('<meta property="og:image:height" content="630"');
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image"');
+    expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
+  });
 
   it('トップページにサイトの概要と、ICS のダウンロードと取り込み手順を出す', () => {
     const html = page('index.html');
