@@ -129,7 +129,7 @@ GitHub のリポジトリの secrets に次の 2 つが要ります。
 | `CLOUDFLARE_API_TOKEN`  | Cloudflare の API トークン（「Edit Cloudflare Workers」のテンプレート） |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare のアカウント ID                                              |
 
-公開先の URL は `astro.config.mjs` の `site`、独自ドメインは `wrangler.json` の `routes` にあります。別の URL でビルドするとき（プレビューなど）は、環境変数 `SITE_URL` で `site` を上書きできます。
+公開先の URL は `astro.config.mjs` の `site`、独自ドメインは `wrangler.json` の `routes` にあります。`www.koyomi.tkc310.com` も独自ドメインにしてあり（証明書のため）、Cloudflare のダッシュボードの Redirect Rule で `koyomi.tkc310.com` へ 301 で転送します（ADR-0018）。別の URL でビルドするとき（プレビューなど）は、環境変数 `SITE_URL` で `site` を上書きできます。
 
 ### 手元からデプロイする
 

@@ -9,6 +9,10 @@
     {
       "pattern": "koyomi.tkc310.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "www.koyomi.tkc310.com",
+      "custom_domain": true
     }
   ]
 }

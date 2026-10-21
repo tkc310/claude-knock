@@ -22,6 +22,7 @@
 | [0015](./0015-yearly-update.md)                  | 定期作業を年 1 回（12 月）にまとめ、ビルドした日に依存する表示（次の行事・次回）を外す                | 採用                   |
 | [0016](./0016-deploy-cloudflare-workers.md)      | Cloudflare Workers の静的アセットで配り、main の CI が通ったら `make deploy` でデプロイする           | 採用                   |
 | [0017](./0017-seo.md)                            | canonical・JSON-LD・sitemap.xml で検索エンジンに伝え、ヘッダーのロゴを logo.svg にする                | 採用                   |
+| [0018](./0018-www-redirect.md)                   | www.koyomi.tkc310.com を独自ドメインにして証明書を作り、Redirect Rule で転送する                      | 採用                   |
 
 ## テンプレート
 

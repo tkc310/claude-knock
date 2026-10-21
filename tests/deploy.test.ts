@@ -28,6 +28,13 @@ describe('Cloudflare Workers へのデプロイ', () => {
     expect(read('wrangler.json')).toMatch(domain);
   });
 
+  // www は 2 階層目のサブドメインで、Universal SSL の証明書が効かない。独自ドメインにして証明書を作らせ、
+  // ダッシュボードの Redirect Rule で koyomi.tkc310.com へ 301 で送る（ADR-0018）
+  it('www.koyomi.tkc310.com も独自ドメインにする（証明書のため。転送は Redirect Rule）', () => {
+    const www = /"pattern": "www\.koyomi\.tkc310\.com",\s*"custom_domain": true/;
+    expect(read('wrangler.json')).toMatch(www);
+  });
+
   it('デプロイは main の CI が通った後にだけ動き、手元と同じ make deploy を走らせる', () => {
     const workflow = read('.github/workflows/deploy.yml');
     expect(workflow).toMatch(/workflow_run:\s*\n\s+workflows: \[CI\]\s*\n\s+types: \[completed\]/);
