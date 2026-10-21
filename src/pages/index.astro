@@ -184,7 +184,7 @@ const imports = [
         <SectionHeading id="about" eyebrow="About" title="このサイトについて" />
         <ul class="m-0 grid list-none gap-gap-md p-0 md:grid-cols-2">
           {about.map(({ icon, text }) => (
-            <li class="flex items-start gap-gap-md rounded-xl bg-subtle p-inset-xl">
+            <li class="flex items-start gap-gap-md rounded-sm bg-subtle p-inset-xl">
               <span
                 aria-hidden="true"
                 class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-saffron-muted text-fg-saffron"
@@ -237,28 +237,19 @@ const imports = [
       <section aria-labelledby="events" class="flex flex-col gap-stack-md">
         <SectionHeading id="events" eyebrow="Events" title="行事の一覧">
           <p class="m-0 text-body-sm text-fg-subtle">
-            <span class="hoverable:hidden">由来と行うことを、カードにまとめています。</span>
-            <span class="hidden hoverable:inline">
-              カードにカーソルを当てると、由来・行うこと・{years}の日付が出ます。
-            </span>
-            押すと詳しい説明のページへ移ります。
+            由来と行うことを、カードにまとめています。押すと詳しい説明のページへ移ります。
           </p>
         </SectionHeading>
         <ul class="m-0 grid list-none gap-gap-md p-0 md:grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
           {events.map((event, i) => (
-            <EventCard
-              event={event}
-              entry={entries[i]!}
-              dates={list.filter((o) => o.event.id === event.id)}
-              years={years}
-            />
+            <EventCard event={event} entry={entries[i]!} />
           ))}
         </ul>
       </section>
 
       <section
         aria-labelledby="ics"
-        class="flex flex-col overflow-hidden rounded-xl border border-border-subtle"
+        class="flex flex-col overflow-hidden rounded-sm border border-border-subtle"
       >
         <div class="flex flex-col gap-stack-md bg-gold-subtle p-inset-xl md:flex-row md:items-end md:justify-between md:gap-gutter">
           <SectionHeading id="ics" eyebrow="Import" title="カレンダーアプリに取り込む">
@@ -304,23 +295,28 @@ const imports = [
         </p>
       </section>
 
-      <section aria-labelledby="app" class="flex flex-col gap-stack-md">
-        <SectionHeading id="app" eyebrow="App" title="ホーム画面に追加する（アプリとして使う）">
-          <p class="m-0 max-w-prose text-body-sm text-fg-subtle">
-            ホーム画面やパソコンのアプリ一覧に法輪のアイコンを置き、アプリのように開けます。一度開くと、行事のページと
-            calendar.ics が端末に保存され、オフライン（電波の届かない場所）でも見られます。
-          </p>
-        </SectionHeading>
-        <div class="grid gap-gap-md md:grid-cols-3">
+      <section
+        aria-labelledby="app"
+        class="flex flex-col overflow-hidden rounded-sm border border-border-subtle"
+      >
+        <div class="flex flex-col gap-stack-md bg-gold-subtle p-inset-xl">
+          <SectionHeading id="app" eyebrow="App" title="ホーム画面に追加する（アプリとして使う）">
+            <p class="m-0 max-w-prose text-body-sm">
+              ホーム画面やパソコンのアプリ一覧に法輪のアイコンを置き、アプリのように開けます。一度開くと、行事のページと
+              calendar.ics が端末に保存され、オフライン（電波の届かない場所）でも見られます。
+            </p>
+          </SectionHeading>
+        </div>
+        <div class="grid gap-px bg-border-subtle md:grid-cols-3">
           {installs.map(({ app, steps }) => (
-            <div class="flex flex-col gap-gap-md rounded-xl border border-border-subtle bg-surface p-inset-xl">
+            <div class="flex flex-col gap-gap-md bg-surface p-inset-xl">
               <h3 class="m-0 text-heading-xxs">{app}</h3>
               <ol class="m-0 flex list-none flex-col gap-gap-md p-0">
                 {steps.map((step, n) => (
                   <li class="flex gap-gap-sm">
                     <span
                       aria-hidden="true"
-                      class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-gold-subtle text-label-sm text-fg-saffron tabular-nums ring-1 ring-gold-soft"
+                      class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-saffron-muted text-label-sm text-fg-saffron tabular-nums"
                     >
                       {n + 1}
                     </span>
@@ -335,45 +331,3 @@ const imports = [
     </div>
   </main>
 </Base>
-
-<script>
-  // 一覧のカードのポップアップを、画面に収まる側（右、だめなら左）に出す。
-  // どちらにも入らないときは、カードの下に出す（CSS の hoverable: の位置）。
-  // カーソルの無い画面・狭い画面では、ポップアップにせずカードの中に出すので何もしない（ADR-0013）
-  const GAP = 8;
-  const hoverable = window.matchMedia('(hover: hover) and (min-width: 48rem)');
-  for (const card of document.querySelectorAll<HTMLElement>('[data-card]')) {
-    const pop = card.querySelector<HTMLElement>('[data-popover]');
-    if (!pop) continue;
-    const place = () => {
-      Object.assign(pop.style, { left: '', right: '', top: '', width: '', marginTop: '' });
-      if (!hoverable.matches) return;
-      const rect = card.getBoundingClientRect();
-      const width = 320;
-      const viewport = document.documentElement.clientWidth;
-      const side =
-        rect.right + GAP + width <= viewport
-          ? 'right'
-          : rect.left - GAP - width >= 0
-            ? 'left'
-            : 'below';
-      if (side === 'below') return;
-      Object.assign(pop.style, {
-        width: `${width}px`,
-        marginTop: '0',
-        // CSS の inset-x-0 で左右とも 0 なので、反対側は auto に戻す
-        left: side === 'right' ? `calc(100% + ${GAP}px)` : 'auto',
-        right: side === 'left' ? `calc(100% + ${GAP}px)` : 'auto',
-      });
-      // 縦は画面からはみ出さないよう、カードの上端からずらす
-      const height = pop.offsetHeight;
-      let top = 0;
-      if (rect.top + height > window.innerHeight - GAP)
-        top = window.innerHeight - GAP - height - rect.top;
-      if (rect.top + top < GAP) top = GAP - rect.top;
-      pop.style.top = `${top}px`;
-    };
-    card.addEventListener('mouseenter', place);
-    card.addEventListener('focusin', place);
-  }
-</script>

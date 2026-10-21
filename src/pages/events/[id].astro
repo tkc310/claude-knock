@@ -43,7 +43,7 @@ const others = events.filter((e) => e.id !== event.id);
     </p>
 
     <header class="flex flex-col gap-stack-md">
-      <EventIllustration id={event.id} class="aspect-[16/7] rounded-xl shadow-1" />
+      <EventIllustration id={event.id} class="aspect-[16/7] rounded-sm shadow-1" />
       <div class="flex flex-col gap-gap-sm">
         <p class="m-0 text-label-md tracking-wider text-fg-saffron">{event.name.romaji}</p>
         <h1 class="m-0 text-heading-lg text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-heading-xl">
@@ -57,7 +57,7 @@ const others = events.filter((e) => e.id !== event.id);
 
     <section
       aria-labelledby="dates"
-      class="flex flex-col gap-gap-md rounded-xl border border-border-subtle p-inset-xl"
+      class="flex flex-col gap-gap-md rounded-sm border border-border-subtle p-inset-xl"
     >
       <h2 id="dates" class="m-0 text-heading-xxs">
         {range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の日付
