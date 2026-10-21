@@ -418,13 +418,29 @@ const imports = [
             : '期間中';
   }
   // 次のワンプラ: 候補（[始まり, 終わり, 表示]）から、ブラウザの日付で選び直す
+  type Candidate = [start: string, end: string, label: string];
   const phra = document.querySelector<HTMLTimeElement>('[data-next-phra]');
   if (phra) {
-    const dates: [string, string, string][] = JSON.parse(phra.dataset.dates ?? '[]');
+    const dates: Candidate[] = JSON.parse(phra.dataset.dates ?? '[]');
     const found = dates.find(([, end]) => end >= today) ?? dates.at(-1);
     if (found) {
       phra.dateTime = found[0];
       phra.textContent = found[2];
+    }
+  }
+
+  // 行事カードの次回: 同じく候補から選び直す。候補が尽きたら（表示範囲の後）、サイトの更新を待つ旨を出す
+  for (const row of document.querySelectorAll<HTMLElement>('[data-next-dates]')) {
+    const dates: Candidate[] = JSON.parse(row.dataset.nextDates ?? '[]');
+    const found = dates.find(([, end]) => end >= today);
+    const time = row.querySelector('time');
+    if (!time) continue;
+    if (found) {
+      time.dateTime = found[0];
+      time.textContent = found[2];
+    } else {
+      time.removeAttribute('datetime');
+      time.textContent = time.dataset.nextNone ?? '';
     }
   }
 
