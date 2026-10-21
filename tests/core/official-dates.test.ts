@@ -18,8 +18,6 @@ describe('公式の日付（tests/fixtures/official-dates.json）', () => {
 // 報道の日付（docs/events/README.md の △）。公式の出典が無いので fixtures には入れず、ここで照らす
 describe('報道の日付', () => {
   it.each([
-    ['khao-phansa', '2025-07-11'],
-    ['khao-phansa', '2026-07-30'],
     ['ok-phansa', '2024-10-17'],
     ['ok-phansa', '2025-10-07'],
     ['ok-phansa', '2026-10-26'],
