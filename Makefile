@@ -42,7 +42,8 @@ preview: ## ビルドしたサイトを手元で確認する
 
 ##@ 検査・テスト
 
-check: ## fmt・lint（vp check）と型（astro check。ADR-0010）
+check: ## 生成型を作り（astro sync）、fmt・lint（vp check）と型（astro check。ADR-0010）
+	$(VP) run sync
 	$(VP) check
 	$(VP) run typecheck
 
