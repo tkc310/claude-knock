@@ -122,6 +122,23 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     for (const app of ['Google カレンダー', 'iPhone', 'Outlook']) expect(html).toContain(app);
   });
 
+  it('トップページに、表示範囲の月ごとのカレンダーを出し、行事から詳細ページへリンクする', () => {
+    const html = page('index.html');
+    const { from, to } = displayRange(new Date());
+    expect(html).toContain(`data-month="${from.slice(0, 7)}"`);
+    expect(html).toContain(`data-month="${to.slice(0, 7)}"`);
+    expect(html.match(/data-month="/g)).toHaveLength(24);
+    expect(html).toMatch(/<table[^>]*data-month=/);
+    expect(html).toContain('aria-label="前の月"');
+    expect(html).toContain('aria-label="次の月"');
+  });
+
+  it('一覧のカードのポップアップは、カードの左右に置く', () => {
+    const html = page('index.html');
+    expect(html.match(/\sdata-popover[\s=>]/g)).toHaveLength(events.length);
+    expect(html.match(/\sdata-card[\s=>]/g)).toHaveLength(events.length);
+  });
+
   it.each(events)('$id のイラストを一覧のカードと詳細ページに出す', (event) => {
     const mark = `data-illustration="${event.id}"`;
     expect(page('index.html')).toContain(mark);

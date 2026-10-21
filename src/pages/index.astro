@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import EventCalendar from '@/components/event/EventCalendar.astro';
 import EventFacts from '@/components/event/EventFacts.astro';
 import EventIllustration from '@/components/event/EventIllustration.astro';
 import EventSummary from '@/components/event/EventSummary.astro';
@@ -98,6 +99,20 @@ const imports = [
         </Stack>
       </section>
 
+      <section aria-labelledby="calendar">
+        <Stack gap="md">
+          <Stack gap="sm">
+            <Heading level={2} size="sm" id="calendar">
+              行事カレンダー
+            </Heading>
+            <Text variant="body-sm" tone="subtle">
+              月ごとに行事を見られます。行事名を押すと詳しい説明のページへ移ります。
+            </Text>
+          </Stack>
+          <EventCalendar range={range} list={list} today={today} />
+        </Stack>
+      </section>
+
       <section aria-labelledby="events">
         <Stack gap="md">
           <Stack gap="sm">
@@ -121,6 +136,7 @@ const imports = [
                   title={`${event.name.kana}（${event.name.ja}）`}
                   href={`/events/${event.id}/`}
                   className="overflow-visible"
+                  data-card
                 >
                   <EventIllustration
                     slot="media"
@@ -131,7 +147,10 @@ const imports = [
                     <EventTags event={event} />
                     {next && <Text variant="body-sm">次回 {nextLabel(next.start, next.end)}</Text>}
                   </Stack>
-                  <div class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs rounded-xl border border-border bg-surface p-inset-lg opacity-0 shadow-2 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100">
+                  <div
+                    data-popover
+                    class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs rounded-xl border border-border bg-surface p-inset-lg opacity-0 shadow-2 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100"
+                  >
                     <Stack gap="sm">
                       <EventSummary entry={entries[i]!} />
                       <EventFacts event={event} dates={dates} />
@@ -189,3 +208,42 @@ const imports = [
     </Stack>
   </main>
 </Base>
+
+<script>
+  // 一覧のカードのポップアップを、画面に収まる側（右、だめなら左）に出す。
+  // どちらにも入らない狭い画面では、カードの下に出す（CSS の既定の位置）
+  const GAP = 8;
+  for (const card of document.querySelectorAll<HTMLElement>('[data-card]')) {
+    const pop = card.querySelector<HTMLElement>('[data-popover]');
+    if (!pop) continue;
+    const place = () => {
+      const rect = card.getBoundingClientRect();
+      const width = 320;
+      const viewport = document.documentElement.clientWidth;
+      const side =
+        rect.right + GAP + width <= viewport
+          ? 'right'
+          : rect.left - GAP - width >= 0
+            ? 'left'
+            : 'below';
+      Object.assign(pop.style, { left: '', right: '', top: '', width: '', marginTop: '' });
+      if (side === 'below') return;
+      Object.assign(pop.style, {
+        width: `${width}px`,
+        marginTop: '0',
+        // CSS の inset-x-0 で左右とも 0 なので、反対側は auto に戻す
+        left: side === 'right' ? `calc(100% + ${GAP}px)` : 'auto',
+        right: side === 'left' ? `calc(100% + ${GAP}px)` : 'auto',
+      });
+      // 縦は画面からはみ出さないよう、カードの上端からずらす
+      const height = pop.offsetHeight;
+      let top = 0;
+      if (rect.top + height > window.innerHeight - GAP)
+        top = window.innerHeight - GAP - height - rect.top;
+      if (rect.top + top < GAP) top = GAP - rect.top;
+      pop.style.top = `${top}px`;
+    };
+    card.addEventListener('mouseenter', place);
+    card.addEventListener('focusin', place);
+  }
+</script>

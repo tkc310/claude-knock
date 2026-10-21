@@ -1,0 +1,156 @@
+---
+// トップページの月表示のカレンダー。表示範囲の全月を書き出し、前後の月はボタンで切り替える
+import type { DateRange, Occurrence } from '@/core';
+import type { EventDefinition } from '@/data/events';
+import { calendarMonths, type CalendarItem } from '@/data/month-grid';
+
+interface Props {
+  range: DateRange;
+  list: readonly Occurrence<EventDefinition>[];
+  /** ビルドした日（YYYY-MM-DD）。最初に見せる月と「今日」の印に使う。表示時はブラウザの日付で置き換える */
+  today: string;
+}
+
+const { range, list, today } = Astro.props;
+const months = calendarMonths(range, list);
+const key = (y: number, m: number) => `${y}-${String(m).padStart(2, '0')}`;
+const initial = months.some((m) => key(m.year, m.month) === today.slice(0, 7))
+  ? today.slice(0, 7)
+  : key(months[0]!.year, months[0]!.month);
+const initialTitle = `${initial.slice(0, 4)} 年 ${Number(initial.slice(5))} 月`;
+
+const label = ({ event, mark }: CalendarItem) =>
+  mark === 'start'
+    ? `${event.name.kana} 始まり`
+    : mark === 'end'
+      ? `${event.name.kana} 終わり`
+      : event.name.kana;
+const chip = ({ event }: CalendarItem) =>
+  event.id === 'wan-phra'
+    ? 'text-fg-subtle'
+    : event.category === 'folk'
+      ? 'bg-warning-subtle text-fg'
+      : 'bg-key-subtle text-fg';
+---
+
+<div data-calendar data-initial={initial} class="flex flex-col gap-stack-sm">
+  <div class="flex items-center justify-between gap-gap-sm">
+    <button
+      type="button"
+      data-cal-prev
+      aria-label="前の月"
+      class="rounded-md border border-border px-inset-md py-inset-xs text-body-md hover:bg-subtle disabled:opacity-40"
+    >
+      ‹
+    </button>
+    <p data-cal-title aria-live="polite" class="m-0 text-heading-xs">
+      {initialTitle}
+    </p>
+    <button
+      type="button"
+      data-cal-next
+      aria-label="次の月"
+      class="rounded-md border border-border px-inset-md py-inset-xs text-body-md hover:bg-subtle disabled:opacity-40"
+    >
+      ›
+    </button>
+  </div>
+  {months.map(({ year, month, weeks }) => (
+    <table
+      data-month={key(year, month)}
+      data-title={`${year} 年 ${month} 月`}
+      hidden={key(year, month) !== initial}
+      class="w-full table-fixed border-collapse"
+    >
+      <caption class="sr-only">{`${year} 年 ${month} 月の行事`}</caption>
+      <thead>
+        <tr>
+          {['日', '月', '火', '水', '木', '金', '土'].map((w, i) => (
+            <th
+              scope="col"
+              class:list={[
+                'pb-inset-xs text-body-sm font-regular text-fg-subtle',
+                i === 0 && 'text-fg-danger',
+              ]}
+            >
+              {w}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {weeks.map((week) => (
+          <tr>
+            {week.map((d) => (
+              <td
+                data-date={d.date}
+                class:list={[
+                  'h-20 border border-border-subtle p-inset-xs align-top',
+                  !d.inMonth && 'bg-subtle',
+                ]}
+              >
+                {d.inMonth && (
+                  <>
+                    <span data-day class="block text-body-sm">
+                      {Number(d.date.slice(8))}
+                    </span>
+                    <ul class="m-0 flex list-none flex-col gap-px p-0">
+                      {d.items.map((item) => (
+                        <li class="min-w-0">
+                          <a
+                            href={`/events/${item.event.id}/`}
+                            title={label(item)}
+                            class:list={[
+                              'block truncate rounded-xs px-1 text-dense-sm no-underline hover:underline',
+                              chip(item),
+                            ]}
+                          >
+                            {label(item)}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ))}
+</div>
+
+<script>
+  // 前後の月の切り替えと、ブラウザの日付での「今日」の印
+  for (const root of document.querySelectorAll<HTMLElement>('[data-calendar]')) {
+    const tables = [...root.querySelectorAll<HTMLTableElement>('table[data-month]')];
+    const title = root.querySelector<HTMLElement>('[data-cal-title]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-cal-next]')!;
+    const today = new Date().toLocaleDateString('sv-SE');
+    const start = tables.findIndex((t) => t.dataset.month === today.slice(0, 7));
+    let index =
+      start >= 0 ? start : tables.findIndex((t) => t.dataset.month === root.dataset.initial);
+
+    const show = () => {
+      tables.forEach((t, i) => (t.hidden = i !== index));
+      title.textContent = tables[index]!.dataset.title ?? '';
+      prev.disabled = index === 0;
+      next.disabled = index === tables.length - 1;
+    };
+    prev.addEventListener('click', () => {
+      index = Math.max(0, index - 1);
+      show();
+    });
+    next.addEventListener('click', () => {
+      index = Math.min(tables.length - 1, index + 1);
+      show();
+    });
+
+    const cell = root.querySelector<HTMLElement>(`td[data-date="${today}"]`);
+    cell?.setAttribute('aria-current', 'date');
+    cell?.querySelector('[data-day]')?.classList.add('font-bold', 'text-fg-key');
+    show();
+  }
+</script>
