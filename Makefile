@@ -61,7 +61,7 @@ verify: build ## ビルドし、dist/calendar.ics が VCALENDAR で VEVENT を�
 	@[ "$$(head -c 15 dist/calendar.ics)" = BEGIN:VCALENDAR ] || { echo "dist/calendar.ics が BEGIN:VCALENDAR で始まりません"; exit 1; }
 	@n=$$(grep -c '^BEGIN:VEVENT' dist/calendar.ics); [ "$$n" -ge 1 ] || { echo "dist/calendar.ics に VEVENT がありません"; exit 1; }; echo "dist/calendar.ics: VEVENT $$n 件"
 
-deploy: build verify ## Cloudflare Workers にデプロイする（初回は pnpm dlx wrangler@4 login。SITE_URL を渡すと OGP が絶対 URL になる。ADR-0016）
+deploy: build verify ## Cloudflare Workers にデプロイする（初回のログインは CONTRIBUTING.md の「リリース」。ADR-0016）
 	pnpm dlx --allow-build=esbuild --allow-build=workerd wrangler@4 deploy
 
 ##@ UI

@@ -134,17 +134,20 @@ GitHub のリポジトリの secrets に次の 2 つが要ります。
 ### 手元からデプロイする
 
 ```sh
-pnpm dlx wrangler@4 login   # 初回だけ。ブラウザで Cloudflare にサインインする
-make deploy                 # build → verify → wrangler deploy
+pnpm dlx --allow-build=esbuild --allow-build=workerd wrangler@4 login   # 初回だけ。ブラウザで Cloudflare にサインインする
+make deploy                                                             # build → verify → wrangler deploy
 ```
+
+`pnpm dlx` は、wrangler が使う esbuild と workerd のインストール時のスクリプトを `--allow-build` で許さないと止まります（`ERR_PNPM_IGNORED_BUILDS`）。`make deploy` は付けてあります。
 
 ### ロールバック
 
 公開した版に問題があったら、Cloudflare の前の版に戻せます。
 
 ```sh
-pnpm dlx wrangler@4 deployments list   # これまでのデプロイを見る
-pnpm dlx wrangler@4 rollback           # 1 つ前の版に戻す（版の ID を渡すとその版に戻す）
+WRANGLER="pnpm dlx --allow-build=esbuild --allow-build=workerd wrangler@4"
+$WRANGLER deployments list   # これまでのデプロイを見る
+$WRANGLER rollback           # 1 つ前の版に戻す（版の ID を渡すとその版に戻す）
 ```
 
 ロールバックは一時しのぎです。原因を直した PR を `main` にマージすると、次のデプロイで直った版になります。
