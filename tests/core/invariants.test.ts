@@ -106,11 +106,13 @@ it('Occurrence.lunar は toLunar と一致する', () => {
   for (const o of all) expect(o.lunar).toEqual(toLunarIn(calendar, o.start));
 });
 
-it('8 แรก の表記は、その日を出した年表の年型で決まる', () => {
+it('閏月の年の 1 回目の 8 月の表記は、その日を出した年表の年型で決まる', () => {
   // 上書きの表を試すテストは、年型を変えた年表を作る（overrides.test.ts）
   const cal = buildCalendar((y) => (y === 2570 ? 'adhikamasa' : yearKind(y)));
   const first8 = cal.years.find((y) => y.year === 2570)!.months.find((m) => m.month.month === 8)!;
-  expect(formatLunarDate(toLunarIn(cal, fromDayNumber(first8.start)))).toBe('ขึ้น 1 ค่ำ เดือน 8 แรก');
+  expect(formatLunarDate(toLunarIn(cal, fromDayNumber(first8.start)))).toBe(
+    '太陰暦 8 月（1 回目）前半 1 日',
+  );
 });
 
 function days(from: IsoDate, to: IsoDate): number {

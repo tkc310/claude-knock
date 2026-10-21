@@ -1,7 +1,7 @@
 ---
-// 行事のタグ（太陰暦／太陽暦・民間行事）と日付。トップページと詳細ページで同じ表示にする
+// 行事のタグと日付。トップページと詳細ページで同じ表示にする
+import EventTags from '@/components/event/EventTags.astro';
 import { Stack } from '@/components/ui/stack';
-import { Tag } from '@/components/ui/tag';
 import { Text } from '@/components/ui/text';
 import { formatLunarDate, type Occurrence } from '@/core';
 import type { EventDefinition } from '@/data/events';
@@ -17,12 +17,11 @@ const span = (start: string, end: string) => (start === end ? start : `${start}�
 ---
 
 <Stack gap="sm">
-  <Stack direction="horizontal" gap="sm" wrap>
-    {event.date.kind === 'solar-span' ? <Tag>太陽暦</Tag> : <Tag tone="key">太陰暦</Tag>}
-    {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
-  </Stack>
+  <EventTags event={event} />
   {event.date.kind === 'uposatha' ? (
-    <Text variant="body-sm">毎月の白分 8・15 日、黒分 8 日、月末（{dates.length} 日）</Text>
+    <Text variant="body-sm">
+      月に 4 回。月の前半・後半それぞれの 8 日目と最後の日（{dates.length} 日）
+    </Text>
   ) : (
     <Stack as="ul" gap="sm">
       {dates.map((o) => (

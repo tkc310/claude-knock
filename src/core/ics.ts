@@ -4,7 +4,7 @@ import type { Occurrence } from './rules';
 
 interface IcsEvent {
   id: string;
-  name: { th: string; kana: string };
+  name: { kana: string; ja: string };
 }
 
 const encoder = new TextEncoder();
@@ -53,7 +53,7 @@ export function toIcs<E extends IcsEvent>(
       `DTSTART;VALUE=DATE:${ymd(start)}`,
       // 終日の DTEND は排他的なので、終わりの翌日
       `DTEND;VALUE=DATE:${ymd(addDays(end, 1))}`,
-      `SUMMARY:${escapeText(`${event.name.kana}（${event.name.th}）`)}`,
+      `SUMMARY:${escapeText(`${event.name.kana}（${event.name.ja}）`)}`,
       'END:VEVENT',
     ]),
     'END:VCALENDAR',

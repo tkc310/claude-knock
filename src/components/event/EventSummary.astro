@@ -1,0 +1,34 @@
+---
+// 行事の由来と行うこと（frontmatter の origin・practice）。トップページと詳細ページで同じ表示にする
+import type { CollectionEntry } from 'astro:content';
+import { Text } from '@/components/ui/text';
+
+interface Props {
+  entry: CollectionEntry<'events'>;
+}
+
+const { origin, practice } = Astro.props.entry.data;
+---
+
+<dl class="grid grid-cols-[auto_1fr] gap-x-gap-md gap-y-gap-xs">
+  <dt>
+    <Text as="span" variant="body-sm" tone="subtle">
+      由来
+    </Text>
+  </dt>
+  <dd>
+    <Text as="span" variant="body-sm">
+      {origin}
+    </Text>
+  </dd>
+  <dt>
+    <Text as="span" variant="body-sm" tone="subtle">
+      行うこと
+    </Text>
+  </dt>
+  <dd>
+    <Text as="span" variant="body-sm">
+      {practice}
+    </Text>
+  </dd>
+</dl>

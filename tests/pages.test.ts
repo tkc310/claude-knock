@@ -39,7 +39,7 @@ function writeEntries(root: string, ids: readonly string[]) {
   for (const id of ids) {
     writeFileSync(
       join(dir, `${id}.md`),
-      `---\nsummary: ${id} の説明文\n---\n\n## 由来\n\n${id} の本文。\n\n## 出典\n\n- https://example.com/${id}\n`,
+      `---\norigin: ${id} の由来\npractice: ${id} で行うこと\n---\n\n## 由来\n\n${id} の本文。\n\n## 出典\n\n- https://example.com/${id}\n`,
     );
   }
 }
@@ -75,7 +75,10 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     const html = page(`events/${event.id}/index.html`);
     expect(html).toContain(`<h1`);
     expect(html).toContain(formatEventName(event.name));
-    expect(html).toContain(`<meta name="description" content="${event.id} の説明文"`);
+    expect(html).toContain(
+      `<meta name="description" content="${event.id} の由来。${event.id} で行うこと。"`,
+    );
+    expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
     expect(html).toContain(`${event.id} の本文。`);
     expect(html).toContain('href="/"');
     expect(html).toContain(
@@ -93,7 +96,7 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     );
     expect(dates.length).toBeGreaterThan(0);
     if (event.date.kind === 'uposatha') {
-      expect(html).toContain('毎月の白分 8・15 日、黒分 8 日、月末');
+      expect(html).toContain('月に 4 回');
     } else {
       for (const o of dates) {
         expect(html).toContain(o.start);
@@ -102,10 +105,35 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     }
   });
 
-  it('トップページの各カードから詳細ページへリンクする', () => {
+  it('トップページの各カードから詳細ページへリンクし、由来と行うことを出す', () => {
     const html = page('index.html');
-    for (const event of events) expect(html).toContain(`href="/events/${event.id}/"`);
+    for (const event of events) {
+      expect(html).toContain(`href="/events/${event.id}/"`);
+      expect(html).toContain(`${event.id} の由来`);
+      expect(html).toContain(`${event.id} で行うこと`);
+    }
+    expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
   });
+
+  it('トップページにサイトの概要と、ICS のダウンロードと取り込み手順を出す', () => {
+    const html = page('index.html');
+    expect(html).toContain('このサイトについて');
+    expect(html).toMatch(/<a [^>]*href="\/calendar\.ics"[^>]*download/);
+    for (const app of ['Google カレンダー', 'iPhone', 'Outlook']) expect(html).toContain(app);
+  });
+
+  it.each(events)('$id のイラストを一覧のカードと詳細ページに出す', (event) => {
+    const mark = `data-illustration="${event.id}"`;
+    expect(page('index.html')).toContain(mark);
+    expect(page(`events/${event.id}/index.html`)).toContain(mark);
+  });
+
+  it.each(['index.html', 'events/wan-phra/index.html'])(
+    '%s は OS がダークモードでも白い配色にする',
+    (path) => {
+      expect(page(path)).toMatch(/<html [^>]*data-theme="light"/);
+    },
+  );
 });
 
 it('本文の無い行事があればビルドが失敗する', { timeout: 120_000 }, () => {
