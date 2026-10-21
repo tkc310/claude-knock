@@ -14,6 +14,7 @@ const files: Record<string, string> = {
   'sw.js': '',
   'robots.txt': '',
   'sitemap.xml': '<urlset/>',
+  'llms.txt': '# タイ仏教行事カレンダー',
   _headers: '/sw.js\n  Cache-Control: no-cache',
 };
 
@@ -30,12 +31,13 @@ it('ページは末尾が / の URL にし、ICS・マニフェスト・アイ�
   ]);
 });
 
-it('どのページも読み込まない _astro/ のファイルと、sw.js・robots.txt・sitemap.xml は保存しない', () => {
+it('どのページも読み込まない _astro/ と、sw.js・robots.txt・sitemap.xml・llms.txt は保存しない', () => {
   const urls = precacheUrls(Object.keys(files), (f) => files[f]!);
   expect(urls).not.toContain('/_astro/client.unused.js');
   expect(urls).not.toContain('/sw.js');
   expect(urls).not.toContain('/robots.txt');
   expect(urls).not.toContain('/sitemap.xml');
+  expect(urls).not.toContain('/llms.txt');
 });
 
 // _headers・_redirects は Cloudflare が読むだけで配られない（404）。保存の対象に入れると cache.addAll が失敗し、

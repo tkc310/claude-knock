@@ -263,6 +263,23 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(blocks[0]![1]!).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
+  // llms.txt（https://llmstxt.org/ 、ADR-0019）。AI 向けにサイトの概要と全ページを Markdown で渡す
+  it('llms.txt に、サイト名・概要・全ページのリンクと、行事の由来・行うこと・日付を出す', () => {
+    const llms = page('llms.txt');
+    expect(llms.startsWith('# タイ仏教行事カレンダー\n')).toBe(true);
+    expect(llms).toMatch(/^> .+/m);
+    for (const event of events) {
+      const line = llms.split('\n').find((l) => l.includes(`(${site}/events/${event.id}/)`));
+      expect(line).toBeTruthy();
+      expect(line).toContain(formatEventName(event.name));
+      expect(line).toContain(`${event.id} の由来`);
+    }
+    expect(llms).toContain(`(${site}/tambun/)`);
+    expect(llms).toContain(`(${site}/calendar.ics)`);
+    expect(llms).toMatch(/^## Optional$/m);
+    expect(llms).not.toMatch(/[\u0E00-\u0E7F]/);
+  });
+
   it('sitemap.xml に全ページを絶対 URL で載せ、robots.txt から指す', () => {
     const sitemap = page('sitemap.xml');
     expect(sitemap).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
