@@ -57,6 +57,10 @@
     & h2[id='出典'] ~ ul li {
       @apply text-body-sm text-fg-subtle;
     }
+    /* 本文の中の飾りのイラスト（public/illustrations/）。幅いっぱいにし、読み込む前から高さを確保する */
+    & img[src^='/illustrations/'] {
+      @apply block aspect-[8/3] h-auto w-full rounded-sm;
+    }
     & blockquote {
       @apply rounded-e-lg border-s-4 border-gold-soft bg-gold-subtle px-inset-lg py-inset-md;
     }

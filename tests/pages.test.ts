@@ -369,6 +369,25 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(JSON.parse(sw.match(/const PRECACHE = (\[[^\]]*\])/)![1]!)).toContain('/tambun/');
   });
 
+  // タンブンのページのイラスト（public/illustrations/tambun/）。飾りなので alt は空にする
+  it('タンブンの説明ページは、冒頭と各節にイラストを置く', () => {
+    const html = page('tambun/index.html');
+    const img = /<img [^>]*src="(\/illustrations\/tambun\/[a-z-]+\.svg)"[^>]*>/g;
+    const srcs = [...html.matchAll(img)];
+    expect(srcs.length).toBeGreaterThanOrEqual(8);
+    for (const [tag, src] of srcs) {
+      expect(tag).toMatch(/alt=""/);
+      expect(page(src!.slice(1))).toContain('<svg');
+    }
+    expect(srcs[0]![1]).toBe('/illustrations/tambun/hero.svg');
+  });
+
+  it('トップページの「このサイトについて」から、タンブンの説明ページへリンクする', () => {
+    const html = page('index.html');
+    const about = html.match(/<section aria-labelledby="about"[\s\S]*?<\/section>/)?.[0];
+    expect(about).toMatch(/<a [^>]*href="\/tambun\/"/);
+  });
+
   it.each(['index.html', 'events/wan-phra/index.html'])(
     '%s は OS がダークモードでも白い配色にする',
     (path) => {
