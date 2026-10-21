@@ -9,9 +9,16 @@ import type { AstroIntegration } from 'astro';
 const VERSION_MARK = `'__SW_VERSION__'`;
 const PRECACHE_MARK = '/* __SW_PRECACHE__ */ []';
 
-// 保存しないファイル。sw.js 自身と検索エンジン向けの robots.txt・sitemap.xml（ADR-0017）、
+// 保存しないファイル。sw.js 自身と検索エンジン・AI 向けの robots.txt・sitemap.xml・llms.txt（ADR-0017・0019）、
 // Cloudflare が読むだけで配らない _headers・_redirects（ADR-0016）
-const notCached = new Set(['sw.js', 'robots.txt', 'sitemap.xml', '_headers', '_redirects']);
+const notCached = new Set([
+  'sw.js',
+  'robots.txt',
+  'sitemap.xml',
+  'llms.txt',
+  '_headers',
+  '_redirects',
+]);
 
 /** dist の中のファイルから、Service Worker が保存する URL を選ぶ */
 export function precacheUrls(files: readonly string[], read: (file: string) => string): string[] {
