@@ -46,6 +46,24 @@ describe('Cloudflare Workers へのデプロイ', () => {
     expect(workflow).toContain('CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}');
   });
 
+  // 表示する範囲（今年と来年）はビルドした日で決まるので、年が変わったら作り直す（ADR-0022）。
+  // cron は UTC。日本時間の 1 月 1 日 0 時 5 分は 12 月 31 日 15 時 5 分（UTC）で、TZ を日本にして年を数える
+  it('毎年 1 月 1 日（日本時間）に、main をビルドし直してデプロイする', () => {
+    const workflow = read('.github/workflows/deploy.yml');
+    expect(workflow).toMatch(/schedule:\s*\n\s+- cron: '5 15 31 12 \*'/);
+    expect(workflow).toContain("github.event_name == 'schedule'");
+    expect(workflow).toMatch(/TZ: Asia\/Tokyo/);
+  });
+
+  // 公開リポジトリでは、60 日動きが無いと定期実行が止まる。毎月 API で有効にし直す
+  it('毎月、定期実行のワークフローを有効にし直す', () => {
+    const workflow = read('.github/workflows/keepalive.yml');
+    expect(workflow).toMatch(/schedule:\s*\n\s+- cron: '\S+ \S+ 1 \* \*'/);
+    expect(workflow).toMatch(/actions: write/);
+    expect(workflow).toContain('gh workflow enable deploy.yml');
+    expect(workflow).toContain('gh workflow enable keepalive.yml');
+  });
+
   it('make deploy は build と verify の後に wrangler で送る', () => {
     expect(read('Makefile')).toMatch(/^deploy: build verify .*\n\tpnpm dlx .*wrangler@4 deploy$/m);
   });

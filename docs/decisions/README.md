@@ -26,6 +26,7 @@
 | [0019](./0019-llms-txt.md)                       | AI 向けに llms.txt を置き、行事の由来・行うこと・日付まで書く                                         | 採用                   |
 | [0020](./0020-rich-results.md)                   | リッチリザルト向けに Organization と Article の JSON-LD を出し、Event は出さない                      | 採用                   |
 | [0021](./0021-release-please.md)                 | バージョンとリリースノートを release-please で自動化する                                              | 採用                   |
+| [0022](./0022-yearly-rebuild.md)                 | 毎年 1 月 1 日に自動でビルドし直し、定期実行を毎月有効にし直す                                        | 採用                   |
 
 ## テンプレート
 

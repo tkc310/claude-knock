@@ -1,0 +1,25 @@
+# 定期実行を止めないためのワークフロー（ADR-0022）。
+# 公開リポジトリでは、60 日リポジトリに動きが無いと定期実行（schedule）が自動で止まる。
+# 年に 1 回の Deploy（1 月 1 日）が止まらないよう、毎月 1 日に API で有効にし直す
+name: Keepalive
+
+on:
+  schedule:
+    - cron: '17 3 1 * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 定期実行のワークフローを有効にし直す
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow enable deploy.yml
+          gh workflow enable keepalive.yml
