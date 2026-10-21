@@ -11,7 +11,7 @@ import { gregorianYear } from '../../src/core/day';
 import { occurrencesIn } from '../../src/core/rules';
 import { yearKind, type YearKind } from '../../src/core/suriyayatra';
 import { events } from '../../src/data/events';
-import { officialDatesInTable, type OfficialDate } from './fixtures';
+import { officialDates, officialDatesInTable, type OfficialDate } from './fixtures';
 
 const yearKinds: readonly YearKind[] = ['common', 'adhikavara', 'adhikamasa'];
 
@@ -49,7 +49,12 @@ describe('YEAR_KIND_OVERRIDES', () => {
   });
 
   it('上書きした年には、すべて根拠の fixtures がある', () => {
-    expect([...YEAR_KIND_OVERRIDES.keys()].filter((y) => !byLunarYear.has(y))).toEqual([]);
+    // 年表より前の年は、アーサーラハ・ブーチャーの間隔が根拠（year-kind.test.ts）。7 月なので西暦年 + 543
+    const asarnhaYears = officialDates
+      .filter((d) => d.eventId === 'asarnha-bucha')
+      .map((d) => Number(d.date.slice(0, 4)) + 543);
+    const evidenced = new Set([...byLunarYear.keys(), ...asarnhaYears]);
+    expect([...YEAR_KIND_OVERRIDES.keys()].filter((y) => !evidenced.has(y))).toEqual([]);
   });
 
   it('上書きを入れた暦が fixtures をすべて満たす', () => {

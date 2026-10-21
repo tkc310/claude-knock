@@ -41,7 +41,11 @@ export interface Calendar {
  * 暦法と公式の暦が食い違う年の年型。tests/core/overrides.test.ts が fixtures と両方向で照らす。
  * 足すときは、テストの失敗メッセージに出る年型を、出典を見て確かめてから書く
  */
-export const YEAR_KIND_OVERRIDES: ReadonlyMap<number, YearKind> = new Map();
+export const YEAR_KIND_OVERRIDES: ReadonlyMap<number, YearKind> = new Map([
+  // 年表より前の年。出す日付には効かないが、暦法が外れた年として残す（tests/core/year-kind.test.ts）
+  [2557, 'common'],
+  [2559, 'adhikavara'],
+]);
 
 // 仏暦 2567 年の เดือนอ้าย ขึ้น 1 ค่ำ。公式のアーサーラハ・ブーチャー 2024-07-20 の 220 日前
 const EPOCH_YEAR = 2567;
