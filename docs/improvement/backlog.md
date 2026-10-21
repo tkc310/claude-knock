@@ -29,3 +29,4 @@
 
 - [ ] remote を作ったら、Issue テンプレート「改善提案」と PR テンプレート（`log.md` への記録のチェック）を足す
 - [ ] Cloudflare（Void）へのデプロイ手順を用意する（必要になったら `@astrojs/cloudflare`）
+- [ ] デプロイ先ができたら、毎日のビルドとデプロイを定期実行にする（`TZ=Asia/Tokyo`、検査が落ちたらデプロイしない）。方針は `docs/operations.md` の「定期ビルド」

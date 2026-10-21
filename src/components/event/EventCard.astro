@@ -25,7 +25,12 @@ interface Props {
 }
 
 const { event, entry, dates, today, years } = Astro.props;
-const next = dates.find((o) => o.end >= today);
+// 次回の候補。ビルドした日にまだ終わっていない日付をすべて持たせ、表示時にブラウザの日付で選び直す（index.astro の script）
+const remaining = dates.filter((o) => o.end >= today);
+const next = remaining[0];
+const candidates = JSON.stringify(
+  remaining.map((o) => [o.start, o.end, spanLabel(o.start, o.end)]),
+);
 ---
 
 <li
@@ -61,17 +66,23 @@ const next = dates.find((o) => o.end >= today);
       <EventFacts event={event} dates={dates} tags={false} />
     </div>
   </div>
-  {next && (
-    <div class="mt-auto flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md">
-      <span class="text-label-sm text-fg-subtle">次回</span>
-      <time datetime={next.start} class="text-body-sm font-bold">
-        {spanLabel(next.start, next.end)}
-      </time>
-      <Icon
-        name="arrow-right"
-        size="sm"
-        className="ms-auto text-icon-key transition-transform group-hover/card:translate-x-gap-xs"
-      />
-    </div>
-  )}
+  <div
+    data-next-dates={candidates}
+    class="mt-auto flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md"
+  >
+    <span class="text-label-sm text-fg-subtle">次回</span>
+    <!-- 候補が尽きたら（表示期間の後）、日付の代わりにこの文言を出す。要素を増やさないよう time の中身を差し替える -->
+    <time
+      datetime={next?.start}
+      data-next-none="次回の日付は、サイトの更新後に表示されます"
+      class="text-body-sm font-bold"
+    >
+      {next ? spanLabel(next.start, next.end) : '次回の日付は、サイトの更新後に表示されます'}
+    </time>
+    <Icon
+      name="arrow-right"
+      size="sm"
+      className="ms-auto text-icon-key transition-transform group-hover/card:translate-x-gap-xs"
+    />
+  </div>
 </li>

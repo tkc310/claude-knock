@@ -118,6 +118,24 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
   });
 
+  it('行事カードの次回は、表示時にブラウザの日付で選び直せるよう、まだ終わっていない日付をすべて候補に持つ', () => {
+    const html = page('index.html');
+    const today = new Date().toLocaleDateString('sv-SE');
+    const all = occurrences(events, displayRange(new Date()));
+    const attrs = [...html.matchAll(/data-next-dates="([^"]*)"/g)].map((m) =>
+      JSON.parse(m[1]!.replaceAll('&quot;', '"')),
+    ) as [string, string, string][][];
+    expect(attrs).toHaveLength(events.length);
+    for (const [i, event] of events.entries()) {
+      const expected = all.filter((o) => o.event.id === event.id && o.end >= today);
+      expect(attrs[i]!.map(([start, end]) => [start, end])).toEqual(
+        expected.map((o) => [o.start, o.end]),
+      );
+    }
+    // 候補が尽きたとき（表示範囲の後）に出す文言
+    expect(html).toContain('次回の日付は、サイトの更新後に表示されます');
+  });
+
   it('トップページにサイトの概要と、ICS のダウンロードと取り込み手順を出す', () => {
     const html = page('index.html');
     expect(html).toContain('このサイトについて');
