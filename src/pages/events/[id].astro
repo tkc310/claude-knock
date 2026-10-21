@@ -31,7 +31,9 @@ const name = formatEventName(event.name);
   <main class="mx-auto max-w-3xl p-inset-xl">
     <Stack gap="lg">
       <Text variant="body-sm">
-        <a href="/" class="text-fg-link underline underline-offset-[0.2em]">行事の一覧へ戻る</a>
+        <a href="/" class="text-fg-link underline underline-offset-[0.2em]">
+          行事の一覧へ戻る
+        </a>
       </Text>
       <Stack gap="sm">
         <Heading level={1}>{name}</Heading>
@@ -45,9 +47,7 @@ const name = formatEventName(event.name);
           <EventFacts event={event} dates={dates} />
         </Stack>
       </section>
-      <div
-        class="flex flex-col gap-stack-sm [&_a]:break-all [&_a]:text-fg-link [&_a]:underline [&_a]:underline-offset-[0.2em] [&_h2]:mt-stack-md [&_h2]:text-heading-sm [&_h3]:text-heading-xs [&_li]:ms-inset-lg [&_ol]:list-decimal [&_p]:text-body-md [&_ul]:list-disc"
-      >
+      <div class="flex flex-col gap-stack-sm [&_a]:break-all [&_a]:text-fg-link [&_a]:underline [&_a]:underline-offset-[0.2em] [&_h2]:mt-stack-md [&_h2]:text-heading-sm [&_h3]:text-heading-xs [&_li]:ms-inset-lg [&_ol]:list-decimal [&_p]:text-body-md [&_ul]:list-disc">
         <Content />
       </div>
     </Stack>
