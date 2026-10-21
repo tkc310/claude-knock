@@ -22,3 +22,9 @@
 意図が明確なら直接: `pstack:tdd` `pstack:architect` `pstack:arena` `pstack:interrogate`。
 単一ファイルの小変更・質問は直接作業する。
 
+## ディレクトリ責務
+- src/core/ : 暦計算などのドメインロジック。Astro/React/DOM に依存しない純粋な TS。
+  公開 API は src/core/index.ts から export する
+- src/lib/  : UI ユーティリティ（tv, tw-merge 等のサードパーティの抽象・設定層）
+- src/data/ : 行事定義（core を使って日付を得る）
+
