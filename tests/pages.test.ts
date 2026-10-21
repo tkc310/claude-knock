@@ -217,16 +217,60 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(page(path)).not.toMatch(/\brounded-(?:t-|b-|s-|e-)?(?:lg|xl|2xl|3xl)\b/);
   });
 
-  it('ヘッダーのロゴは法輪で、favicon も同じ法輪にする', () => {
+  it('ヘッダーのロゴは logo.svg（法輪とサイト名）で、favicon は法輪にする', () => {
     for (const path of ['index.html', 'events/wan-phra/index.html']) {
       const html = page(path);
-      expect(html).toMatch(/<svg [^>]*data-logo="dharma-wheel"/);
+      expect(html).toMatch(/<img [^>]*src="\/logo\.svg"[^>]*alt="タイ仏教行事カレンダー"/);
       expect(html).toMatch(/<link [^>]*rel="icon"[^>]*href="\/favicon\.svg"/);
       expect(html).toMatch(/<link [^>]*rel="icon"[^>]*href="\/favicon\.ico"/);
     }
     // 法輪の金色（行事のイラストのアーサーラハ・ブーチャーと同じ）
     expect(page('favicon.svg')).toContain('#D99A2B');
     expect(readFileSync(join(root, 'dist/favicon.ico')).readUInt32LE(0)).toBe(0x0001_0000);
+  });
+
+  // SEO（ADR-0017）。公開先は astro.config の site（https://koyomi.tkc310.com）
+  const site = 'https://koyomi.tkc310.com';
+  const seoPages = [
+    ['index.html', '/'],
+    ['events/wan-phra/index.html', '/events/wan-phra/'],
+    ['tambun/index.html', '/tambun/'],
+  ] as const;
+
+  it.each(seoPages)('%s に canonical・og:url・og:image を絶対 URL で出す', (path, url) => {
+    const html = page(path);
+    expect(html).toContain(`<link rel="canonical" href="${site}${url}"`);
+    expect(html).toContain(`<meta property="og:url" content="${site}${url}"`);
+    expect(html).toContain(`<meta property="og:image" content="${site}/og.png"`);
+  });
+
+  it.each(seoPages)('%s に JSON-LD（WebSite、トップ以外はパンくず）を出す', (path, url) => {
+    const html = page(path);
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">([^<]*)<\/script>/g)];
+    expect(blocks).toHaveLength(1);
+    type Node = { '@type': string; [key: string]: unknown };
+    const graph: Node[] = JSON.parse(blocks[0]![1]!)['@graph'];
+    const website = graph.find((n) => n['@type'] === 'WebSite');
+    const name = 'タイ仏教行事カレンダー';
+    expect(website).toMatchObject({ name, url: `${site}/`, inLanguage: 'ja' });
+    const crumbs = graph.find((n) => n['@type'] === 'BreadcrumbList');
+    if (url === '/') {
+      expect(crumbs).toBeUndefined();
+    } else {
+      const items = crumbs?.itemListElement as { position: number; item: string }[];
+      expect(items.map((i) => i.item)).toEqual([`${site}/`, `${site}${url}`]);
+    }
+    expect(blocks[0]![1]!).not.toMatch(/[\u0E00-\u0E7F]/);
+  });
+
+  it('sitemap.xml に全ページを絶対 URL で載せ、robots.txt から指す', () => {
+    const sitemap = page('sitemap.xml');
+    expect(sitemap).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+    const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    const eventUrls = events.map((e) => `${site}/events/${e.id}/`);
+    const expected = [`${site}/`, `${site}/tambun/`, ...eventUrls];
+    expect(locs.sort()).toEqual(expected.sort());
+    expect(page('robots.txt')).toContain(`Sitemap: ${site}/sitemap.xml`);
   });
 
   it('トップページの冒頭にサイト名の見出しを重ねず、導入文を h1 にする', () => {
@@ -317,7 +361,7 @@ describe('/events/[id]', { timeout: 120_000 }, () => {
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('タンブン');
     expect(html).toMatch(/<meta name="description" content="[^"]{20,}"/);
-    expect(html).toMatch(/<svg [^>]*data-logo="dharma-wheel"/);
+    expect(html).toMatch(/<img [^>]*src="\/logo\.svg"/);
     expect(html).toMatch(/<a href="https:\/\/suttacentral\.net\/an8\.36\/[^"]*" target="_blank"/);
     expect(html).not.toMatch(/[\u0E00-\u0E7F]/);
     expect(html).toContain('href="/"');

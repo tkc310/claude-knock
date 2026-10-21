@@ -1,6 +1,5 @@
 ---
 import '@/styles/globals.css';
-import { wheelIcon } from '@/components/site/dharma-wheel';
 
 interface Props {
   title: string;
@@ -9,10 +8,35 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-// OGP・X のカード。og:image は絶対 URL が求められるので、astro.config に site があればそれで解決する。
-// 公開先が決まっていない今は site が無く、ルートからのパスになる（バックログ）
-const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
-const ogUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// SEO（ADR-0017）。canonical・og:url・og:image は astro.config の site（https://koyomi.tkc310.com）で絶対 URL にする
+const siteName = 'タイ仏教行事カレンダー';
+const home = new URL('/', Astro.site ?? Astro.url).href;
+const canonical = new URL(Astro.url.pathname, home).href;
+const ogImage = new URL('/og.png', home).href;
+// JSON-LD: どのページにも WebSite、トップ以外はパンくず（トップ → このページ）を出す
+const pageName = title.split(' | ')[0]!;
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': `${home}#website`,
+    name: siteName,
+    url: home,
+    inLanguage: 'ja',
+    description,
+  },
+];
+if (canonical !== home) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: siteName, item: home },
+      { '@type': 'ListItem', position: 2, name: pageName, item: canonical },
+    ],
+  });
+}
+const ld = { '@context': 'https://schema.org', '@graph': graph };
+// </script> で途切れないよう < をエスケープする
+const jsonLd = JSON.stringify(ld).replaceAll('<', '\\u003c');
 // 配色は白に固定する。OS のダークモードには追従しない（data-theme="light"）
 const nav = [
   { href: '/#calendar', label: 'カレンダー' },
@@ -31,6 +55,7 @@ const themeColor = '#ffffff';
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta name="theme-color" content={themeColor} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -38,11 +63,11 @@ const themeColor = '#ffffff';
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="タイ仏教行事" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="タイ仏教行事カレンダー" />
+    <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {ogUrl && <meta property="og:url" content={ogUrl} />}
+    <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -51,6 +76,7 @@ const themeColor = '#ffffff';
       content="タイ仏教行事カレンダー。タイの仏教行事の日付と意味を、日本語で。"
     />
     <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={jsonLd} />
   </head>
   <body class="flex min-h-dvh flex-col bg-canvas text-fg">
     <header class="border-b border-border-subtle bg-surface">
@@ -60,18 +86,8 @@ const themeColor = '#ffffff';
           href="/"
           class="focus-ring flex items-center gap-gap-sm self-start rounded-md text-label-md text-fg no-underline"
         >
-          <!-- ロゴ: 法輪。行事のイラストと同じ形と色（src/components/site/dharma-wheel.ts。favicon も同じ） -->
-          <svg
-            viewBox="0 0 64 64"
-            width="32"
-            height="32"
-            aria-hidden="true"
-            focusable="false"
-            data-logo="dharma-wheel"
-            class="size-8 shrink-0"
-            set:html={wheelIcon('circle')}
-          />
-          タイ仏教行事カレンダー
+          <!-- ロゴ: 法輪とサイト名（public/logo.svg。make brand で作る）。文字はアウトライン化してある -->
+          <img src="/logo.svg" alt={siteName} width="478" height="80" class="h-9 w-auto" />
         </a>
         <nav aria-label="ページ内の案内">
           <ul class="-mx-inset-sm my-0 flex list-none flex-wrap p-0 md:gap-gap-xs">
