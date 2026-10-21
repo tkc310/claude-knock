@@ -1,0 +1,39 @@
+---
+// タンブン（功徳を積む行い）の説明ページ。本文は src/content/guides/tambun.md
+// 行事の詳細ページ（src/pages/events/[id].astro）と同じ組み方・本文の書式（.event-prose）にする
+import { getEntry, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { Icon } from '@/components/ui/icon';
+
+const entry = await getEntry('guides', 'tambun');
+if (!entry) throw new Error('src/content/guides/tambun.md がありません');
+const { Content } = await render(entry);
+const { title, description } = entry.data;
+---
+
+<Base title={`${title} | タイ仏教行事カレンダー`} description={description}>
+  <main class="mx-auto flex max-w-3xl flex-col gap-stack-md px-inset-lg pt-inset-xl md:px-inset-xl">
+    <p class="m-0 text-body-sm">
+      <a
+        href="/"
+        class="focus-ring inline-flex items-center gap-gap-xs rounded-xs text-fg-link underline underline-offset-[0.2em] hover:text-fg-link-hover"
+      >
+        <Icon name="chevron-left" size="sm" />
+        行事の一覧へ戻る
+      </a>
+    </p>
+
+    <header class="flex flex-col gap-gap-sm">
+      <p class="m-0 text-label-md tracking-wider text-fg-saffron">Tham Bun</p>
+      <h1 class="m-0 text-heading-lg text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-heading-xl">
+        {title}
+        <span class="block text-heading-xs font-regular text-fg-subtle">功徳を積む行い</span>
+      </h1>
+      <p class="m-0 text-body-md text-fg-subtle">{description}</p>
+    </header>
+
+    <article class="event-prose">
+      <Content />
+    </article>
+  </main>
+</Base>
