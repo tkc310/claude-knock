@@ -20,7 +20,7 @@ const { event } = occurrence;
   href={`/events/${event.id}/`}
   class="group/next focus-ring flex flex-col text-fg no-underline"
 >
-  <span class="mx-inset-lg block overflow-hidden rounded-lg">
+  <span class="mx-inset-lg block overflow-hidden rounded-xs">
     <EventIllustration
       id={event.id}
       class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/next:scale-[1.04]"
@@ -33,7 +33,7 @@ const { event } = occurrence;
       </span>
       <span
         data-countdown
-        class="shrink-0 rounded-full bg-saffron-subtle px-inset-sm py-0.5 text-label-sm text-fg-saffron empty:hidden"
+        class="shrink-0 rounded-xs bg-saffron-subtle px-inset-sm py-0.5 text-label-sm text-fg-saffron empty:hidden"
       />
     </span>
     <span class="text-body-sm text-fg-subtle">{event.name.ja}</span>

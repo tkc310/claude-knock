@@ -1,12 +1,9 @@
 ---
 // トップページの行事の一覧のカード。カード全体が詳細ページへのリンク。
-// スマホファースト（ADR-0013）: 由来と行うこと（data-popover）は、既定ではカードの中に出す。
-// カーソルのある md 以上の画面（hoverable:）でだけカードの外へ浮かせ、ホバー・フォーカスで表示年の日付と一緒に出す。
-// 行事名はすぐ隣のカードにあるので、ポップアップには繰り返さない
-// 浮かせたときの左右の置き場所は src/pages/index.astro の script が決める（data-card・data-popover）
+// 由来と行うこと（data-details）は、スマホでも PC でもカードの中（次回の日付の上）に出す。
+// 以前は PC でだけホバーのポップアップにしていたが、スマホと同じ見せ方にそろえた（docs/improvement/log.md）
 import type { CollectionEntry } from 'astro:content';
 import { spanLabel } from '@/components/event/date-label';
-import EventFacts from '@/components/event/EventFacts.astro';
 import EventIllustration from '@/components/event/EventIllustration.astro';
 import EventSummary from '@/components/event/EventSummary.astro';
 import EventTags from '@/components/event/EventTags.astro';
@@ -20,11 +17,9 @@ interface Props {
   dates: readonly Occurrence<EventDefinition>[];
   /** ビルドした日（YYYY-MM-DD）。次回の日付を選ぶのに使う */
   today: string;
-  /** 表示範囲の年（例: 2026〜2027 年） */
-  years: string;
 }
 
-const { event, entry, dates, today, years } = Astro.props;
+const { event, entry, dates, today } = Astro.props;
 // 次回の候補。ビルドした日にまだ終わっていない日付をすべて持たせ、表示時にブラウザの日付で選び直す（index.astro の script）
 const remaining = dates.filter((o) => o.end >= today);
 const next = remaining[0];
@@ -35,9 +30,9 @@ const candidates = JSON.stringify(
 
 <li
   data-card
-  class="group/card focus-ring-within relative flex flex-col rounded-xl border border-border-subtle bg-surface text-fg transition-[border-color,box-shadow] hover:border-saffron hover:shadow-2"
+  class="group/card focus-ring-within relative flex flex-col rounded-sm border border-border-subtle bg-surface text-fg transition-[border-color,box-shadow] hover:border-saffron hover:shadow-2"
 >
-  <div class="overflow-hidden rounded-t-xl">
+  <div class="overflow-hidden rounded-t-sm">
     <EventIllustration
       id={event.id}
       class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/card:scale-[1.04]"
@@ -57,14 +52,10 @@ const candidates = JSON.stringify(
     <EventTags event={event} />
   </div>
   <div
-    data-popover
-    class="mx-inset-lg mb-inset-lg flex flex-col gap-gap-md rounded-lg bg-subtle p-inset-md hoverable:pointer-events-none hoverable:absolute hoverable:inset-x-0 hoverable:top-full hoverable:z-10 hoverable:m-0 hoverable:mt-gap-xs hoverable:translate-y-1 hoverable:rounded-xl hoverable:border hoverable:border-border-subtle hoverable:bg-surface hoverable:p-inset-lg hoverable:opacity-0 hoverable:shadow-3 hoverable:transition-[opacity,translate] hoverable:group-focus-within/card:translate-y-0 hoverable:group-focus-within/card:opacity-100 hoverable:group-hover/card:translate-y-0 hoverable:group-hover/card:opacity-100"
+    data-details
+    class="mx-inset-lg mb-inset-lg flex flex-col gap-gap-md rounded-xs bg-subtle p-inset-md"
   >
     <EventSummary entry={entry} />
-    <div class="hidden flex-col gap-gap-sm rounded-lg bg-subtle p-inset-md hoverable:flex">
-      <p class="m-0 text-label-sm text-fg-subtle">{years}の日付</p>
-      <EventFacts event={event} dates={dates} tags={false} />
-    </div>
   </div>
   <div
     data-next-dates={candidates}

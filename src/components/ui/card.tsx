@@ -5,7 +5,7 @@ import { type VariantProps, tv } from '@/lib/tv';
 
 export const cardVariants = tv({
   slots: {
-    root: 'group/card relative flex list-none flex-col overflow-hidden rounded-xl border text-fg',
+    root: 'group/card relative flex list-none flex-col overflow-hidden rounded-sm border text-fg',
     media:
       '[&>img,&>picture,&>video]:block [&>img,&>picture,&>video]:aspect-video [&>img,&>picture,&>video]:w-full [&>img,&>picture,&>video]:object-cover',
     body: 'flex flex-1 flex-col gap-stack-sm p-inset-xl',
