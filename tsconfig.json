@@ -4,6 +4,7 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "jsx": "react-jsx",
+    "types": ["node"],
     "jsxImportSource": "react",
     "paths": {
       "@/*": ["./src/*"]
