@@ -13,8 +13,7 @@ interface Props {
 }
 
 const { event, dates } = Astro.props;
-const span = (start: string, end: string) =>
-  start === end ? start : `${start}〜${end.slice(5)}`;
+const span = (start: string, end: string) => (start === end ? start : `${start}〜${end.slice(5)}`);
 ---
 
 <Stack gap="sm">
@@ -22,19 +21,17 @@ const span = (start: string, end: string) =>
     {event.date.kind === 'solar-span' ? <Tag>太陽暦</Tag> : <Tag tone="key">太陰暦</Tag>}
     {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
   </Stack>
-  {
-    event.date.kind === 'uposatha' ? (
-      <Text variant="body-sm">毎月の白分 8・15 日、黒分 8 日、月末（{dates.length} 日）</Text>
-    ) : (
-      <Stack as="ul" gap="sm">
-        {dates.map((o) => (
-          <li>
-            <Text variant="body-sm">
-              {span(o.start, o.end)}（{formatLunarDate(o.lunar)}）
-            </Text>
-          </li>
-        ))}
-      </Stack>
-    )
-  }
+  {event.date.kind === 'uposatha' ? (
+    <Text variant="body-sm">毎月の白分 8・15 日、黒分 8 日、月末（{dates.length} 日）</Text>
+  ) : (
+    <Stack as="ul" gap="sm">
+      {dates.map((o) => (
+        <li>
+          <Text variant="body-sm">
+            {span(o.start, o.end)}（{formatLunarDate(o.lunar)}）
+          </Text>
+        </li>
+      ))}
+    </Stack>
+  )}
 </Stack>
