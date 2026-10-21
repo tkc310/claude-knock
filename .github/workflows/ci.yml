@@ -42,9 +42,7 @@ jobs:
           pnpm_config_store_dir: ${{ runner.temp }}/pnpm-store
 
       - name: fmt・lint・型
-        run: |
-          set -o pipefail
-          make check 2>&1 | tee /tmp/check.log || { msg=$(sed 's/\x1b\[[0-9;]*m//g' /tmp/check.log | grep -E -A4 '(×|✗|error|Error|warn|⚠)' | head -60 | tr '\n' '~'); echo "::error::$msg"; exit 1; }
+        run: make check
 
       - name: テスト
         run: make test
