@@ -9,6 +9,10 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+// OGP・X のカード。og:image は絶対 URL が求められるので、astro.config に site があればそれで解決する。
+// 公開先が決まっていない今は site が無く、ルートからのパスになる（バックログ）
+const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
+const ogUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 // 配色は白に固定する。OS のダークモードには追従しない（data-theme="light"）
 const nav = [
   { href: '/#calendar', label: 'カレンダー' },
@@ -33,6 +37,20 @@ const themeColor = '#ffffff';
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="タイ仏教行事" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="タイ仏教行事カレンダー" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogUrl && <meta property="og:url" content={ogUrl} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="タイ仏教行事カレンダー。タイの仏教行事の日付と意味を、日本語で。"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="flex min-h-dvh flex-col bg-canvas text-fg">
     <header class="border-b border-border-subtle bg-surface">

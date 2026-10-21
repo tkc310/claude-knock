@@ -10,7 +10,7 @@ VP ?= pnpm exec vp
 # 引数（例: make ui-add C="heading card"）
 C ?=
 
-.PHONY: help setup tools install dev build preview check fix test test-watch verify ui-add icons clean
+.PHONY: help setup tools install dev build preview check fix test test-watch verify ui-add icons brand clean
 
 ##@ はじめる
 
@@ -69,6 +69,10 @@ ui-add: ## 8341-ui の部品を足す（C="heading card"）
 
 icons: ## favicon と PWA のアイコンを法輪の形から作り直す（macOS の sips を使う。ADR-0013）
 	node scripts/icons.ts
+
+brand: ## ロゴ（public/logo.svg・logo.png）と OGP バナー（public/og.png）を作り直す（python3・fontTools・playwright と Noto Sans CJK が要る）
+	PYTHONDONTWRITEBYTECODE=1 python3 scripts/brand/logo.py
+	PYTHONDONTWRITEBYTECODE=1 python3 scripts/brand/og.py
 
 ##@ 後片付け
 
