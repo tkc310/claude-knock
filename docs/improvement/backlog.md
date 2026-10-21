@@ -25,7 +25,6 @@
 
 - [ ] 静的出力では `calendar.ics.ts` の Content-Type は使われず、配信先が拡張子で決める。デプロイ先（Cloudflare）で `text/calendar; charset=utf-8` になるか確かめる
 - [ ] `.astro` のテンプレート部分は `vp fmt` も `vp lint` も見ない（`astro check` だけ）。`prettier-plugin-astro` を入れるか判断する
-- [ ] 型検査が `vp check`（tsgolint、TypeScript 7 系）と `astro check`（TypeScript 6）で二重に走っている。どちらかに寄せるか判断する
 
 ## 仕組み
 
