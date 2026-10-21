@@ -1,0 +1,136 @@
+---
+// トップページの月表示のカレンダー。表示範囲の全月を書き出し、前後の月はボタンで切り替える
+// スマホ幅（md 未満）ではマスの中を色の点にし、その月の行事は表の下に文字で並べる（data-agenda）。1 か月分は CalendarMonth.astro
+import CalendarMonth from '@/components/event/CalendarMonth.astro';
+import { Icon } from '@/components/ui/icon';
+import type { DateRange, Occurrence } from '@/core';
+import type { EventDefinition } from '@/data/events';
+import { calendarMonths } from '@/data/month-grid';
+
+interface Props {
+  range: DateRange;
+  list: readonly Occurrence<EventDefinition>[];
+  /** ビルドした日（YYYY-MM-DD）。最初に見せる月と「今日」の印に使う。表示時はブラウザの日付で置き換える */
+  today: string;
+}
+
+const { range, list, today } = Astro.props;
+const months = calendarMonths(range, list);
+const key = (y: number, m: number) => `${y}-${String(m).padStart(2, '0')}`;
+const initial = months.some((m) => key(m.year, m.month) === today.slice(0, 7))
+  ? today.slice(0, 7)
+  : key(months[0]!.year, months[0]!.month);
+const initialTitle = `${initial.slice(0, 4)} 年 ${Number(initial.slice(5))} 月`;
+
+const navButton =
+  'focus-ring tap-target inline-flex size-control-sm items-center justify-center rounded-full border border-border bg-surface text-icon hover:bg-muted disabled:cursor-not-allowed disabled:border-border-disabled disabled:text-fg-disabled disabled:hover:bg-surface';
+const legend = [
+  { label: '仏教行事', swatch: 'size-2.5 rounded-full bg-saffron' },
+  { label: '民間行事', swatch: 'size-2.5 rounded-full bg-water' },
+  { label: 'ワンプラ（布薩日）', swatch: 'size-2.5 rounded-full bg-gold' },
+  { label: '今日', swatch: 'size-4 rounded-full bg-key ring-2 ring-gold-subtle' },
+];
+---
+
+<div
+  data-calendar
+  data-initial={initial}
+  data-months={months.map((m) => key(m.year, m.month)).join(' ')}
+  class="flex flex-col gap-gap-md rounded-xl border border-border-subtle bg-surface p-inset-md md:p-inset-xl"
+>
+  <div class="flex items-center justify-between gap-gap-sm">
+    <p data-cal-title aria-live="polite" class="m-0 text-heading-xs tabular-nums">
+      {initialTitle}
+    </p>
+    <div class="flex items-center gap-gap-sm">
+      <button
+        type="button"
+        data-cal-today
+        class="focus-ring inline-flex h-control-sm items-center rounded-full border border-border bg-surface px-inset-md text-label-sm hover:bg-muted disabled:cursor-default disabled:border-border-disabled disabled:text-fg-disabled disabled:hover:bg-surface"
+      >
+        今月
+      </button>
+      <button type="button" data-cal-prev aria-label="前の月" class={navButton}>
+        <Icon name="chevron-left" />
+      </button>
+      <button type="button" data-cal-next aria-label="次の月" class={navButton}>
+        <Icon name="chevron-right" />
+      </button>
+    </div>
+  </div>
+  {months.map((m) => {
+    const k = key(m.year, m.month);
+    // 最初に見せる月のほかは <template> に入れ、DOM を小さくする。前後の月へ移ったとき下の script が出す（ADR-0013）
+    return k === initial ? (
+      <CalendarMonth month={m} monthKey={k} hidden={false} />
+    ) : (
+      <template data-month-template={k}>
+        <CalendarMonth month={m} monthKey={k} hidden />
+      </template>
+    );
+  })}
+  <ul
+    data-legend
+    class="m-0 flex list-none flex-wrap gap-x-gap-md gap-y-gap-xs border-t border-border-subtle p-0 pt-inset-md"
+  >
+    {legend.map(({ label, swatch }) => (
+      <li class="flex items-center gap-gap-xs text-body-sm text-fg-subtle">
+        <span aria-hidden="true" class:list={['shrink-0', swatch]} />
+        {label}
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  // 前後の月の切り替えと、ブラウザの日付での「今日」の印。
+  // 最初に見せる月のほかは <template data-month-template> に入っているので、見せるときに DOM に出す
+  for (const root of document.querySelectorAll<HTMLElement>('[data-calendar]')) {
+    const keys = (root.dataset.months ?? '').split(' ');
+    const title = root.querySelector<HTMLElement>('[data-cal-title]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-cal-next]')!;
+    const current = root.querySelector<HTMLButtonElement>('[data-cal-today]')!;
+    const today = new Date().toLocaleDateString('sv-SE');
+    const start = keys.indexOf(today.slice(0, 7));
+    const home = start >= 0 ? start : keys.indexOf(root.dataset.initial ?? '');
+    let index = home;
+
+    const reveal = (key: string) => {
+      const template = root.querySelector<HTMLTemplateElement>(
+        `template[data-month-template="${key}"]`,
+      );
+      template?.replaceWith(template.content);
+    };
+    const show = () => {
+      const key = keys[index]!;
+      reveal(key);
+      for (const el of root.querySelectorAll<HTMLElement>('[data-month], [data-agenda]')) {
+        el.hidden = (el.dataset.month ?? el.dataset.agenda) !== key;
+      }
+      title.textContent = `${key.slice(0, 4)} 年 ${Number(key.slice(5))} 月`;
+      prev.disabled = index === 0;
+      next.disabled = index === keys.length - 1;
+      current.disabled = index === home;
+    };
+    prev.addEventListener('click', () => {
+      index = Math.max(0, index - 1);
+      show();
+    });
+    next.addEventListener('click', () => {
+      index = Math.min(keys.length - 1, index + 1);
+      show();
+    });
+    current.addEventListener('click', () => {
+      index = home;
+      show();
+    });
+
+    // 前後の月の枠埋めのマスにも同じ日付があるので、その月の日（日付の数字があるマス）だけに付ける
+    reveal(keys[home]!);
+    root
+      .querySelector(`td[data-date="${today}"]:has([data-day])`)
+      ?.setAttribute('aria-current', 'date');
+    show();
+  }
+</script>

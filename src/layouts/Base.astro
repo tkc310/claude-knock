@@ -1,26 +1,94 @@
 ---
 import '@/styles/globals.css';
+import { wheelIcon } from '@/components/site/dharma-wheel';
 
 interface Props {
   title: string;
-  description?: string;
+  /** 検索結果に出る説明文。どのページにも書く */
+  description: string;
 }
 
 const { title, description } = Astro.props;
 // 配色は白に固定する。OS のダークモードには追従しない（data-theme="light"）
+const nav = [
+  { href: '/#calendar', label: 'カレンダー' },
+  { href: '/#events', label: '行事の一覧' },
+  { href: '/#ics', label: '取り込む' },
+  { href: '/#app', label: 'アプリ' },
+];
+// ブラウザの上の帯（スマホ）とホーム画面から開いたときの色。ヘッダーの面（白）に合わせる
+const themeColor = '#ffffff';
 ---
 
 <html lang="ja" data-theme="light">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="タイ仏教行事" />
   </head>
-  <body class="bg-canvas text-fg">
-    <slot />
+  <body class="flex min-h-dvh flex-col bg-canvas text-fg">
+    <header class="border-b border-border-subtle bg-surface">
+      <!-- スマホではロゴの下に案内を並べ、md 以上で 1 行にする -->
+      <div class="mx-auto flex max-w-5xl flex-col gap-gap-xs px-inset-lg pt-inset-md pb-inset-xs md:flex-row md:items-center md:justify-between md:gap-gap-md md:px-inset-xl md:py-inset-md">
+        <a
+          href="/"
+          class="focus-ring flex items-center gap-gap-sm self-start rounded-md text-label-md text-fg no-underline"
+        >
+          <!-- ロゴ: 法輪。行事のイラストと同じ形と色（src/components/site/dharma-wheel.ts。favicon も同じ） -->
+          <svg
+            viewBox="0 0 64 64"
+            width="32"
+            height="32"
+            aria-hidden="true"
+            focusable="false"
+            data-logo="dharma-wheel"
+            class="size-8 shrink-0"
+            set:html={wheelIcon('circle')}
+          />
+          タイ仏教行事カレンダー
+        </a>
+        <nav aria-label="ページ内の案内">
+          <ul class="-mx-inset-sm my-0 flex list-none flex-wrap p-0 md:gap-gap-xs">
+            {nav.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="focus-ring inline-flex min-h-control-md items-center rounded-xs px-inset-sm text-body-sm text-fg-subtle no-underline hover:text-fg hover:underline hover:underline-offset-[0.3em]"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="flex-1">
+      <slot />
+    </div>
+    <footer class="mt-stack-lg border-t border-border-subtle bg-subtle">
+      <div class="mx-auto flex max-w-5xl flex-col gap-gap-xs px-inset-lg py-inset-xl md:px-inset-xl">
+        <p class="m-0 text-body-sm text-fg-subtle">
+          日付はタイの太陰暦から計算し、タイ政府の公式発表と照らし合わせています。出典は各行事のページにあります。
+        </p>
+      </div>
+    </footer>
+    <script>
+      // オフラインでも開けるよう、Service Worker（public/sw.js）を登録する。読み込みが終わってから登録し、表示を遅らせない。
+      // 開発サーバーでは登録しない（保存した古いページで変更が見えなくなるため。ADR-0013）
+      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+        addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
