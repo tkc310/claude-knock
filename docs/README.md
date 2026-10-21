@@ -9,6 +9,7 @@
 | [improvement/log.md](./improvement/log.md)         | 直したことの記録（1 改善 1 行）                                       |
 | [decisions/](./decisions/README.md)                | 設計判断の記録（ADR）                                                 |
 | [events/](./events/README.md)                      | 行事ごとの資料（日付の決め方と出典）                                  |
+| [plans/](./plans/event-pages.md)                   | 進めている作業の計画（行事の詳細ページ）                              |
 | [ai-agents.md](./ai-agents.md)                     | AI エージェントが読むファイルと、エージェントに任せるときの進め方     |
 
 ドメインのルール（4 表記の併記、出典 URL、太陰暦の計算、対象とする行事の範囲）は [`CLAUDE.md`](../CLAUDE.md) にあります。
