@@ -77,6 +77,23 @@ describe('行事どうしの関係', () => {
     expect(new Set(pairs('visakha-bucha', 'asarnha-bucha'))).toEqual(new Set([59, 60]));
   });
 
+  it('アッタミー・ブーチャー = ウィサーカ・ブーチャーの 8 日後で、同じ月の แรม 8 ค่ำ', () => {
+    expect(new Set(pairs('visakha-bucha', 'atthami-bucha'))).toEqual(new Set([8]));
+    const visakha = all.filter((o) => o.event.id === 'visakha-bucha');
+    const atthami = all.filter((o) => o.event.id === 'atthami-bucha');
+    for (const [i, o] of atthami.entries()) {
+      expect(o.lunar).toMatchObject({
+        month: visakha[i]!.lunar.month,
+        isLeapMonth: false,
+        phase: 'waning',
+        day: 8,
+      });
+    }
+    // แรม 8 ค่ำ はワンプラでもある
+    const wanPhra = new Set(startsOf('wan-phra'));
+    expect(startsOf('atthami-bucha').filter((d) => !wanPhra.has(d))).toEqual([]);
+  });
+
   it('満月の行事の日は、どれもワンプラでもある', () => {
     const wanPhra = new Set(startsOf('wan-phra'));
     for (const id of ['makha-bucha', 'visakha-bucha', 'asarnha-bucha', 'ok-phansa'] as const) {

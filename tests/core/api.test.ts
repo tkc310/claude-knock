@@ -39,6 +39,8 @@ describe('toLunar と formatLunarDate', () => {
     ['2026-07-30', 2569, 'แรม 1 ค่ำ เดือน 8 หลัง'],
     ['2026-06-29', 2569, 'ขึ้น 15 ค่ำ เดือน 8 แรก'],
     ['2026-02-16', 2569, 'แรม 14 ค่ำ เดือน 3'],
+    // アッタミー・ブーチャー 2026 年。閏月の年なので เดือน 7（Thai PBS）
+    ['2026-06-08', 2569, 'แรม 8 ค่ำ เดือน 7'],
   ])('%s → 仏暦 %i「%s」', (date, buddhistYear, text) => {
     const lunar = toLunar(parseIsoDate(date));
     expect(lunar.buddhistYear).toBe(buddhistYear);

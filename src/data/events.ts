@@ -5,6 +5,7 @@ export type EventId =
   | 'wan-phra'
   | 'makha-bucha'
   | 'visakha-bucha'
+  | 'atthami-bucha'
   | 'asarnha-bucha'
   | 'khao-phansa'
   | 'ok-phansa'
@@ -62,6 +63,21 @@ export const events: readonly EventDefinition[] = [
       romaji: 'Visakha Bucha',
       kana: 'ウィサーカ・ブーチャー',
       ja: '仏誕節',
+    },
+  },
+  {
+    id: 'atthami-bucha',
+    category: 'buddhist',
+    // ウィサーカ・ブーチャーの 8 日後。閏月の年は同じく 1 か月ずれる（docs/events/atthami-bucha.md）
+    date: {
+      kind: 'lunar-day',
+      at: { month: { common: 6, adhikamas: 7 }, phase: 'waning', day: 8 },
+    },
+    name: {
+      th: 'วันอัฏฐมีบูชา',
+      romaji: 'Atthami Bucha',
+      kana: 'アッタミー・ブーチャー',
+      ja: '荼毘節',
     },
   },
   {
