@@ -1,6 +1,9 @@
 ---
-// トップページの行事の一覧のカード。カード全体が詳細ページへのリンクで、ホバー・フォーカスで由来と日付のポップアップを出す
-// ポップアップの左右の置き場所は src/pages/index.astro の script が決める（data-card・data-popover）
+// トップページの行事の一覧のカード。カード全体が詳細ページへのリンク。
+// スマホファースト（ADR-0013）: 由来と行うこと（data-popover）は、既定ではカードの中に出す。
+// カーソルのある md 以上の画面（hoverable:）でだけカードの外へ浮かせ、ホバー・フォーカスで表示年の日付と一緒に出す。
+// 行事名はすぐ隣のカードにあるので、ポップアップには繰り返さない
+// 浮かせたときの左右の置き場所は src/pages/index.astro の script が決める（data-card・data-popover）
 import type { CollectionEntry } from 'astro:content';
 import { spanLabel } from '@/components/event/date-label';
 import EventFacts from '@/components/event/EventFacts.astro';
@@ -35,7 +38,7 @@ const next = dates.find((o) => o.end >= today);
       class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/card:scale-[1.04]"
     />
   </div>
-  <div class="flex flex-1 flex-col gap-gap-sm p-inset-lg">
+  <div class="flex flex-col gap-gap-sm p-inset-lg">
     <p class="m-0 text-label-sm tracking-wider text-fg-saffron">{event.name.romaji}</p>
     <h3 class="m-0 text-heading-xxs [font-feature-settings:'palt']">
       <a
@@ -48,8 +51,18 @@ const next = dates.find((o) => o.end >= today);
     </h3>
     <EventTags event={event} />
   </div>
+  <div
+    data-popover
+    class="mx-inset-lg mb-inset-lg flex flex-col gap-gap-md rounded-lg bg-subtle p-inset-md hoverable:pointer-events-none hoverable:absolute hoverable:inset-x-0 hoverable:top-full hoverable:z-10 hoverable:m-0 hoverable:mt-gap-xs hoverable:translate-y-1 hoverable:rounded-xl hoverable:border hoverable:border-border-subtle hoverable:bg-surface hoverable:p-inset-lg hoverable:opacity-0 hoverable:shadow-3 hoverable:transition-[opacity,translate] hoverable:group-focus-within/card:translate-y-0 hoverable:group-focus-within/card:opacity-100 hoverable:group-hover/card:translate-y-0 hoverable:group-hover/card:opacity-100"
+  >
+    <EventSummary entry={entry} />
+    <div class="hidden flex-col gap-gap-sm rounded-lg bg-subtle p-inset-md hoverable:flex">
+      <p class="m-0 text-label-sm text-fg-subtle">{years}の日付</p>
+      <EventFacts event={event} dates={dates} tags={false} />
+    </div>
+  </div>
   {next && (
-    <div class="flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md">
+    <div class="mt-auto flex items-center gap-gap-sm border-t border-border-subtle px-inset-lg py-inset-md">
       <span class="text-label-sm text-fg-subtle">次回</span>
       <time datetime={next.start} class="text-body-sm font-bold">
         {spanLabel(next.start, next.end)}
@@ -61,19 +74,4 @@ const next = dates.find((o) => o.end >= today);
       />
     </div>
   )}
-  <div
-    data-popover
-    class="pointer-events-none absolute inset-x-0 top-full z-10 mt-gap-xs translate-y-1 rounded-xl border border-border-subtle bg-surface p-inset-lg opacity-0 shadow-3 transition-[opacity,translate] group-focus-within/card:translate-y-0 group-focus-within/card:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100"
-  >
-    <div class="flex flex-col gap-gap-md">
-      <p class="m-0 border-b border-border-subtle pb-inset-sm text-label-md">
-        {`${event.name.kana}（${event.name.ja}）`}
-      </p>
-      <EventSummary entry={entry} />
-      <div class="flex flex-col gap-gap-sm rounded-lg bg-subtle p-inset-md">
-        <p class="m-0 text-label-sm text-fg-subtle">{years}の日付</p>
-        <EventFacts event={event} dates={dates} tags={false} />
-      </div>
-    </div>
-  </div>
 </li>

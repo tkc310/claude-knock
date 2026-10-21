@@ -1,11 +1,11 @@
 ---
 // トップページの月表示のカレンダー。表示範囲の全月を書き出し、前後の月はボタンで切り替える
-// スマホ幅（md 未満）ではマスの中を色の点にし、その月の行事は表の下に文字で並べる（data-agenda）
-import { dateLabel } from '@/components/event/date-label';
+// スマホ幅（md 未満）ではマスの中を色の点にし、その月の行事は表の下に文字で並べる（data-agenda）。1 か月分は CalendarMonth.astro
+import CalendarMonth from '@/components/event/CalendarMonth.astro';
 import { Icon } from '@/components/ui/icon';
 import type { DateRange, Occurrence } from '@/core';
 import type { EventDefinition } from '@/data/events';
-import { calendarMonths, type CalendarItem } from '@/data/month-grid';
+import { calendarMonths } from '@/data/month-grid';
 
 interface Props {
   range: DateRange;
@@ -22,32 +22,6 @@ const initial = months.some((m) => key(m.year, m.month) === today.slice(0, 7))
   : key(months[0]!.year, months[0]!.month);
 const initialTitle = `${initial.slice(0, 4)} 年 ${Number(initial.slice(5))} 月`;
 
-const label = ({ event, mark }: CalendarItem) =>
-  mark === 'start'
-    ? `${event.name.kana} 始まり`
-    : mark === 'end'
-      ? `${event.name.kana} 終わり`
-      : event.name.kana;
-
-// 色分け: 仏教行事は僧衣のサフラン色、民間行事は水の青緑、ワンプラは月の金色。今日の印は藍（key）
-type Tone = 'buddhist' | 'folk' | 'phra';
-const tone = ({ event }: CalendarItem): Tone =>
-  event.id === 'wan-phra' ? 'phra' : event.category === 'folk' ? 'folk' : 'buddhist';
-const chip: Record<Tone, string> = {
-  buddhist: 'border-saffron bg-saffron-subtle text-fg',
-  folk: 'border-water bg-water-subtle text-fg',
-  phra: 'border-gold text-fg-subtle',
-};
-const dot: Record<Tone, string> = {
-  buddhist: 'bg-saffron',
-  folk: 'bg-water',
-  phra: 'bg-gold',
-};
-const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-const dayTone = (date: string) => {
-  const w = new Date(`${date}T00:00:00Z`).getUTCDay();
-  return w === 0 ? 'text-fg-danger' : w === 6 ? 'text-fg-link' : '';
-};
 const navButton =
   'focus-ring tap-target inline-flex size-control-sm items-center justify-center rounded-full border border-border bg-surface text-icon hover:bg-muted disabled:cursor-not-allowed disabled:border-border-disabled disabled:text-fg-disabled disabled:hover:bg-surface';
 const legend = [
@@ -61,6 +35,7 @@ const legend = [
 <div
   data-calendar
   data-initial={initial}
+  data-months={months.map((m) => key(m.year, m.month)).join(' ')}
   class="flex flex-col gap-gap-md rounded-xl border border-border-subtle bg-surface p-inset-md md:p-inset-xl"
 >
   <div class="flex items-center justify-between gap-gap-sm">
@@ -83,123 +58,15 @@ const legend = [
       </button>
     </div>
   </div>
-  {months.map(({ year, month, weeks }) => (
-    <table
-      data-month={key(year, month)}
-      data-title={`${year} 年 ${month} 月`}
-      hidden={key(year, month) !== initial}
-      class="w-full table-fixed border-collapse"
-    >
-      <caption class="sr-only">{`${year} 年 ${month} 月の行事`}</caption>
-      <thead>
-        <tr>
-          {weekdays.map((w, i) => (
-            <th
-              scope="col"
-              class:list={[
-                'pb-inset-sm text-label-sm',
-                i === 0 ? 'text-fg-danger' : i === 6 ? 'text-fg-link' : 'text-fg-subtle',
-              ]}
-            >
-              {w}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {weeks.map((week) => (
-          <tr>
-            {week.map((d) => (
-              <td
-                data-date={d.date}
-                class="h-14 border-t border-border-subtle px-0.5 py-1 align-top aria-[current=date]:bg-gold-subtle md:h-24 md:p-inset-xs"
-              >
-                {d.inMonth && (
-                  <div class="flex flex-col items-center gap-1 md:items-stretch">
-                    <span
-                      data-day
-                      class:list={[
-                        'inline-flex size-7 items-center justify-center self-center rounded-full text-dense-sm tabular-nums',
-                        '[[aria-current=date]_&]:bg-key [[aria-current=date]_&]:font-bold [[aria-current=date]_&]:text-fg-on-key',
-                        dayTone(d.date),
-                      ]}
-                    >
-                      {Number(d.date.slice(8))}
-                    </span>
-                    {d.items.length > 0 && (
-                      <>
-                        <span
-                          aria-hidden="true"
-                          class="flex flex-wrap justify-center gap-0.5 md:hidden"
-                        >
-                          {d.items.map((item) => (
-                            <span class:list={['size-2 rounded-full', dot[tone(item)]]} />
-                          ))}
-                        </span>
-                        <ul class="m-0 hidden list-none flex-col gap-0.5 p-0 md:flex">
-                          {d.items.map((item) => (
-                            <li class="min-w-0">
-                              <a
-                                href={`/events/${item.event.id}/`}
-                                title={label(item)}
-                                class:list={[
-                                  'focus-ring line-clamp-2 block rounded-xs border-s-2 px-1 py-px text-dense-sm no-underline hover:underline',
-                                  chip[tone(item)],
-                                ]}
-                              >
-                                {label(item)}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                  </div>
-                )}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ))}
-  {months.map(({ year, month, weeks }) => {
-    const days = weeks.flat().filter((d) => d.inMonth && d.items.length > 0);
-    return (
-      <div
-        data-agenda={key(year, month)}
-        hidden={key(year, month) !== initial}
-        class="border-t border-border-subtle pt-inset-md md:hidden"
-      >
-        <p class="m-0 mb-gap-sm text-label-sm text-fg-subtle">{`${month} 月の行事`}</p>
-        <ul class="m-0 flex list-none flex-col p-0">
-          {days.flatMap((d) =>
-            d.items.map((item) => (
-              <li class="flex items-center gap-gap-sm border-b border-border-subtle py-inset-sm last:border-b-0">
-                <time
-                  datetime={d.date}
-                  class:list={[
-                    'w-32 shrink-0 text-body-sm whitespace-nowrap tabular-nums',
-                    dayTone(d.date),
-                  ]}
-                >
-                  {dateLabel(d.date, { year: false })}
-                </time>
-                <span
-                  aria-hidden="true"
-                  class:list={['size-2 shrink-0 rounded-full', dot[tone(item)]]}
-                />
-                <a
-                  href={`/events/${item.event.id}/`}
-                  class="focus-ring rounded-xs text-body-sm text-fg-link underline underline-offset-[0.2em]"
-                >
-                  {label(item)}
-                </a>
-              </li>
-            )),
-          )}
-        </ul>
-      </div>
+  {months.map((m) => {
+    const k = key(m.year, m.month);
+    // 最初に見せる月のほかは <template> に入れ、DOM を小さくする。前後の月へ移ったとき下の script が出す（ADR-0013）
+    return k === initial ? (
+      <CalendarMonth month={m} monthKey={k} hidden={false} />
+    ) : (
+      <template data-month-template={k}>
+        <CalendarMonth month={m} monthKey={k} hidden />
+      </template>
     );
   })}
   <ul
@@ -216,26 +83,34 @@ const legend = [
 </div>
 
 <script>
-  // 前後の月の切り替えと、ブラウザの日付での「今日」の印
+  // 前後の月の切り替えと、ブラウザの日付での「今日」の印。
+  // 最初に見せる月のほかは <template data-month-template> に入っているので、見せるときに DOM に出す
   for (const root of document.querySelectorAll<HTMLElement>('[data-calendar]')) {
-    const tables = [...root.querySelectorAll<HTMLTableElement>('table[data-month]')];
-    const agendas = [...root.querySelectorAll<HTMLElement>('[data-agenda]')];
+    const keys = (root.dataset.months ?? '').split(' ');
     const title = root.querySelector<HTMLElement>('[data-cal-title]')!;
     const prev = root.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
     const next = root.querySelector<HTMLButtonElement>('[data-cal-next]')!;
     const current = root.querySelector<HTMLButtonElement>('[data-cal-today]')!;
     const today = new Date().toLocaleDateString('sv-SE');
-    const start = tables.findIndex((t) => t.dataset.month === today.slice(0, 7));
-    const home =
-      start >= 0 ? start : tables.findIndex((t) => t.dataset.month === root.dataset.initial);
+    const start = keys.indexOf(today.slice(0, 7));
+    const home = start >= 0 ? start : keys.indexOf(root.dataset.initial ?? '');
     let index = home;
 
+    const reveal = (key: string) => {
+      const template = root.querySelector<HTMLTemplateElement>(
+        `template[data-month-template="${key}"]`,
+      );
+      template?.replaceWith(template.content);
+    };
     const show = () => {
-      tables.forEach((t, i) => (t.hidden = i !== index));
-      agendas.forEach((a, i) => (a.hidden = i !== index));
-      title.textContent = tables[index]!.dataset.title ?? '';
+      const key = keys[index]!;
+      reveal(key);
+      for (const el of root.querySelectorAll<HTMLElement>('[data-month], [data-agenda]')) {
+        el.hidden = (el.dataset.month ?? el.dataset.agenda) !== key;
+      }
+      title.textContent = `${key.slice(0, 4)} 年 ${Number(key.slice(5))} 月`;
       prev.disabled = index === 0;
-      next.disabled = index === tables.length - 1;
+      next.disabled = index === keys.length - 1;
       current.disabled = index === home;
     };
     prev.addEventListener('click', () => {
@@ -243,7 +118,7 @@ const legend = [
       show();
     });
     next.addEventListener('click', () => {
-      index = Math.min(tables.length - 1, index + 1);
+      index = Math.min(keys.length - 1, index + 1);
       show();
     });
     current.addEventListener('click', () => {
@@ -252,6 +127,7 @@ const legend = [
     });
 
     // 前後の月の枠埋めのマスにも同じ日付があるので、その月の日（日付の数字があるマス）だけに付ける
+    reveal(keys[home]!);
     root
       .querySelector(`td[data-date="${today}"]:has([data-day])`)
       ?.setAttribute('aria-current', 'date');

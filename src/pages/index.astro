@@ -3,7 +3,7 @@ import { getEntry } from 'astro:content';
 import { spanLabel } from '@/components/event/date-label';
 import EventCalendar from '@/components/event/EventCalendar.astro';
 import EventCard from '@/components/event/EventCard.astro';
-import EventIllustration from '@/components/event/EventIllustration.astro';
+import NextEvent from '@/components/event/NextEvent.astro';
 import SectionHeading from '@/components/site/SectionHeading.astro';
 import Base from '@/layouts/Base.astro';
 import { Icon } from '@/components/ui/icon';
@@ -39,6 +39,34 @@ const about = [
   },
 ] as const;
 
+// ホーム画面に追加する（PWA。ADR-0013）。オフラインで見られるのは public/sw.js が保存するため
+const installs = [
+  {
+    app: 'iPhone・iPad（Safari）',
+    steps: [
+      'Safari でこのページを開き、共有ボタン（四角から上向きの矢印）を押す',
+      'メニューを下へ送り、「ホーム画面に追加」を選ぶ',
+      '名前を確かめて「追加」を押す',
+    ],
+  },
+  {
+    app: 'Android（Chrome）',
+    steps: [
+      'Chrome でこのページを開き、右上のメニュー（︙）を押す',
+      '「ホーム画面に追加」または「アプリをインストール」を選ぶ',
+      '「インストール」（または「追加」）を押す',
+    ],
+  },
+  {
+    app: 'パソコン（Chrome・Edge）',
+    steps: [
+      'アドレスバーの右端にあるインストールのアイコン（画面と下向きの矢印）を押す',
+      'アイコンが無いときは、Chrome はメニューの「キャスト、保存、共有」、Edge はメニューの「アプリ」から選ぶ',
+      '「インストール」を押すと、別のウィンドウのアプリとして開く',
+    ],
+  },
+];
+
 const imports = [
   {
     app: 'Google カレンダー（パソコン）',
@@ -67,7 +95,10 @@ const imports = [
 ];
 ---
 
-<Base title="タイ仏教行事カレンダー">
+<Base
+  title="タイ仏教行事カレンダー"
+  description="タイの仏教行事（ワンプラ、マーカ・ブーチャー、ウィサーカ・ブーチャー、カオパンサーなど）の日付と意味を、日本語でまとめたカレンダーです。タイの太陰暦から計算し、公式発表と照らし合わせています。カレンダーアプリへの取り込み（ICS）にも対応。"
+>
   <main>
     <section
       aria-labelledby="site-title"
@@ -116,43 +147,25 @@ const imports = [
             focusable="false"
             class="h-4 w-[5.5rem] text-gold"
           >
-            <circle
-              cx="8"
-              cy="8"
-              r="6.5"
+            <path
+              d="M1.5 8a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0ZM25.5 8a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0ZM73.5 8a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0Z"
               fill="none"
               stroke="currentColor"
               stroke-width="1.5"
-            ></circle>
-            <circle
-              cx="32"
-              cy="8"
-              r="6.5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-            ></circle>
-            <path d="M32 1.5 A6.5 6.5 0 0 1 32 14.5 Z" fill="currentColor"></path>
-            <circle cx="56" cy="8" r="7.25" fill="currentColor"></circle>
-            <circle
-              cx="80"
-              cy="8"
-              r="6.5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-            ></circle>
-            <path d="M80 1.5 A6.5 6.5 0 0 0 80 14.5 Z" fill="currentColor"></path>
+            ></path>
+            <path
+              d="M32 1.5 A6.5 6.5 0 0 1 32 14.5 ZM48.75 8a7.25 7.25 0 1 0 14.5 0a7.25 7.25 0 1 0 -14.5 0ZM80 1.5 A6.5 6.5 0 0 0 80 14.5 Z"
+              fill="currentColor"
+            ></path>
           </svg>
+          <!-- サイト名はヘッダーにあるので、導入文をページの見出し（h1）にして大きく出す -->
           <h1
             id="site-title"
-            class="m-0 text-heading-md text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-display-md"
+            class="m-0 text-heading-md text-balance [font-feature-settings:'palt'] [word-break:auto-phrase] md:text-heading-xl"
           >
-            タイ仏教行事カレンダー
+            タイの仏教行事の<span class="text-fg-saffron">日付と意味</span>
+            を、日本語でまとめたカレンダーです。
           </h1>
-          <p class="m-0 max-w-prose text-body-lg text-fg-subtle">
-            タイの仏教行事の日付と意味を、日本語でまとめたカレンダーです。
-          </p>
           <div class="flex flex-wrap items-center gap-gap-sm">
             <a
               href="#calendar"
@@ -182,49 +195,31 @@ const imports = [
               <span aria-hidden="true" class="size-2 rounded-full bg-saffron" />
               次の行事
             </p>
-            {upcoming.map((o, i) => (
-              <a
-                data-next-event
-                data-start={o.start}
-                data-end={o.end}
-                href={`/events/${o.event.id}/`}
-                hidden={i !== 0}
-                class="group/next focus-ring flex flex-col text-fg no-underline"
-              >
-                <span class="mx-inset-lg block overflow-hidden rounded-lg">
-                  <EventIllustration
-                    id={o.event.id}
-                    class="aspect-[16/7] transition-transform duration-(--8341-motion-duration-slow) group-hover/next:scale-[1.04]"
-                  />
-                </span>
-                <span class="flex flex-col gap-gap-xs px-inset-lg pt-inset-md pb-inset-lg">
-                  <span class="flex items-baseline justify-between gap-gap-sm">
-                    <span class="text-heading-xxs group-hover/next:underline group-hover/next:underline-offset-[0.25em]">
-                      {o.event.name.kana}
-                    </span>
-                    <span
-                      data-countdown
-                      class="shrink-0 rounded-full bg-saffron-subtle px-inset-sm py-0.5 text-label-sm text-fg-saffron empty:hidden"
-                    />
-                  </span>
-                  <span class="text-body-sm text-fg-subtle">{o.event.name.ja}</span>
-                  <time datetime={o.start} class="text-body-sm font-bold">
-                    {spanLabel(o.start, o.end)}
-                  </time>
-                </span>
-              </a>
-            ))}
+            {upcoming.map((o, i) =>
+              // 2 件目からは <template> に入れて DOM を小さくし、ビルドした日より後に開いたとき下の script が出す（ADR-0013）
+              i === 0 ? (
+                <NextEvent occurrence={o} />
+              ) : (
+                <template data-next-template data-end={o.end}>
+                  <NextEvent occurrence={o} />
+                </template>
+              ),
+            )}
             {upcomingPhra.length > 0 && (
               <p class="m-0 flex flex-wrap items-center gap-x-gap-sm border-t border-border-subtle bg-subtle px-inset-lg py-inset-sm text-body-sm">
                 <span class="flex items-center gap-gap-xs text-fg-subtle">
                   <span aria-hidden="true" class="size-2 rounded-full bg-gold" />
                   次のワンプラ（布薩日）
                 </span>
-                {upcomingPhra.map((o, i) => (
-                  <time data-next-phra data-end={o.end} datetime={o.start} hidden={i !== 0}>
-                    {spanLabel(o.start, o.end)}
-                  </time>
-                ))}
+                <time
+                  data-next-phra
+                  data-dates={JSON.stringify(
+                    upcomingPhra.map((o) => [o.start, o.end, spanLabel(o.start, o.end)]),
+                  )}
+                  datetime={upcomingPhra[0]!.start}
+                >
+                  {spanLabel(upcomingPhra[0]!.start, upcomingPhra[0]!.end)}
+                </time>
               </p>
             )}
           </aside>
@@ -290,11 +285,16 @@ const imports = [
       <section aria-labelledby="events" class="flex flex-col gap-stack-md">
         <SectionHeading id="events" eyebrow="Events" title="行事の一覧">
           <p class="m-0 text-body-sm text-fg-subtle">
-            カードにカーソルを当てると、由来・行うこと・{years}
-            の日付が出ます。押すと詳しい説明のページへ移ります。
+            <span class="hoverable:hidden">
+              由来と行うことと次回の日付を、カードにまとめています。
+            </span>
+            <span class="hidden hoverable:inline">
+              カードにカーソルを当てると、由来・行うこと・{years}の日付が出ます。
+            </span>
+            押すと詳しい説明のページへ移ります。
           </p>
         </SectionHeading>
-        <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-gap-md p-0">
+        <ul class="m-0 grid list-none gap-gap-md p-0 md:grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
           {events.map((event, i) => (
             <EventCard
               event={event}
@@ -354,6 +354,35 @@ const imports = [
           </span>
         </p>
       </section>
+
+      <section aria-labelledby="app" class="flex flex-col gap-stack-md">
+        <SectionHeading id="app" eyebrow="App" title="ホーム画面に追加する（アプリとして使う）">
+          <p class="m-0 max-w-prose text-body-sm text-fg-subtle">
+            ホーム画面やパソコンのアプリ一覧に法輪のアイコンを置き、アプリのように開けます。一度開くと、行事のページと
+            calendar.ics が端末に保存され、オフライン（電波の届かない場所）でも見られます。
+          </p>
+        </SectionHeading>
+        <div class="grid gap-gap-md md:grid-cols-3">
+          {installs.map(({ app, steps }) => (
+            <div class="flex flex-col gap-gap-md rounded-xl border border-border-subtle bg-surface p-inset-xl">
+              <h3 class="m-0 text-heading-xxs">{app}</h3>
+              <ol class="m-0 flex list-none flex-col gap-gap-md p-0">
+                {steps.map((step, n) => (
+                  <li class="flex gap-gap-sm">
+                    <span
+                      aria-hidden="true"
+                      class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-gold-subtle text-label-sm text-fg-saffron tabular-nums ring-1 ring-gold-soft"
+                    >
+                      {n + 1}
+                    </span>
+                    <span class="text-body-sm">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   </main>
 </Base>
@@ -363,12 +392,19 @@ const imports = [
   const today = new Date().toLocaleDateString('sv-SE');
   const days = (from: string, to: string) =>
     Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
-  const pick = <T extends HTMLElement>(items: T[]) => {
-    const found = items.find((el) => (el.dataset.end ?? '') >= today) ?? items.at(-1);
-    for (const el of items) el.hidden = el !== found;
-    return found;
-  };
-  const next = pick([...document.querySelectorAll<HTMLElement>('[data-next-event]')]);
+  // ビルドした日の「次の行事」が過ぎていたら、<template> の候補から選び直して差し替える
+  let next = document.querySelector<HTMLElement>('[data-next-event]');
+  if (next && (next.dataset.end ?? '') < today) {
+    const later = [
+      ...document.querySelectorAll<HTMLTemplateElement>('template[data-next-template]'),
+    ];
+    const found = later.find((t) => (t.dataset.end ?? '') >= today) ?? later.at(-1);
+    const replacement = found?.content.firstElementChild;
+    if (found && replacement instanceof HTMLElement) {
+      next.replaceWith(found.content);
+      next = replacement;
+    }
+  }
   const countdown = next?.querySelector<HTMLElement>('[data-countdown]');
   if (next && countdown) {
     const { start = '', end = '' } = next.dataset;
@@ -381,15 +417,28 @@ const imports = [
             ? '今日'
             : '期間中';
   }
-  pick([...document.querySelectorAll<HTMLElement>('[data-next-phra]')]);
+  // 次のワンプラ: 候補（[始まり, 終わり, 表示]）から、ブラウザの日付で選び直す
+  const phra = document.querySelector<HTMLTimeElement>('[data-next-phra]');
+  if (phra) {
+    const dates: [string, string, string][] = JSON.parse(phra.dataset.dates ?? '[]');
+    const found = dates.find(([, end]) => end >= today) ?? dates.at(-1);
+    if (found) {
+      phra.dateTime = found[0];
+      phra.textContent = found[2];
+    }
+  }
 
   // 一覧のカードのポップアップを、画面に収まる側（右、だめなら左）に出す。
-  // どちらにも入らない狭い画面では、カードの下に出す（CSS の既定の位置）
+  // どちらにも入らないときは、カードの下に出す（CSS の hoverable: の位置）。
+  // カーソルの無い画面・狭い画面では、ポップアップにせずカードの中に出すので何もしない（ADR-0013）
   const GAP = 8;
+  const hoverable = window.matchMedia('(hover: hover) and (min-width: 48rem)');
   for (const card of document.querySelectorAll<HTMLElement>('[data-card]')) {
     const pop = card.querySelector<HTMLElement>('[data-popover]');
     if (!pop) continue;
     const place = () => {
+      Object.assign(pop.style, { left: '', right: '', top: '', width: '', marginTop: '' });
+      if (!hoverable.matches) return;
       const rect = card.getBoundingClientRect();
       const width = 320;
       const viewport = document.documentElement.clientWidth;
@@ -399,7 +448,6 @@ const imports = [
           : rect.left - GAP - width >= 0
             ? 'left'
             : 'below';
-      Object.assign(pop.style, { left: '', right: '', top: '', width: '', marginTop: '' });
       if (side === 'below') return;
       Object.assign(pop.style, {
         width: `${width}px`,

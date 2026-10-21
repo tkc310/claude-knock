@@ -18,21 +18,33 @@ make dev     # http://localhost:4321
 `make` で一覧を表示する。どのコマンドも [Vite+](https://viteplus.dev/)（`vp`）を通して動く。
 `vp` をグローバルに入れていなくても、プロジェクト内の `vite-plus` を使う（`make VP=vp ...` で差し替え可）。
 
-| make                           | 実体                                           | 内容                 |
-| :----------------------------- | :--------------------------------------------- | :------------------- |
-| `make setup`                   | `mise install` / `asdf install` + `vp install` | 初回の準備           |
-| `make install`                 | `vp install`                                   | 依存を入れる         |
-| `make dev`                     | `vp run dev` → `astro dev`                     | 開発サーバー         |
-| `make build`                   | `vp run build` → `astro build`                 | `dist/` に静的ビルド |
-| `make preview`                 | `vp run preview` → `astro preview`             | ビルドの確認         |
-| `make check`                   | `vp check` + `vp run typecheck`                | fmt・lint・型        |
-| `make fix`                     | `vp check --fix`                               | fmt・lint の自動修正 |
-| `make test`                    | `vp test`                                      | テスト               |
-| `make test-watch`              | `vp test watch`                                | テストの監視実行     |
-| `make ui-add C="heading card"` | `vp dlx shadcn@latest add @8341/...`           | 8341-ui の部品を足す |
-| `make clean`                   | `rm -rf dist .astro`                           | 成果物を消す         |
+| make                           | 実体                                           | 内容                                                      |
+| :----------------------------- | :--------------------------------------------- | :-------------------------------------------------------- |
+| `make setup`                   | `mise install` / `asdf install` + `vp install` | 初回の準備                                                |
+| `make install`                 | `vp install`                                   | 依存を入れる                                              |
+| `make dev`                     | `vp run dev` → `astro dev`                     | 開発サーバー                                              |
+| `make build`                   | `vp run build` → `astro build`                 | `dist/` に静的ビルド                                      |
+| `make preview`                 | `vp run preview` → `astro preview`             | ビルドの確認                                              |
+| `make check`                   | `vp check` + `vp run typecheck`                | fmt・lint・型                                             |
+| `make fix`                     | `vp check --fix`                               | fmt・lint の自動修正                                      |
+| `make test`                    | `vp test`                                      | テスト                                                    |
+| `make test-watch`              | `vp test watch`                                | テストの監視実行                                          |
+| `make ui-add C="heading card"` | `vp dlx shadcn@latest add @8341/...`           | 8341-ui の部品を足す                                      |
+| `make icons`                   | `node scripts/icons.ts`                        | 法輪の favicon・PWA のアイコンを作り直す（macOS の sips） |
+| `make clean`                   | `rm -rf dist .astro`                           | 成果物を消す                                              |
 
 `vp dev` / `vp build` は素の Vite を動かすので使わない。Astro のコマンドは `package.json` の scripts に集約し、`vp run <script>` で呼ぶ。
+
+## PWA（ホーム画面に追加・オフライン）
+
+サイトは PWA としてホーム画面やパソコンのアプリ一覧に追加でき、一度開くとオフラインでも見られる（ADR-0013）。
+
+- `public/manifest.webmanifest`: 名前・アイコン・色・`display: standalone`
+- `public/icons/`・`public/favicon.*`: ヘッダーのロゴと同じ法輪（`src/components/site/dharma-wheel.ts`）。形や色を変えたら `make icons` で作り直してコミットする
+- `public/sw.js`: 自前の Service Worker。全ページ・`calendar.ics`・アイコンを保存し、ページと ICS はネットワークを先に見て、つながらないときに保存した版を返す。保存する URL と版（中身のハッシュ）はビルドの最後に `src/integrations/service-worker.ts` が `dist/sw.js` に書き込む
+- 登録は本番ビルドだけ（`make dev` では登録しない）。確かめるときは `make build` のあと `make preview` で開く
+
+追加の手順（iPhone は Safari の共有 →「ホーム画面に追加」、Android は Chrome のメニュー →「ホーム画面に追加」/「アプリをインストール」、パソコンは Chrome・Edge のアドレスバーのインストール）はトップページの「ホーム画面に追加する」にある。
 
 ## ディレクトリ
 

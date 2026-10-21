@@ -1,0 +1,148 @@
+---
+// カレンダーの 1 か月分: 月表（table）と、スマホ幅で表の下に並べるその月の行事（data-agenda）。EventCalendar.astro が使う
+import { dateLabel } from '@/components/event/date-label';
+import type { CalendarItem, CalendarMonth } from '@/data/month-grid';
+
+interface Props {
+  month: CalendarMonth;
+  /** 2026-10 の形 */
+  monthKey: string;
+  hidden: boolean;
+}
+
+const { month: m, monthKey, hidden } = Astro.props;
+const { year, month, weeks } = m;
+const days = weeks.flat().filter((d) => d.inMonth && d.items.length > 0);
+
+const label = ({ event, mark }: CalendarItem) =>
+  mark === 'start'
+    ? `${event.name.kana} 始まり`
+    : mark === 'end'
+      ? `${event.name.kana} 終わり`
+      : event.name.kana;
+
+// 色分け: 仏教行事は僧衣のサフラン色、民間行事は水の青緑、ワンプラは月の金色。今日の印は藍（key）
+type Tone = 'buddhist' | 'folk' | 'phra';
+const tone = ({ event }: CalendarItem): Tone =>
+  event.id === 'wan-phra' ? 'phra' : event.category === 'folk' ? 'folk' : 'buddhist';
+const chip: Record<Tone, string> = {
+  buddhist: 'border-saffron bg-saffron-subtle text-fg',
+  folk: 'border-water bg-water-subtle text-fg',
+  phra: 'border-gold text-fg-subtle',
+};
+const dot: Record<Tone, string> = {
+  buddhist: 'bg-saffron',
+  folk: 'bg-water',
+  phra: 'bg-gold',
+};
+const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+const dayTone = (date: string) => {
+  const w = new Date(`${date}T00:00:00Z`).getUTCDay();
+  return w === 0 ? 'text-fg-danger' : w === 6 ? 'text-fg-link' : '';
+};
+---
+
+<table data-month={monthKey} hidden={hidden} class="w-full table-fixed border-collapse">
+  <caption class="sr-only">{`${year} 年 ${month} 月の行事`}</caption>
+  <thead>
+    <tr>
+      {weekdays.map((w, i) => (
+        <th
+          scope="col"
+          class:list={[
+            'pb-inset-sm text-label-sm',
+            i === 0 ? 'text-fg-danger' : i === 6 ? 'text-fg-link' : 'text-fg-subtle',
+          ]}
+        >
+          {w}
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {weeks.map((week) => (
+      <tr>
+        {week.map((d) => (
+          <td
+            data-date={d.date}
+            class="h-14 border-t border-border-subtle px-0.5 py-1 align-top aria-[current=date]:bg-gold-subtle md:h-24 md:p-inset-xs"
+          >
+            {d.inMonth && (
+              <>
+                <span
+                  data-day
+                  class:list={[
+                    'mx-auto flex size-7 items-center justify-center rounded-full text-dense-sm tabular-nums',
+                    '[[aria-current=date]_&]:bg-key [[aria-current=date]_&]:font-bold [[aria-current=date]_&]:text-fg-on-key',
+                    dayTone(d.date),
+                  ]}
+                >
+                  {Number(d.date.slice(8))}
+                </span>
+                {d.items.length > 0 && (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      class="mt-1 flex flex-wrap justify-center gap-0.5 md:hidden"
+                    >
+                      {d.items.map((item) => (
+                        <span class:list={['size-2 rounded-full', dot[tone(item)]]} />
+                      ))}
+                    </span>
+                    <ul class="m-0 mt-1 hidden list-none flex-col gap-0.5 p-0 md:flex">
+                      {d.items.map((item) => (
+                        <li class="min-w-0">
+                          <a
+                            href={`/events/${item.event.id}/`}
+                            title={label(item)}
+                            class:list={[
+                              'focus-ring line-clamp-2 block min-h-6 rounded-xs border-s-2 px-1 py-0.5 text-dense-sm no-underline hover:underline',
+                              chip[tone(item)],
+                            ]}
+                          >
+                            {label(item)}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </>
+            )}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+<div
+  data-agenda={monthKey}
+  hidden={hidden}
+  class="border-t border-border-subtle pt-inset-md md:hidden"
+>
+  <p class="m-0 mb-gap-sm text-label-sm text-fg-subtle">{`${month} 月の行事`}</p>
+  <ul class="m-0 flex list-none flex-col p-0">
+    {days.flatMap((d) =>
+      d.items.map((item) => (
+        <li class="flex items-center gap-gap-sm border-b border-border-subtle py-inset-sm last:border-b-0">
+          <time
+            datetime={d.date}
+            class:list={[
+              'w-32 shrink-0 text-body-sm whitespace-nowrap tabular-nums',
+              dayTone(d.date),
+            ]}
+          >
+            {dateLabel(d.date, { year: false })}
+          </time>
+          <span aria-hidden="true" class:list={['size-2 shrink-0 rounded-full', dot[tone(item)]]} />
+          <a
+            href={`/events/${item.event.id}/`}
+            class="focus-ring rounded-xs text-body-sm text-fg-link underline underline-offset-[0.2em]"
+          >
+            {label(item)}
+          </a>
+        </li>
+      )),
+    )}
+  </ul>
+</div>

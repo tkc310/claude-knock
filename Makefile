@@ -10,7 +10,7 @@ VP ?= pnpm exec vp
 # 引数（例: make ui-add C="heading card"）
 C ?=
 
-.PHONY: help setup tools install dev build preview check fix test test-watch verify ui-add clean
+.PHONY: help setup tools install dev build preview check fix test test-watch verify ui-add icons clean
 
 ##@ はじめる
 
@@ -66,6 +66,9 @@ verify: build ## ビルドし、dist/calendar.ics が VCALENDAR で VEVENT を�
 ui-add: ## 8341-ui の部品を足す（C="heading card"）
 	@test -n "$(C)" || { echo 'C="部品名 ..." を指定してください（例: make ui-add C="heading card"）'; exit 1; }
 	$(VP) dlx shadcn@latest add $(addprefix @8341/,$(C))
+
+icons: ## favicon と PWA のアイコンを法輪の形から作り直す（macOS の sips を使う。ADR-0013）
+	node scripts/icons.ts
 
 ##@ 後片付け
 

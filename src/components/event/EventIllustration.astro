@@ -1,6 +1,7 @@
 ---
 // 行事のイメージイラスト（自作の SVG）。行事の中身を連想させるモチーフを 1 つ描く。
-// 飾りなので読み上げない（行事名は見出しにある）
+// 飾りなので読み上げない（行事名は見出しにある）。
+// 同じ色の繰り返しの図形（灯明・雨・輻など）は 1 つの path にまとめ、ページの DOM を小さくする（ADR-0013）
 import type { EventId } from '@/data/events';
 
 interface Props {
@@ -26,6 +27,14 @@ const candles = Array.from({ length: 14 }, (_, i) => {
   return { x: 160 + Math.cos(a) * 110, y: 112 + Math.sin(a) * 18 };
 });
 const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
+const monks = [104, 160, 216];
+
+// 円・楕円を path の部分路にする（いくつも並べて 1 つの path にするため）
+const ellipse = (cx: number, cy: number, rx: number, ry = rx) =>
+  `M${cx - rx} ${cy}a${rx} ${ry} 0 1 0 ${2 * rx} 0a${rx} ${ry} 0 1 0 ${-2 * rx} 0Z`;
+function paths<T>(items: readonly T[], f: (item: T) => string): string {
+  return items.map(f).join('');
+}
 ---
 
 <svg
@@ -39,12 +48,8 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
   {id === 'wan-phra' && (
     <>
       <rect width="320" height="140" fill="#2E3A6B" />
-      <circle cx="40" cy="24" r="1.5" fill="#fff" />
-      <circle cx="282" cy="30" r="1.5" fill="#fff" />
-      <circle cx="160" cy="18" r="1.2" fill="#fff" />
-      {[70, 130, 190, 250].map((x) => (
-        <circle cx={x} cy="74" r="22" fill="#46528A" />
-      ))}
+      <path d={ellipse(40, 24, 1.5) + ellipse(282, 30, 1.5) + ellipse(160, 18, 1.2)} fill="#fff" />
+      <path d={paths([70, 130, 190, 250], (x) => ellipse(x, 74, 22))} fill="#46528A" />
       <path d="M70 52 A22 22 0 0 1 70 96 Z" fill="#F6E7B0" />
       <circle cx="130" cy="74" r="22" fill="#F6E7B0" />
       <path d="M190 52 A22 22 0 0 0 190 96 Z" fill="#F6E7B0" />
@@ -66,12 +71,8 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
       <path d="M134 102 C134 70 186 70 186 102 Z" fill="#F2C14E" />
       <rect x="152" y="58" width="16" height="10" fill="#E8B04B" />
       <path d="M160 18 L168 58 H152 Z" fill="#F2C14E" />
-      {candles.map(({ x, y }) => (
-        <g>
-          <rect x={x - 2} y={y - 8} width="4" height="10" fill="#FFF6E5" />
-          <ellipse cx={x} cy={y - 12} rx="3" ry="5" fill="#FFB547" />
-        </g>
-      ))}
+      <path d={paths(candles, ({ x, y }) => `M${x - 2} ${y - 8}h4v10h-4Z`)} fill="#FFF6E5" />
+      <path d={paths(candles, ({ x, y }) => ellipse(x, y - 12, 3, 5))} fill="#FFB547" />
     </>
   )}
   {id === 'visakha-bucha' && (
@@ -111,12 +112,12 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
     <>
       <rect width="320" height="140" fill="#FFF3D6" />
       <circle cx="160" cy="70" r="52" fill="none" stroke="#D99A2B" stroke-width="6" />
-      {spokes.map(({ x, y, kx, ky }) => (
-        <>
-          <line x1="160" y1="70" x2={x} y2={y} stroke="#D99A2B" stroke-width="4" />
-          <circle cx={kx} cy={ky} r="5" fill="#D99A2B" />
-        </>
-      ))}
+      <path
+        d={paths(spokes, ({ x, y }) => `M160 70L${x} ${y}`)}
+        stroke="#D99A2B"
+        stroke-width="4"
+      />
+      <path d={paths(spokes, ({ kx, ky }) => ellipse(kx, ky, 5))} fill="#D99A2B" />
       <circle cx="160" cy="70" r="12" fill="#D99A2B" />
       <circle cx="160" cy="70" r="5" fill="#FFF3D6" />
     </>
@@ -124,17 +125,12 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
   {id === 'khao-phansa' && (
     <>
       <rect width="320" height="140" fill="#DCEBFA" />
-      {rain.map((x, i) => (
-        <line
-          x1={x}
-          y1={i < 6 ? 20 : 70}
-          x2={x - 6}
-          y2={i < 6 ? 40 : 90}
-          stroke="#7FB3D5"
-          stroke-width="3"
-          stroke-linecap="round"
-        />
-      ))}
+      <path
+        d={rain.map((x, i) => `M${x} ${i < 6 ? 20 : 70}l-6 20`).join('')}
+        stroke="#7FB3D5"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
       <rect x="140" y="44" width="40" height="80" rx="4" fill="#F2C14E" />
       <path d="M140 70 h40 M140 96 h40" stroke="#D99A2B" stroke-width="4" />
       <rect x="130" y="122" width="60" height="8" rx="2" fill="#B07A3B" />
@@ -146,13 +142,16 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
     <>
       <rect width="320" height="140" fill="#F4E6CF" />
       <circle cx="160" cy="44" r="26" fill="#FFF8E1" />
-      {[104, 160, 216].map((x) => (
-        <>
-          <circle cx={x} cy="86" r="9" fill="#C98E62" />
-          <path d={`M${x - 24} 128 C${x - 22} 100 ${x + 22} 100 ${x + 24} 128 Z`} fill="#E07B2B" />
-          <path d={`M${x - 6} 102 L${x + 18} 128`} stroke="#B85E1B" stroke-width="3" />
-        </>
-      ))}
+      <path d={paths(monks, (x) => ellipse(x, 86, 9))} fill="#C98E62" />
+      <path
+        d={paths(monks, (x) => `M${x - 24} 128 C${x - 22} 100 ${x + 22} 100 ${x + 24} 128 Z`)}
+        fill="#E07B2B"
+      />
+      <path
+        d={paths(monks, (x) => `M${x - 6} 102 L${x + 18} 128`)}
+        stroke="#B85E1B"
+        stroke-width="3"
+      />
     </>
   )}
   {id === 'thot-kathin' && (
@@ -189,9 +188,10 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
         opacity="0.6"
       />
       <ellipse cx="150" cy="100" rx="46" ry="10" fill="#4E8A4A" />
-      {[118, 134, 150, 166, 182].map((x) => (
-        <path d={`M${x - 10} 98 L${x} 74 L${x + 10} 98 Z`} fill="#6BAF5F" />
-      ))}
+      <path
+        d={paths([118, 134, 150, 166, 182], (x) => `M${x - 10} 98 L${x} 74 L${x + 10} 98 Z`)}
+        fill="#6BAF5F"
+      />
       <circle cx="140" cy="80" r="5" fill="#F28CB1" />
       <circle cx="162" cy="78" r="5" fill="#F6E7B0" />
       <rect x="149" y="60" width="4" height="18" fill="#FFF6E5" />
@@ -203,22 +203,22 @@ const rain = [30, 70, 110, 210, 250, 290, 50, 90, 230, 270];
       <rect width="320" height="140" fill="#E3F4FA" />
       <path d="M110 76 h100 C206 112 186 124 160 124 C134 124 114 112 110 76 Z" fill="#C9A24B" />
       <ellipse cx="160" cy="76" rx="50" ry="8" fill="#5FA8D3" />
-      {[
-        [140, 52, 4],
-        [160, 40, 5],
-        [182, 50, 4],
-        [124, 34, 3],
-        [198, 30, 3],
-        [170, 20, 3],
-      ].map(([x, y, r]) => (
-        <path
-          d={`M${x} ${y - r * 2} C${x + r} ${y - r / 2} ${x + r} ${y + r} ${x} ${y + r} C${x - r} ${y + r} ${x - r} ${y - r / 2} ${x} ${y - r * 2} Z`}
-          fill="#5FA8D3"
-        />
-      ))}
-      {[146, 160, 174].map((x) => (
-        <circle cx={x} cy="74" r="4" fill="#FFFFFF" />
-      ))}
+      <path
+        d={paths(
+          [
+            [140, 52, 4],
+            [160, 40, 5],
+            [182, 50, 4],
+            [124, 34, 3],
+            [198, 30, 3],
+            [170, 20, 3],
+          ] as const,
+          ([x, y, r]) =>
+            `M${x} ${y - r * 2} C${x + r} ${y - r / 2} ${x + r} ${y + r} ${x} ${y + r} C${x - r} ${y + r} ${x - r} ${y - r / 2} ${x} ${y - r * 2} Z`,
+        )}
+        fill="#5FA8D3"
+      />
+      <path d={paths([146, 160, 174], (x) => ellipse(x, 74, 4))} fill="#FFFFFF" />
     </>
   )}
 </svg>
