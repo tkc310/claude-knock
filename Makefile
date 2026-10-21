@@ -10,7 +10,7 @@ VP ?= pnpm exec vp
 # 引数（例: make ui-add C="heading card"）
 C ?=
 
-.PHONY: help setup tools install dev build preview check fix test test-watch ui-add clean
+.PHONY: help setup tools install dev build preview check fix test test-watch verify ui-add clean
 
 ##@ はじめる
 
@@ -54,6 +54,11 @@ test: ## テストを実行する
 
 test-watch: ## テストを監視モードで実行する
 	$(VP) test watch
+
+verify: build ## ビルドし、dist/calendar.ics が VCALENDAR で VEVENT を含むことを確かめる
+	@test -f dist/calendar.ics || { echo "dist/calendar.ics がありません"; exit 1; }
+	@[ "$$(head -c 15 dist/calendar.ics)" = BEGIN:VCALENDAR ] || { echo "dist/calendar.ics が BEGIN:VCALENDAR で始まりません"; exit 1; }
+	@n=$$(grep -c '^BEGIN:VEVENT' dist/calendar.ics); [ "$$n" -ge 1 ] || { echo "dist/calendar.ics に VEVENT がありません"; exit 1; }; echo "dist/calendar.ics: VEVENT $$n 件"
 
 ##@ UI
 

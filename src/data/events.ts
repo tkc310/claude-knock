@@ -1,4 +1,6 @@
 // 行事定義。名前は「タイ語 / ローマ字 / カタカナ / 日本語訳」を必ず併記する
+import type { DateRule, LunarDayRule } from '@/core';
+
 export type EventId =
   | 'wan-phra'
   | 'makha-bucha'
@@ -24,49 +26,37 @@ export interface EventName {
  */
 export type EventCategory = 'buddhist' | 'folk';
 
-/** 月日（太陽暦）。month は 1 始まり */
-export interface MonthDay {
-  month: number;
-  day: number;
-}
-
-interface BaseEvent {
+export interface EventDefinition {
   id: EventId;
   name: EventName;
   category: EventCategory;
+  /** 日付の規則。解釈は src/core/ が持つ（ADR-0008） */
+  date: DateRule;
 }
 
-/** タイ太陰暦から日付を計算する行事。規則は src/core/ で扱う */
-export interface LunarEvent extends BaseEvent {
-  calendar: 'lunar';
-}
-
-/** 太陽暦で日付が固定の行事 */
-export interface SolarEvent extends BaseEvent {
-  calendar: 'solar';
-  start: MonthDay;
-  end: MonthDay;
-}
-
-export type EventDefinition = LunarEvent | SolarEvent;
+const fullMoon = (month: LunarDayRule['month']): DateRule => ({
+  kind: 'lunar-day',
+  at: { month, phase: 'waxing', day: 15 },
+});
 
 export const events: readonly EventDefinition[] = [
   {
     id: 'wan-phra',
     category: 'buddhist',
-    calendar: 'lunar',
+    date: { kind: 'uposatha' },
     name: { th: 'วันพระ', romaji: 'Wan Phra', kana: 'ワンプラ', ja: '布薩日' },
   },
   {
     id: 'makha-bucha',
     category: 'buddhist',
-    calendar: 'lunar',
+    // 閏月の年は 1 か月ずれる（docs/events/makha-bucha.md）
+    date: fullMoon({ common: 3, adhikamas: 4 }),
     name: { th: 'วันมาฆบูชา', romaji: 'Makha Bucha', kana: 'マーカ・ブーチャー', ja: '万仏節' },
   },
   {
     id: 'visakha-bucha',
     category: 'buddhist',
-    calendar: 'lunar',
+    date: fullMoon({ common: 6, adhikamas: 7 }),
     name: {
       th: 'วันวิสาขบูชา',
       romaji: 'Visakha Bucha',
@@ -77,7 +67,7 @@ export const events: readonly EventDefinition[] = [
   {
     id: 'asarnha-bucha',
     category: 'buddhist',
-    calendar: 'lunar',
+    date: fullMoon({ common: 8, adhikamas: 'second-8' }),
     name: {
       th: 'วันอาสาฬหบูชา',
       romaji: 'Asarnha Bucha',
@@ -88,33 +78,39 @@ export const events: readonly EventDefinition[] = [
   {
     id: 'khao-phansa',
     category: 'buddhist',
-    calendar: 'lunar',
+    date: {
+      kind: 'lunar-day',
+      at: { month: { common: 8, adhikamas: 'second-8' }, phase: 'waning', day: 1 },
+    },
     name: { th: 'วันเข้าพรรษา', romaji: 'Khao Phansa', kana: 'カオパンサー', ja: '入安居' },
   },
   {
     id: 'ok-phansa',
     category: 'buddhist',
-    calendar: 'lunar',
+    date: fullMoon(11),
     name: { th: 'วันออกพรรษา', romaji: 'Ok Phansa', kana: 'オークパンサー', ja: '出安居' },
   },
   {
     id: 'thot-kathin',
     category: 'buddhist',
-    calendar: 'lunar',
+    // オークパンサーの翌日から、1 か月後の満月まで
+    date: {
+      kind: 'lunar-span',
+      start: { month: 11, phase: 'waning', day: 1 },
+      end: { month: 12, phase: 'waxing', day: 15 },
+    },
     name: { th: 'ทอดกฐิน', romaji: 'Thot Kathin', kana: 'トートカティン', ja: 'カティナ衣奉献' },
   },
   {
     id: 'loi-krathong',
     category: 'folk',
-    calendar: 'lunar',
+    date: fullMoon(12),
     name: { th: 'ลอยกระทง', romaji: 'Loi Krathong', kana: 'ロイクラトン', ja: '灯籠流し' },
   },
   {
     id: 'songkran',
     category: 'folk',
-    calendar: 'solar',
-    start: { month: 4, day: 13 },
-    end: { month: 4, day: 15 },
+    date: { kind: 'solar-span', start: { month: 4, day: 13 }, end: { month: 4, day: 15 } },
     name: { th: 'สงกรานต์', romaji: 'Songkran', kana: 'ソンクラーン', ja: 'タイ正月' },
   },
 ];

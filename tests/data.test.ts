@@ -22,13 +22,14 @@ describe('events', () => {
     expect(folk).toEqual(['loi-krathong', 'songkran']);
   });
 
-  it('ロイクラトンはタイ太陰暦から計算する', () => {
-    expect(events.find((e) => e.id === 'loi-krathong')).toMatchObject({ calendar: 'lunar' });
+  it('ソンクラーンのほかは、タイ太陰暦から計算する', () => {
+    const solar = events.filter((e) => e.date.kind === 'solar-span').map((e) => e.id);
+    expect(solar).toEqual(['songkran']);
   });
 
   it('ソンクラーンは太陽暦の 4/13〜15 に固定', () => {
-    expect(events.find((e) => e.id === 'songkran')).toMatchObject({
-      calendar: 'solar',
+    expect(events.find((e) => e.id === 'songkran')?.date).toEqual({
+      kind: 'solar-span',
       start: { month: 4, day: 13 },
       end: { month: 4, day: 15 },
     });

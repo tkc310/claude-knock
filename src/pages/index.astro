@@ -5,7 +5,14 @@ import { Heading } from '@/components/ui/heading';
 import { Stack } from '@/components/ui/stack';
 import { Tag } from '@/components/ui/tag';
 import { Text } from '@/components/ui/text';
+import { formatLunarDate, occurrences } from '@/core';
+import { displayRange } from '@/data/display-range';
 import { events, formatEventName } from '@/data/events';
+
+const range = displayRange(new Date());
+const list = occurrences(events, range);
+const span = (start: string, end: string) =>
+  start === end ? start : `${start}〜${end.slice(5)}`;
 ---
 
 <Base title="タイ仏教行事カレンダー">
@@ -13,27 +20,44 @@ import { events, formatEventName } from '@/data/events';
     <Stack gap="lg">
       <Stack gap="sm">
         <Heading level={1}>タイ仏教行事カレンダー</Heading>
-        <Text tone="subtle">タイ太陰暦と太陽暦にもとづく行事の一覧です。</Text>
+        <Text tone="subtle">
+          タイ太陰暦と太陽暦にもとづく、{range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の行事の一覧です。
+        </Text>
       </Stack>
       <Stack as="ul" gap="md">
         {
-          events.map((event) => (
-            <Card as="li" headingLevel={2} title={formatEventName(event.name)}>
-              <Stack direction="horizontal" gap="sm" wrap>
-                {event.calendar === 'lunar' ? (
-                  <Tag tone="key">太陰暦</Tag>
-                ) : (
-                  <>
-                    <Tag>太陽暦</Tag>
-                    <Text as="span" variant="body-sm">
-                      {event.start.month}/{event.start.day}〜{event.end.day}
+          events.map((event) => {
+            const dates = list.filter((o) => o.event.id === event.id);
+            return (
+              <Card as="li" headingLevel={2} title={formatEventName(event.name)}>
+                <Stack gap="sm">
+                  <Stack direction="horizontal" gap="sm" wrap>
+                    {event.date.kind === 'solar-span' ? (
+                      <Tag>太陽暦</Tag>
+                    ) : (
+                      <Tag tone="key">太陰暦</Tag>
+                    )}
+                    {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
+                  </Stack>
+                  {event.date.kind === 'uposatha' ? (
+                    <Text variant="body-sm">
+                      毎月の白分 8・15 日、黒分 8 日、月末（{dates.length} 日）
                     </Text>
-                  </>
-                )}
-                {event.category === 'folk' && <Tag tone="warning">民間行事</Tag>}
-              </Stack>
-            </Card>
-          ))
+                  ) : (
+                    <Stack as="ul" gap="sm">
+                      {dates.map((o) => (
+                        <li>
+                          <Text variant="body-sm">
+                            {span(o.start, o.end)}（{formatLunarDate(o.lunar)}）
+                          </Text>
+                        </li>
+                      ))}
+                    </Stack>
+                  )}
+                </Stack>
+              </Card>
+            );
+          })
         }
       </Stack>
     </Stack>
