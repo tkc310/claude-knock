@@ -13,6 +13,7 @@ const files: Record<string, string> = {
   '_astro/client.unused.js': '',
   'sw.js': '',
   'robots.txt': '',
+  _headers: '/sw.js\n  Cache-Control: no-cache',
 };
 
 it('ページは末尾が / の URL にし、ICS・マニフェスト・アイコンを含める', () => {
@@ -33,4 +34,12 @@ it('どのページも読み込まない _astro/ のファイルと、sw.js・ro
   expect(urls).not.toContain('/_astro/client.unused.js');
   expect(urls).not.toContain('/sw.js');
   expect(urls).not.toContain('/robots.txt');
+});
+
+// _headers・_redirects は Cloudflare が読むだけで配られない（404）。保存の対象に入れると cache.addAll が失敗し、
+// Service Worker のインストールそのものが失敗する（ADR-0016）
+it('Cloudflare の設定ファイル（_headers・_redirects）は保存しない', () => {
+  const urls = precacheUrls([...Object.keys(files), '_redirects'], (f) => files[f] ?? '');
+  expect(urls).not.toContain('/_headers');
+  expect(urls).not.toContain('/_redirects');
 });

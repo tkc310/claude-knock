@@ -1,0 +1,59 @@
+# main の CI が通ったら、ビルドして Cloudflare Workers の静的アセットへデプロイする（ADR-0016）。
+# 必要なもの: secrets の CLOUDFLARE_API_TOKEN・CLOUDFLARE_ACCOUNT_ID
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # CI が通った main の push だけ（手動の実行は main のときだけ）
+    if: >-
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # CI が確かめたコミットそのものを配る
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: jdx/mise-action@v2
+        with:
+          install: false
+          cache: true
+
+      - name: Node.js・pnpm を入れる（.tool-versions）
+        run: make tools
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('.tool-versions', 'pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+
+      - name: 依存を入れる
+        run: make install
+        env:
+          pnpm_config_store_dir: ${{ runner.temp }}/pnpm-store
+
+      # build・verify の後に wrangler で dist/ を送る（make deploy。手元と同じ）
+      - name: ビルドしてデプロイする
+        run: make deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

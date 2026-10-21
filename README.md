@@ -31,6 +31,7 @@ make dev     # http://localhost:4321
 | `make test-watch`              | `vp test watch`                                | テストの監視実行                                          |
 | `make ui-add C="heading card"` | `vp dlx shadcn@latest add @8341/...`           | 8341-ui の部品を足す                                      |
 | `make icons`                   | `node scripts/icons.ts`                        | 法輪の favicon・PWA のアイコンを作り直す（macOS の sips） |
+| `make deploy`                  | `pnpm dlx wrangler@4 deploy`                   | Cloudflare Workers にデプロイ（ADR-0016）                 |
 | `make clean`                   | `rm -rf dist .astro`                           | 成果物を消す                                              |
 
 `vp dev` / `vp build` は素の Vite を動かすので使わない。Astro のコマンドは `package.json` の scripts に集約し、`vp run <script>` で呼ぶ。
@@ -59,6 +60,14 @@ tests/           テスト
 tests/fixtures/  日付の正解データ（出典 URL 必須）
 docs/events/     行事ごとの資料
 ```
+
+## デプロイ
+
+Cloudflare Workers の静的アセットで `dist/` を配る（ADR-0016）。main にマージすると、CI が通った後に `.github/workflows/deploy.yml` が `make deploy` を走らせる。
+
+- 手元から: `pnpm dlx wrangler@4 login` で一度ログインし、`make deploy`
+- 公開先: https://koyomi.tkc310.com（`astro.config.mjs` の `site` と `wrangler.json` の `routes`）
+- GitHub に要るもの: secrets の `CLOUDFLARE_API_TOKEN`・`CLOUDFLARE_ACCOUNT_ID`
 
 ## 定期作業
 

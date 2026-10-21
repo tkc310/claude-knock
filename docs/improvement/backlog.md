@@ -20,13 +20,10 @@
 
 ## 配信
 
-- [ ] 公開先が決まったら `astro.config.mjs` に `site` を設定する。いまは `og:image` がルートからのパス（`/og.png`）で、`og:url` も出ていない。OGP の仕様と多くの SNS は絶対 URL を求める（`src/layouts/Base.astro`）
-
 ## 検査
 
-- [ ] 静的出力では `calendar.ics.ts` の Content-Type は使われず、配信先が拡張子で決める。デプロイ先（Cloudflare）で `text/calendar; charset=utf-8` になるか確かめる
+- [ ] 初回のデプロイの後、`/calendar.ics` が `public/_headers` のとおり `text/calendar; charset=utf-8` で返るか確かめる（`curl -sI`。ADR-0016）
 
 ## 仕組み
 
 - [ ] remote を作ったら、Issue テンプレート「改善提案」と PR テンプレート（`log.md` への記録のチェック）を足す
-- [ ] Cloudflare（Void）へのデプロイ手順を用意する（必要になったら `@astrojs/cloudflare`）

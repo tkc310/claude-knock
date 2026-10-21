@@ -9,6 +9,9 @@ import type { AstroIntegration } from 'astro';
 const VERSION_MARK = `'__SW_VERSION__'`;
 const PRECACHE_MARK = '/* __SW_PRECACHE__ */ []';
 
+// 保存しないファイル。sw.js 自身と robots.txt、Cloudflare が読むだけで配らない _headers・_redirects（ADR-0016）
+const notCached = new Set(['sw.js', 'robots.txt', '_headers', '_redirects']);
+
 /** dist の中のファイルから、Service Worker が保存する URL を選ぶ */
 export function precacheUrls(files: readonly string[], read: (file: string) => string): string[] {
   const html = files.filter((f) => f.endsWith('.html'));
@@ -18,7 +21,7 @@ export function precacheUrls(files: readonly string[], read: (file: string) => s
   );
   const pages = html.map((f) => `/${f.replace(/(^|\/)index\.html$/, '$1')}`);
   const assets = files
-    .filter((f) => !f.endsWith('.html') && f !== 'sw.js' && f !== 'robots.txt')
+    .filter((f) => !f.endsWith('.html') && !notCached.has(f))
     .map((f) => `/${f}`)
     .filter((url) => !url.startsWith('/_astro/') || referenced.has(url));
   return [...pages, ...assets].sort();
