@@ -5,12 +5,11 @@ import { Heading } from '@/components/ui/heading';
 import { Stack } from '@/components/ui/stack';
 import { Tag } from '@/components/ui/tag';
 import { Text } from '@/components/ui/text';
-import { formatLunarDate, gregorianYear, occurrences } from '@/core';
+import { formatLunarDate, occurrences } from '@/core';
+import { displayRange } from '@/data/display-range';
 import { events, formatEventName } from '@/data/events';
 
-// 出すのは今年と来年の行事だけ（ADR-0008 の 1）。範囲はビルドの日から決める
-const thisYear = new Date().getFullYear();
-const range = { from: gregorianYear(thisYear).from, to: gregorianYear(thisYear + 1).to };
+const range = displayRange(new Date());
 const list = occurrences(events, range);
 const span = (start: string, end: string) =>
   start === end ? start : `${start}〜${end.slice(5)}`;
@@ -22,7 +21,7 @@ const span = (start: string, end: string) =>
       <Stack gap="sm">
         <Heading level={1}>タイ仏教行事カレンダー</Heading>
         <Text tone="subtle">
-          タイ太陰暦と太陽暦にもとづく、{thisYear}〜{thisYear + 1} 年の行事の一覧です。
+          タイ太陰暦と太陽暦にもとづく、{range.from.slice(0, 4)}〜{range.to.slice(0, 4)} 年の行事の一覧です。
         </Text>
       </Stack>
       <Stack as="ul" gap="md">
