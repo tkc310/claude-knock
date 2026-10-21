@@ -10,6 +10,23 @@ export default defineConfig({
   lint: {
     ignorePatterns: ['dist/**', '.astro/**', ...generated],
     options: { typeAware: true, typeCheck: true },
+    // core の内部は core の中とテストからだけ読み込む。外からは公開 API（src/core/index.ts）を使う（ADR-0008）
+    overrides: [
+      {
+        files: ['src/**'],
+        excludeFiles: ['src/core/**'],
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            {
+              patterns: [
+                { group: ['@/core/*', '**/core/*'], message: '公開 API の @/core から読み込む' },
+              ],
+            },
+          ],
+        },
+      },
+    ],
   },
   fmt: {
     ignorePatterns: ['dist/**', '.astro/**', 'pnpm-lock.yaml', 'CLAUDE.md', ...generated],
