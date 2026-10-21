@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .claude/worktrees/
+
+# event-notice の下書き（コミットしない）
+docs/notices/
