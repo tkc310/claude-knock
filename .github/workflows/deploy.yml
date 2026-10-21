@@ -1,4 +1,5 @@
 # main の CI が通ったら、ビルドして Cloudflare Workers の静的アセットへデプロイする（ADR-0016）。
+# 毎年 1 月 1 日（日本時間）にも、main をビルドし直す。表示する範囲（今年と来年）がビルドした日で決まるため（ADR-0022）
 # 必要なもの: secrets の CLOUDFLARE_API_TOKEN・CLOUDFLARE_ACCOUNT_ID
 name: Deploy
 
@@ -8,6 +9,9 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+  # cron は UTC。日本時間の 1 月 1 日 0 時 5 分
+  schedule:
+    - cron: '5 15 31 12 *'
 
 permissions:
   contents: read
@@ -18,14 +22,18 @@ concurrency:
 
 jobs:
   deploy:
-    # CI が通った main の push だけ（手動の実行は main のときだけ）
+    # CI が通った main の push、1 月 1 日の定期実行（main）、手動の実行（main のときだけ）
     if: >-
       (github.event_name == 'workflow_run' &&
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push') ||
+      github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # 「今年」を日本時間で数える（ランナーは UTC）
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v4
         with:
