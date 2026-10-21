@@ -3,6 +3,7 @@
 export { formatLunarDate, supportedRange, toLunar } from './calendar';
 export type { LunarMonth, ThaiLunarDate } from './calendar';
 export { addDays, gregorianYear, parseIsoDate } from './day';
+export { toIcs } from './ics';
 export type { DateRange, IsoDate, MonthDay } from './day';
 export { occurrences } from './rules';
 export type { DateRule, LunarDayRule, MonthRef, Occurrence } from './rules';
