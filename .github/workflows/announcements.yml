@@ -25,9 +25,9 @@ jobs:
       # 「今年」を日本時間で数える（ランナーは UTC）
       TZ: Asia/Tokyo
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
         with:
           install: false
           cache: true
