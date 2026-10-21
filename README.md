@@ -66,7 +66,7 @@ docs/events/     行事ごとの資料
 Cloudflare Workers の静的アセットで `dist/` を配る（ADR-0016）。main にマージすると、CI が通った後に `.github/workflows/deploy.yml` が `make deploy` を走らせる。
 
 - 手元から: `pnpm dlx wrangler@4 login` で一度ログインし、`make deploy`
-- 公開先: https://koyomi.tkc310.com（`astro.config.mjs` の `site` と `wrangler.jsonc` の `routes`）
+- 公開先: https://koyomi.tkc310.com（`astro.config.mjs` の `site` と `wrangler.json` の `routes`）
 - GitHub に要るもの: secrets の `CLOUDFLARE_API_TOKEN`・`CLOUDFLARE_ACCOUNT_ID`
 
 ## 定期作業

@@ -7,8 +7,8 @@ import { describe, expect, it } from 'vite-plus/test';
 const read = (f: string) => readFileSync(join(import.meta.dirname, '..', f), 'utf8');
 
 describe('Cloudflare Workers へのデプロイ', () => {
-  it('wrangler.jsonc は dist/ を静的アセットとして配り、Worker のスクリプトを持たない', () => {
-    const config = read('wrangler.jsonc');
+  it('wrangler.json は dist/ を静的アセットとして配り、Worker のスクリプトを持たない', () => {
+    const config = read('wrangler.json');
     expect(config).toMatch(/"name":\s*"koyomi"/);
     expect(config).toMatch(/"compatibility_date":\s*"\d{4}-\d{2}-\d{2}"/);
     expect(config).toMatch(/"directory":\s*"\.\/dist"/);
@@ -24,8 +24,8 @@ describe('Cloudflare Workers へのデプロイ', () => {
   it('公開先は koyomi.tkc310.com（site と独自ドメイン）', () => {
     const site = /site: process\.env\.SITE_URL \|\| 'https:\/\/koyomi\.tkc310\.com'/;
     expect(read('astro.config.mjs')).toMatch(site);
-    const domain = /"pattern": "koyomi\.tkc310\.com", "custom_domain": true/;
-    expect(read('wrangler.jsonc')).toMatch(domain);
+    const domain = /"pattern": "koyomi\.tkc310\.com",\s*"custom_domain": true/;
+    expect(read('wrangler.json')).toMatch(domain);
   });
 
   it('デプロイは main の CI が通った後にだけ動き、手元と同じ make deploy を走らせる', () => {
