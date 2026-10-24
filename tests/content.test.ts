@@ -104,7 +104,14 @@ describe('ロイクラトンの仏足跡の言い伝え（src/content/events/loi
 
   it('寺の縁起と、阿羅漢になる話の出典を付ける', () => {
     expect(text).toContain('https://www.blockdit.com/posts/62283a2503f10e26721184a6');
-    expect(text).toContain('https://pantip.com/topic/40638895');
+    expect(text).toContain('https://mahatapsong.blogspot.com/2015/05/4.html');
+  });
+
+  // メッテイヤ仏の時代の寿命 8 万年は長部 26 経にある。生まれ変わって阿羅漢になるまでの時間の裏付け
+  it('岩の中の者はメッテイヤ仏のもとで阿羅漢になり、その時代の寿命は 8 万年（長部 26 経）', () => {
+    expect(text).toMatch(/メッテイヤ仏のもとで[^。]*阿羅漢/);
+    expect(text).toContain('8 万年');
+    expect(text).toContain('https://suttacentral.net/dn26/');
   });
 
   it('タイ文字を書かない（出典の URL は除く。ADR-0012）', () => {
