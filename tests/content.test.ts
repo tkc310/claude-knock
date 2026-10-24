@@ -97,8 +97,9 @@ describe('ロイクラトンの仏足跡の言い伝え（src/content/events/loi
   );
 
   it('過去 3 仏とゴータマ仏の足跡が重なり、未来仏メッテイヤが 1 つにする話を書く', () => {
-    const past = ['カクサンダ仏', 'コーナーガマナ仏', 'カッサパ仏', 'ゴータマ仏'];
-    for (const word of ['シーロイ', ...past, 'メッテイヤ仏', '阿羅漢']) expect(text).toContain(word);
+    const buddhas = ['カクサンダ', 'コーナーガマナ', 'カッサパ', 'ゴータマ', 'メッテイヤ'];
+    for (const word of buddhas) expect(text).toContain(`${word}仏`);
+    for (const word of ['シーロイ', '阿羅漢']) expect(text).toContain(word);
   });
 
   it('寺の縁起と、阿羅漢になる話の出典を付ける', () => {
