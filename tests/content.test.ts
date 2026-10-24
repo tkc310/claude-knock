@@ -88,3 +88,25 @@ describe('タンブンの説明（src/content/guides/tambun.md）', () => {
     expect(read(`src/content/events/${id}.md`)).toContain('](/tambun/)');
   });
 });
+
+// 仏足跡四つの言い伝え。三蔵ではなく、寺の伝える縁起とネットの語りなので、出どころを分けて書く
+describe('ロイクラトンの仏足跡の言い伝え（src/content/events/loi-krathong.md）', () => {
+  const text = readFileSync(
+    join(import.meta.dirname, '..', 'src/content/events/loi-krathong.md'),
+    'utf8',
+  );
+
+  it('過去 3 仏とゴータマ仏の足跡が重なり、未来仏メッテイヤが 1 つにする話を書く', () => {
+    const past = ['カクサンダ仏', 'コーナーガマナ仏', 'カッサパ仏', 'ゴータマ仏'];
+    for (const word of ['シーロイ', ...past, 'メッテイヤ仏', '阿羅漢']) expect(text).toContain(word);
+  });
+
+  it('寺の縁起と、阿羅漢になる話の出典を付ける', () => {
+    expect(text).toContain('https://www.blockdit.com/posts/62283a2503f10e26721184a6');
+    expect(text).toContain('https://pantip.com/topic/40638895');
+  });
+
+  it('タイ文字を書かない（出典の URL は除く。ADR-0012）', () => {
+    expect(text.replace(/https?:\/\/\S+/g, '')).not.toMatch(/[฀-๿]/);
+  });
+});
